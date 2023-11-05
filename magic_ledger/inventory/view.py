@@ -10,12 +10,12 @@ import logging
 
 bp = Blueprint("inventory", __name__, url_prefix="/inventory")
 
+
 @bp.route("/", methods=("GET", "POST"))
 def inventory():
     if request.method == "POST":
         logging.info('''Creating inventory with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info(request.json)
 
         inv_type = request.json["inv_type"]
         name = request.json["name"]
@@ -32,11 +32,11 @@ def inventory():
         if error is not None:
             flash(error)
         else:
-            inventory = Inventory(inv_type, name, description, inventory_method, organization_id)
-            db.session.add(inventory)
+            inv = Inventory(inv_type, name, description, inventory_method, organization_id)
+            db.session.add(inv)
             db.session.commit()
-            return jsonify(inventory)
+            return jsonify(inv)
     elif request.method == "GET":
-        inventory = Inventory.query.all()
-        json_data = json.dumps([row.__getstate__() for row in inventory], default=str)
+        res = Inventory.query.all()
+        json_data = json.dumps([row.__getstate__() for row in res], default=str)
         return json_data

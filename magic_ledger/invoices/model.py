@@ -11,6 +11,7 @@ class InventoryMethodEnum(Enum):
     PAID = "paid"
     DUE = "due"
 
+
 @dataclass
 class Invoice(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -56,14 +57,14 @@ class Invoice(db.Model):
     def __getstate__(self):
         state = self.__dict__.copy()
         del state['_sa_instance_state']
-        if (state['payment_status'] == InventoryMethodEnum.PAID):
+        if state['payment_status'] == InventoryMethodEnum.PAID:
             state['payment_status'] = "paid"
-        elif (state['payment_status'] == InventoryMethodEnum.DUE):
+        elif state['payment_status'] == InventoryMethodEnum.DUE:
             state['payment_status'] = "due"
 
-        if (state['currency'] == Currency.RON):
+        if state['currency'] == Currency.RON:
             state['currency'] = "RON"
-        elif (state['currency'] == Currency.EUR):
+        elif state['currency'] == Currency.EUR:
             state['currency'] = "EUR"
         return state
 

@@ -15,8 +15,7 @@ bp = Blueprint("companies", __name__, url_prefix="/organizations")
 def organizations():
     if request.method == "POST":
         logging.info('''Creating company with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info(request.json)
 
         name = request.json["name"]
         cif = request.json["cif"]

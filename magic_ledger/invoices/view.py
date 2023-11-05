@@ -15,8 +15,8 @@ bp = Blueprint("invoices", __name__, url_prefix="/invoices")
 def invoices():
     if request.method == "POST":
         logging.info('''Creating invoice with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info(request.json)
+
         # The type will determin weather we add something to the inventory or not
         inv_type = request.json["inv_type"]
         number = request.json["number"]

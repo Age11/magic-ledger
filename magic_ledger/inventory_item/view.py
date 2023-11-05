@@ -14,9 +14,8 @@ bp = Blueprint("inventory_item", __name__, url_prefix="/inventory_item")
 @bp.route("/", methods=("GET", "POST"))
 def products():
     if request.method == "POST":
-        logging.info('''Creating inventory with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info('''Creating inventory item with the following data:''')
+        logging.info(request.json)
 
         name = request.json["name"]
         description = request.json["description"]
@@ -37,8 +36,8 @@ def products():
             flash(error)
         else:
             product = InventoryItem(name=name, description=description, quantity=quantity,
-                              measurement_unit=measurement_unit, acquisition_price=acquisition_price,
-                              total_value=total_value, inventory_id=inventory_id, invoice_id=invoice_id)
+                                    measurement_unit=measurement_unit, acquisition_price=acquisition_price,
+                                    total_value=total_value, inventory_id=inventory_id, invoice_id=invoice_id)
             db.session.add(product)
             db.session.commit()
             return jsonify(product)

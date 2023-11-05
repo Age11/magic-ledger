@@ -13,9 +13,8 @@ bp = Blueprint("bank_details", __name__, url_prefix="/bank_details")
 @bp.route("/", methods=("GET", "POST"))
 def invoices():
     if request.method == "POST":
-        logging.info('''Creating address with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info('''Creating banking details with the following data:''')
+        logging.info(request.json)
 
         organization_id = request.json["organization_id"]
         account = request.json["account"]

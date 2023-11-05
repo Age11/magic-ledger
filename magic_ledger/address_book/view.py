@@ -10,12 +10,12 @@ import logging
 
 bp = Blueprint("addressbook", __name__, url_prefix="/addressbook")
 
+
 @bp.route("/", methods=("GET", "POST"))
 def invoices():
     if request.method == "POST":
         logging.info('''Creating address with the following data:''')
-        logging.info(request.form)
-        logging.info(request.data)
+        logging.info(request.json)
 
         country = request.json["country"]
         stat_or_province = request.json["stat_or_province"]
@@ -35,8 +35,8 @@ def invoices():
             flash(error)
         else:
             address = Addressbook(country=country, stat_or_province=stat_or_province, city=city,
-                                            street=street, apartment_or_suite=apartment_or_suite, postal_code=postal_code,
-                                            organization_id=organization_id)
+                                  street=street, apartment_or_suite=apartment_or_suite, postal_code=postal_code,
+                                  organization_id=organization_id)
             db.session.add(address)
             db.session.commit()
             return jsonify(address)
