@@ -4,8 +4,9 @@ from dataclasses import dataclass
 from magic_ledger import db
 from enum import Enum
 
+
 @dataclass
-class Product(db.Model):
+class InventoryItem(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255))
@@ -16,17 +17,18 @@ class Product(db.Model):
     # could be linked to a specific invoice
     invoice_id = db.Column(db.Integer, db.ForeignKey('invoice.id'))
     # must belong to an organization
-    organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'), nullable=False)
+    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
 
     # add a constructor
-    def __init__(self, name, description, quantity, measurement_unit, acquisition_price, total_value, invoice_id, organization_id):
+    def __init__(self, name, description, quantity, measurement_unit, acquisition_price, total_value, invoice_id,
+                 inventory_id):
         self.name = name
         self.description = description
         self.quantity = quantity
         self.measurement_unit = measurement_unit
         self.acquisition_price = acquisition_price
         self.total_value = total_value
-        self.organization_id = organization_id
+        self.inventory_id = inventory_id
         self.invoice_id = invoice_id
 
     def __getstate__(self):

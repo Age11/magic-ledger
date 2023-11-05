@@ -57,8 +57,8 @@ def create_app(test_config=None):
     from magic_ledger import invoices
     app.register_blueprint(invoices.bp)
 
-    from magic_ledger import products
-    app.register_blueprint(products.bp)
+    from magic_ledger import inventory_item
+    app.register_blueprint(inventory_item.bp)
 
     # app.register_blueprint(blog.bp)
 

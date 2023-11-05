@@ -83,17 +83,18 @@ def test_post_get_organization(client, app):
     assert resp["due_date"] == "2020-01-01 00:00:00"
     assert resp["state"] == "paid"
     assert resp["organization_id"] == org_id
+    invoice_id = resp["id"]
 
-    response = client.post("/products/", json={"name": "test",
+    response = client.post("/inventory_item/", json={"name": "test",
                                                "description": "test",
                                                "quantity": 1,
                                                "measurement_unit": "buc",
                                                "acquisition_price": 1,
                                                "total_value": 1,
-                                               "organization_id": org_id,
-                                               "invoice_id": inv_id})
+                                               "inventory_id": inv_id,
+                                               "invoice_id": invoice_id})
     assert response.status_code == 200
-    response = client.get("/products/")
+    response = client.get("/inventory_item/")
     resp = json.loads(response.data)[0]
     assert resp["name"] == "test"
     assert resp["description"] == "test"
@@ -101,5 +102,5 @@ def test_post_get_organization(client, app):
     assert resp["measurement_unit"] == "buc"
     assert resp["acquisition_price"] == 1
     assert resp["total_value"] == 1
-    assert resp["organization_id"] == org_id
-    assert resp["invoice_id"] == inv_id
+    assert resp["inventory_id"] == inv_id
+    assert resp["invoice_id"] == invoice_id
