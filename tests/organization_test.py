@@ -1,23 +1,18 @@
-import pytest
-from magic_ledger.organizations.model import Organization
-from magic_ledger import db
 import json
+from tests.test_data import test_data
 
-
-def test_post_get_organization(client, app):
+def test_post_get_entities(client, app):
+    #create an organization
+    org_data = test_data['organizations'][0]
     response = client.post("/organizations/",
-                           json={"name": "test",
-                                 "cif": "1234567890",
-                                 "nrc": "1234567890",
-                                 "phone": "1234567890",
-                                 "email": "asdasd@asd.com",
-                                 "vat_mode": "on_invoice",
-                                 "status": "active",
-                                 "type": "project",
-                                 "caen_code": "1234"})
+                           json=org_data)
     assert response.status_code == 200
+
+    #retrieve all organization
     response = client.get("/organizations/")
     assert response.status_code == 200
+
+    #verify the response
     resp = json.loads(response.data)[0]
     assert resp["name"] == "test"
     assert resp["cif"] == "1234567890"
@@ -28,19 +23,22 @@ def test_post_get_organization(client, app):
     assert resp["type"] == "project"
     assert resp["vat_mode"] == "on_invoice"
     assert resp["creation_date"] is not None
+
+    #save the id
     org_id = resp["id"]
 
+    #add organization address
+    org_address = test_data['address'][0]
+    org_address["organization_id"] = org_id
     response = client.post("/addressbook/",
-                           json={"country": "Romania",
-                                 "stat_or_province": "Bucuresti",
-                                 "city": "Bucuresti",
-                                 "street": "Strada",
-                                 "apartment_or_suite": "1",
-                                 "postal_code": "123456",
-                                 "organization_id": org_id})
+                           json=org_address)
     assert response.status_code == 200
+
+    #retrieve all addresses
     response = client.get("/addressbook/")
     resp = json.loads(response.data)[0]
+
+    #verify the response
     assert resp["country"] == "Romania"
     assert resp["stat_or_province"] == "Bucuresti"
     assert resp["city"] == "Bucuresti"
@@ -49,76 +47,86 @@ def test_post_get_organization(client, app):
     assert resp["postal_code"] == "123456"
     assert resp["organization_id"] == org_id
 
-    response = client.post("/inventory/",
-                           json={"inv_type": "inventory",
-                                 "name": "test",
-                                 "description": "test",
-                                 "inventory_method": "fifo",
-                                 "organization_id": org_id})
+    #add organization banking details
+    bank_details = test_data['banking_details'][0]
+    bank_details["organization_id"] = org_id
+    response = client.post("/bank_details/", json=bank_details)
     assert response.status_code == 200
+
+    #retrieve all banking details
+    response = client.get("/bank_details/")
+    resp = json.loads(response.data)[0]
+
+    #verify the response
+    assert resp["account"] == "test"
+    assert resp["details"] == "test"
+    assert resp["organization_id"] == org_id
+
+    #add organization inventory
+    org_inventory = test_data['inventory'][0]
+    org_inventory["organization_id"] = org_id
+    response = client.post("/inventory/",
+                           json=org_inventory)
+    assert response.status_code == 200
+
+    #retrieve all inventoryes
     response = client.get("/inventory/")
     resp = json.loads(response.data)[0]
-    assert resp["inv_type"] == "inventory"
+
+    #verify the response
+    assert resp["inv_type"] == "stock"
     assert resp["name"] == "test"
     assert resp["description"] == "test"
     assert resp["inventory_method"] == "fifo"
     assert resp["organization_id"] == org_id
     inventory_id = resp["id"]
 
+    #add invoice
+    org_invoice = test_data['invoices'][0]
+    org_invoice["organization_id"] = org_id
+    org_invoice["supplier_id"] = org_id
+    org_invoice["client_id"] = org_id
     response = client.post("/invoices/",
-                           json={
-                               "inv_type": "invoice",
-                               "number": "0001",
-                               "serial": "FF",
-                               "issue_date": "2020-01-01",
-                               "receive_date": "2020-01-01",
-                               "due_date": "2020-01-01",
-                               "payment_status": "paid",
-                               "organization_id": org_id,
-                               "supplier_id": org_id,
-                               "client_id": org_id,
-                               "currency": "RON",
-                               "amount": 100,
-                               "issuer_name": "test"
-                           })
+                           json=org_invoice)
     assert response.status_code == 200
+
+    #retrieve all invoices
     response = client.get("/invoices/")
     resp = json.loads(response.data)[0]
+
+    #verify the response
     assert resp["inv_type"] == "invoice"
     assert resp["number"] == "0001"
     assert resp["serial"] == "FF"
     assert resp["receive_date"] == "2020-01-01 00:00:00"
     assert resp["due_date"] == "2020-01-01 00:00:00"
+    assert resp["issue_date"] == "2020-01-01 00:00:00"
     assert resp["payment_status"] == "paid"
     assert resp["organization_id"] == org_id
+    assert resp["supplier_id"] == org_id
+    assert resp["client_id"] == org_id
+    assert resp["amount"] == 100.00
+    assert resp["currency"] == "RON"
+    assert resp["issuer_name"] == "issuer_name"
     invoice_id = resp["id"]
 
-    response = client.post("/inventory_item/", json={"name": "test",
-                                                     "description": "test",
-                                                     "quantity": 1,
-                                                     "measurement_unit": "buc",
-                                                     "acquisition_price": 1,
-                                                     "total_value": 1,
-                                                     "inventory_id": inventory_id,
-                                                     "invoice_id": invoice_id})
+    #add inventory item
+    item = test_data['items'][0]
+    item["inventory_id"] = inventory_id
+    item["invoice_id"] = invoice_id
+    response = client.post("/inventory_item/", json=item)
     assert response.status_code == 200
+
+    #retrieve all inventory items
     response = client.get("/inventory_item/")
     resp = json.loads(response.data)[0]
+
+    #verify the response
     assert resp["name"] == "test"
     assert resp["description"] == "test"
     assert resp["quantity"] == 1
     assert resp["measurement_unit"] == "buc"
-    assert resp["acquisition_price"] == 1
-    assert resp["total_value"] == 1
+    assert resp["acquisition_price"] == 100
+    assert resp["total_value"] == 100
     assert resp["inventory_id"] == inventory_id
     assert resp["invoice_id"] == invoice_id
-
-    response = client.post("/bank_details/", json={"account": "test",
-                                                    "details": "test",
-                                                    "organization_id": org_id})
-    assert response.status_code == 200
-    response = client.get("/bank_details/")
-    resp = json.loads(response.data)[0]
-    assert resp["account"] == "test"
-    assert resp["details"] == "test"
-    assert resp["organization_id"] == org_id

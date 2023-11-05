@@ -1,4 +1,4 @@
-{
+test_data = {
   "organizations": [
     {
       "name": "test",
@@ -63,6 +63,18 @@
       "organization_id": "org_id"
     }
   ],
+  "banking_details": [
+    {
+      "account": "test",
+      "details": "test",
+      "organization_id": "org_id"
+    },
+    {
+      "account": "RO49AAAA1B31007593840000",
+      "details": "AAAA BANK",
+      "organization_id": "org_id"
+    }
+  ],
   "inventory": [
     {
       "inv_type": "stock",
@@ -92,7 +104,28 @@
       "supplier_id": "supplier_id",
       "client_id": "client_id",
       "currency": "RON",
-      "amount": "100"
+      "amount": "100",
+      "issuer_name": "issuer_name"
+    }
+  ],
+  "items": [
+    {
+      "name": "test",
+      "description": "test",
+      "quantity": "1",
+      "measurement_unit": "buc",
+      "acquisition_price": "100",
+      "inventory_id": "inventory_id",
+      "total_value": 100
+    },
+    {
+      "name": "paracetamol",
+      "description": "medicament",
+      "quantity": "1",
+      "measurement_unit": "cutie",
+      "acquisition_price": "100",
+      "inventory_id": "inventory_id",
+      "total_value": 100
     }
   ]
 }
