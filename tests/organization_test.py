@@ -63,36 +63,44 @@ def test_post_get_organization(client, app):
     assert resp["description"] == "test"
     assert resp["inventory_method"] == "fifo"
     assert resp["organization_id"] == org_id
-    inv_id = resp["id"]
+    inventory_id = resp["id"]
 
     response = client.post("/invoices/",
-                           json={"inv_type": "invoice",
-                                 "number": "1",
-                                 "serial": "1",
-                                 "receive_date": "2020-01-01",
-                                 "due_date": "2020-01-01",
-                                 "state": "paid",
-                                 "organization_id": org_id})
+                           json={
+                               "inv_type": "invoice",
+                               "number": "0001",
+                               "serial": "FF",
+                               "issue_date": "2020-01-01",
+                               "receive_date": "2020-01-01",
+                               "due_date": "2020-01-01",
+                               "payment_status": "paid",
+                               "organization_id": org_id,
+                               "supplier_id": org_id,
+                               "client_id": org_id,
+                               "currency": "RON",
+                               "amount": 100,
+                               "issuer_name": "test"
+                           })
     assert response.status_code == 200
     response = client.get("/invoices/")
     resp = json.loads(response.data)[0]
     assert resp["inv_type"] == "invoice"
-    assert resp["number"] == "1"
-    assert resp["serial"] == "1"
+    assert resp["number"] == "0001"
+    assert resp["serial"] == "FF"
     assert resp["receive_date"] == "2020-01-01 00:00:00"
     assert resp["due_date"] == "2020-01-01 00:00:00"
-    assert resp["state"] == "paid"
+    assert resp["payment_status"] == "paid"
     assert resp["organization_id"] == org_id
     invoice_id = resp["id"]
 
     response = client.post("/inventory_item/", json={"name": "test",
-                                               "description": "test",
-                                               "quantity": 1,
-                                               "measurement_unit": "buc",
-                                               "acquisition_price": 1,
-                                               "total_value": 1,
-                                               "inventory_id": inv_id,
-                                               "invoice_id": invoice_id})
+                                                     "description": "test",
+                                                     "quantity": 1,
+                                                     "measurement_unit": "buc",
+                                                     "acquisition_price": 1,
+                                                     "total_value": 1,
+                                                     "inventory_id": inventory_id,
+                                                     "invoice_id": invoice_id})
     assert response.status_code == 200
     response = client.get("/inventory_item/")
     resp = json.loads(response.data)[0]
@@ -102,5 +110,5 @@ def test_post_get_organization(client, app):
     assert resp["measurement_unit"] == "buc"
     assert resp["acquisition_price"] == 1
     assert resp["total_value"] == 1
-    assert resp["inventory_id"] == inv_id
+    assert resp["inventory_id"] == inventory_id
     assert resp["invoice_id"] == invoice_id
