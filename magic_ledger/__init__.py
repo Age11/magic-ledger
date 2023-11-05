@@ -60,6 +60,9 @@ def create_app(test_config=None):
     from magic_ledger import inventory_item
     app.register_blueprint(inventory_item.bp)
 
+    from magic_ledger import banking_details
+    app.register_blueprint(banking_details.bp)
+
     # app.register_blueprint(blog.bp)
 
     return app

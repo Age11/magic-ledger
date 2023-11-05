@@ -11,7 +11,6 @@ class InventoryMethodEnum(Enum):
     PAID = "paid"
     DUE = "due"
 
-
 @dataclass
 class Invoice(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
@@ -23,7 +22,7 @@ class Invoice(db.Model):
     due_date = db.Column(db.DateTime, nullable=False)
     payment_status = db.Column(db.Enum(InventoryMethodEnum), nullable=False)
     organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'), nullable=False)
-    supplier_id = db.Column(db.Integer, db.ForeignKey('organization.id'), nullable=False)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
     client_id = db.Column(db.Integer, db.ForeignKey('organization.id'), nullable=False)
     currency = db.Column(db.Enum(Currency), nullable=False)
     issuer_name = db.Column(db.String(255))

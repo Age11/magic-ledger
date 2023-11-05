@@ -112,3 +112,13 @@ def test_post_get_organization(client, app):
     assert resp["total_value"] == 1
     assert resp["inventory_id"] == inventory_id
     assert resp["invoice_id"] == invoice_id
+
+    response = client.post("/bank_details/", json={"account": "test",
+                                                    "details": "test",
+                                                    "organization_id": org_id})
+    assert response.status_code == 200
+    response = client.get("/bank_details/")
+    resp = json.loads(response.data)[0]
+    assert resp["account"] == "test"
+    assert resp["details"] == "test"
+    assert resp["organization_id"] == org_id
