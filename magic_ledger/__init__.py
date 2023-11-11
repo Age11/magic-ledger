@@ -48,9 +48,6 @@ def create_app(test_config=None):
     from magic_ledger import organizations
     app.register_blueprint(organizations.bp)
 
-    from magic_ledger import address_book
-    app.register_blueprint(address_book.bp)
-
     from magic_ledger import inventory
     app.register_blueprint(inventory.bp)
 
@@ -59,9 +56,6 @@ def create_app(test_config=None):
 
     from magic_ledger import inventory_item
     app.register_blueprint(inventory_item.bp)
-
-    from magic_ledger import banking_details
-    app.register_blueprint(banking_details.bp)
 
     # app.register_blueprint(blog.bp)
 
