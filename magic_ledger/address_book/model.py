@@ -16,7 +16,6 @@ class Addressbook(db.Model):
 
     #add a constructor
     def __init__(self, country, stat_or_province, city, street, apartment_or_suite, postal_code, organization_id):
-        self.type = type
         self.country = country
         self.stat_or_province = stat_or_province
         self.city = city

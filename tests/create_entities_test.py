@@ -6,9 +6,17 @@ def test_post_get_entities(client, app):
     org_data = test_data['organizations'][0]
     response = client.post("/organizations/",
                            json=org_data)
+    assert response.status_code == 201
+    assert response.headers['location'] == '/organizations/1234567890'
+
+    org_path = response.headers['location']
+    response = client.get(org_path)
     assert response.status_code == 200
+    resp = json.loads(response.data)
+    assert resp["name"] == "test"
 
     #retrieve all organization
+
     response = client.get("/organizations/")
     assert response.status_code == 200
 

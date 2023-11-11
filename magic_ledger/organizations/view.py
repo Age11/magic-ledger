@@ -41,9 +41,21 @@ def organizations():
                                             type=type, caen_code=caen_code)
             db.session.add(new_organization)
             db.session.commit()
-            return jsonify(new_organization)
+            response = jsonify()
+            response.status_code = 201
+            response.headers['location'] = '/organizations/' + cif
+            response.autocorrect_location_header = False
+            return response
 
     elif request.method == "GET":
         companies = Organization.query.all()
         json_data = json.dumps([row.__getstate__() for row in companies], default=str)
         return json_data
+
+@bp.route("/<cif>", methods=("GET",))
+def get_organization_by_cif(cif):
+
+    organization = Organization.query.filter_by(cif=cif).first()
+    json_data = json.dumps(organization.__getstate__(), default=str)
+    return json_data
+
