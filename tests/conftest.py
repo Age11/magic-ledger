@@ -1,6 +1,6 @@
 import pytest
 from magic_ledger import create_app
-from magic_ledger import init_db
+from magic_ledger import init_db, insert_account_plan
 from magic_ledger import db
 
 @pytest.fixture
@@ -8,6 +8,7 @@ def app():
     app = create_app({"TESTING": True, "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"})
     with app.app_context():
         init_db()
+        insert_account_plan()
     yield app
 
 @pytest.fixture

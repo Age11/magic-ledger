@@ -5,6 +5,7 @@ from flask import Flask
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import text
 
 __version__ = (1, 1, 0, "dev")
 
@@ -57,7 +58,8 @@ def create_app(test_config=None):
     from magic_ledger import inventory_item
     app.register_blueprint(inventory_item.bp)
 
-    # app.register_blueprint(blog.bp)
+    from magic_ledger import account_plan
+    app.register_blueprint(account_plan.bp)
 
     return app
 
@@ -67,6 +69,14 @@ def init_db():
     db.configure_mappers()
     db.create_all()
     db.session.commit()
+
+#add a python function that insers all the entries in the accounts.sql file into the database
+def insert_account_plan():
+    with open(r'C:\Users\ageor\PycharmProjects\magic-ledger\magic_ledger\accounts.sql', mode='r') as sql_file:
+        for line in sql_file:
+            db.session.execute(text(line))
+            db.session.commit()
+
 
 
 @click.command("init-db")

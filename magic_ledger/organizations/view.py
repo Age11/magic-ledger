@@ -57,12 +57,6 @@ def organizations():
         organizations = Organization.query.all()
         json_data = json.dumps([row.__getstate__() for row in organizations], default=str)
         return json_data
-@bp.route("/<id>", methods=("GET",))
-def get_organization_by_id(id):
-   organization = Organization.query.filter_by(id=id).first()
-   json_data = json.dumps(organization.__getstate__(), default=str)
-   return json_data
-
 @bp.route("/addressbook", methods=("GET", "POST"))
 def addressbook():
     if request.method == "POST":
@@ -125,3 +119,21 @@ def bank_details():
         addresses = BankingDetails.query.all()
         json_data = json.dumps([row.__getstate__() for row in addresses], default=str)
         return json_data
+
+@bp.route("/<id>", methods=("GET",))
+def get_organization_by_id(id):
+   organization = Organization.query.filter_by(id=id).first()
+   json_data = json.dumps(organization.__getstate__(), default=str)
+   return json_data
+
+@bp.route("/<id>/addressbook", methods=("GET",))
+def get_address_by_organization_id(id):
+   address = Addressbook.query.filter_by(organization_id=id).first()
+   json_data = json.dumps(address.__getstate__(), default=str)
+   return json_data
+
+@bp.route("/<id>/banking-details", methods=("GET",))
+def get_banking_details_by_organization_id(id):
+    bank_details = BankingDetails.query.filter_by(organization_id=id).first()
+    json_data = json.dumps(bank_details.__getstate__(), default=str)
+    return json_data

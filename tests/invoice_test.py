@@ -74,6 +74,10 @@ def test_inventory_items(client, app):
     response = client.post("/inventory/", json=inventory)
     assert response.status_code == 200
 
+    response = client.get("/account-plan/")
+    assert response.status_code == 200
+    resp = json.loads(response.data)
+
 
 
 
