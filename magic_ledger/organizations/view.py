@@ -54,8 +54,8 @@ def organizations():
             return response
 
     elif request.method == "GET":
-        companies = Organization.query.all()
-        json_data = json.dumps([row.__getstate__() for row in companies], default=str)
+        organizations = Organization.query.all()
+        json_data = json.dumps([row.__getstate__() for row in organizations], default=str)
         return json_data
 @bp.route("/<id>", methods=("GET",))
 def get_organization_by_id(id):

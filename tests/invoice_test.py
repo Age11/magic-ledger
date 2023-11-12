@@ -1,8 +1,9 @@
 import csv
 import json
+import pytest
 
-
-def test_provision_organizations(client, app):
+@pytest.fixture(autouse=True)
+def provision_organizations(client, app):
     # read the test data organizations csv file and map the data to dictionaries
     with open(r'C:\Users\ageor\PycharmProjects\magic-ledger\tests\test_data\organizations.csv', mode='r') as csv_file:
         csv_reader = csv.DictReader(csv_file)
@@ -56,5 +57,25 @@ def test_provision_organizations(client, app):
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 5
+
+def test_inventory_items(client, app):
+    response = client.get("/organizations/")
+    for org in json.loads(response.data):
+        if org["type"] == "project":
+            org_id = org["id"]
+            break
+    inventory = {
+        "name" : "test",
+        "description" : "inventar1",
+        "inv_type" : "marfuri",
+        "inventory_method": "lifo",
+        "organization_id" : org_id
+    }
+    response = client.post("/inventory/", json=inventory)
+    assert response.status_code == 200
+
+
+
+
 
 
