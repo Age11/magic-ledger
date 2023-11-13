@@ -5,7 +5,7 @@ from flask import request
 from flask import flash
 from flask import jsonify
 from magic_ledger import db
-from magic_ledger.inventory_item.model import InventoryItem
+from magic_ledger.inventory.inventory_items import InventoryItem
 import logging
 
 bp = Blueprint("inventory_item", __name__, url_prefix="/inventory_item")

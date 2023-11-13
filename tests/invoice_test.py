@@ -71,12 +71,23 @@ def test_inventory_items(client, app):
         "inventory_method": "lifo",
         "organization_id" : org_id
     }
-    response = client.post("/inventory/", json=inventory)
-    assert response.status_code == 200
 
-    response = client.get("/account-plan/")
-    assert response.status_code == 200
-    resp = json.loads(response.data)
+    response = client.post("/inventory/", json=inventory)
+    assert response.status_code == 201
+    inv_id = response.headers['location'].split('/')[2]
+
+    inv_item = {
+        "inventory_id": inv_id,
+        "name": "ciocolata",
+        "description": "ciocolata cu lapte",
+        "measurement_unit": "buc",
+        "quantity": 10,
+        "acquisition_price": 10,
+        "invoice_id": 1
+    }
+    response = client.post("/inventory/items", json=inv_item)
+    assert response.status_code == 201
+
 
 
 

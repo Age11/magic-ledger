@@ -138,3 +138,7 @@ def test_post_get_entities(client, app):
     assert resp["total_value"] == 100
     assert resp["inventory_id"] == inventory_id
     assert resp["invoice_id"] == invoice_id
+
+    response = client.get("/account-plan/")
+    assert response.status_code == 200
+    resp = json.loads(response.data)

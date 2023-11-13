@@ -20,14 +20,14 @@ class InventoryItem(db.Model):
     inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
 
     # add a constructor
-    def __init__(self, name, description, quantity, measurement_unit, acquisition_price, total_value, invoice_id,
+    def __init__(self, name, description, quantity, measurement_unit, acquisition_price, invoice_id,
                  inventory_id):
         self.name = name
         self.description = description
         self.quantity = quantity
         self.measurement_unit = measurement_unit
         self.acquisition_price = acquisition_price
-        self.total_value = total_value
+        self.total_value = quantity * acquisition_price
         self.inventory_id = inventory_id
         self.invoice_id = invoice_id
 
