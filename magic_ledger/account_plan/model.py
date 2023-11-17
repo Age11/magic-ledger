@@ -29,6 +29,5 @@ class AccountPlan(db.Model):
         del state['_sa_instance_state']
         return state
 
-
     def __repr__(self):
         return str(self.__getstate__())

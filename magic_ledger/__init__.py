@@ -58,6 +58,9 @@ def create_app(test_config=None):
     from magic_ledger import account_plan
     app.register_blueprint(account_plan.bp)
 
+    from magic_ledger import transactions
+    app.register_blueprint(transactions.bp)
+
     return app
 
 
