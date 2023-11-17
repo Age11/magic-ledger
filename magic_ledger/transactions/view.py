@@ -5,7 +5,7 @@ from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
 from magic_ledger.account_plan.model import AccountPlan
-from magic_ledger.transactions.model import Transaction
+from magic_ledger.transactions.transaction import Transaction
 
 bp = Blueprint("transactions", __name__, url_prefix="/transactions/")
 

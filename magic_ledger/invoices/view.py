@@ -4,7 +4,7 @@ import logging
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
-from magic_ledger.invoices.model import Invoice
+from magic_ledger.invoices.invoice import Invoice
 
 bp = Blueprint("invoices", __name__, url_prefix="/invoices")
 
