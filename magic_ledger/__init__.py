@@ -4,8 +4,8 @@ import click
 from flask import Flask
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import text
+from sqlalchemy.orm import DeclarativeBase
 
 __version__ = (1, 1, 0, "dev")
 
@@ -47,18 +47,23 @@ def create_app(test_config=None):
 
     # apply the blueprints to the app
     from magic_ledger import organizations
+
     app.register_blueprint(organizations.bp)
 
     from magic_ledger import inventory
+
     app.register_blueprint(inventory.bp)
 
     from magic_ledger import invoices
+
     app.register_blueprint(invoices.bp)
 
     from magic_ledger import account_plan
+
     app.register_blueprint(account_plan.bp)
 
     from magic_ledger import transactions
+
     app.register_blueprint(transactions.bp)
 
     return app
@@ -70,13 +75,16 @@ def init_db():
     db.create_all()
     db.session.commit()
 
-#add a python function that insers all the entries in the accounts.sql file into the database
+
+# add a python function that insers all the entries in the accounts.sql file into the database
 def insert_account_plan():
-    with open(r'C:\Users\ageor\PycharmProjects\magic-ledger\magic_ledger\accounts.sql', mode='r') as sql_file:
+    with open(
+        r"C:\Users\ageor\PycharmProjects\magic-ledger\magic_ledger\accounts.sql",
+        mode="r",
+    ) as sql_file:
         for line in sql_file:
             db.session.execute(text(line))
             db.session.commit()
-
 
 
 @click.command("init-db")

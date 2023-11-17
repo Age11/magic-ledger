@@ -1,12 +1,10 @@
 import json
+import logging
 
-from flask import Blueprint
-from flask import request
-from flask import flash
-from flask import jsonify
+from flask import Blueprint, flash, jsonify, request
+
 from magic_ledger import db
 from magic_ledger.invoices.model import Invoice
-import logging
 
 bp = Blueprint("invoices", __name__, url_prefix="/invoices")
 
@@ -14,7 +12,7 @@ bp = Blueprint("invoices", __name__, url_prefix="/invoices")
 @bp.route("/", methods=("GET", "POST"))
 def invoices():
     if request.method == "POST":
-        logging.info('''Creating invoice with the following data:''')
+        logging.info("""Creating invoice with the following data:""")
         logging.info(request.json)
 
         # The type will determin weather we add something to the inventory or not
@@ -42,20 +40,32 @@ def invoices():
         if error is not None:
             flash(error)
         else:
-            new_invoice = Invoice(inv_type=inv_type, number=number, serial=serial, receive_date=receive_date,
-                                  issue_date=issue_date, due_date=due_date, payment_status=payment_status,
-                                  organization_id=org_id, supplier_id=supplier_id, client_id=client_id, amount=amount,
-                                  currency=currency, issuer_name=issuer_name)
+            new_invoice = Invoice(
+                inv_type=inv_type,
+                number=number,
+                serial=serial,
+                receive_date=receive_date,
+                issue_date=issue_date,
+                due_date=due_date,
+                payment_status=payment_status,
+                organization_id=org_id,
+                supplier_id=supplier_id,
+                client_id=client_id,
+                amount=amount,
+                currency=currency,
+                issuer_name=issuer_name,
+            )
             db.session.add(new_invoice)
             db.session.commit()
             response = jsonify()
             response.status_code = 201
-            response.headers['location'] = '/invoices/' + str(new_invoice.id)
+            response.headers["location"] = "/invoices/" + str(new_invoice.id)
             return response
     elif request.method == "GET":
         invs = Invoice.query.all()
         json_data = json.dumps([row.__getstate__() for row in invs], default=str)
         return json_data
+
 
 @bp.route("/<int:invoice_id>", methods=("GET", "PUT", "DELETE"))
 def invoice(invoice_id):

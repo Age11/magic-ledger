@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from magic_ledger import db
 from enum import Enum
+
+from magic_ledger import db
 
 
 class AccountTypeEnum(Enum):
-    ACTIVE = 'activ'
-    PASIVE = 'pasiv'
-    BIFUNCTIONAL = 'bifunctional'
-    UNSPECIFIED = 'nespecificat'
+    ACTIVE = "activ"
+    PASIVE = "pasiv"
+    BIFUNCTIONAL = "bifunctional"
+    UNSPECIFIED = "nespecificat"
 
 
 @dataclass
@@ -26,7 +27,7 @@ class AccountPlan(db.Model):
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        del state['_sa_instance_state']
+        del state["_sa_instance_state"]
         return state
 
     def __repr__(self):

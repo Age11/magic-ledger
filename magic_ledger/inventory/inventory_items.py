@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+
 from magic_ledger import db
+
 
 @dataclass
 class InventoryItem(db.Model):
@@ -13,13 +15,21 @@ class InventoryItem(db.Model):
     acquisition_price = db.Column(db.Float, nullable=False)
     total_value = db.Column(db.Float, nullable=False)
     # could be linked to a specific invoice
-    invoice_id = db.Column(db.Integer, db.ForeignKey('invoice.id'))
+    invoice_id = db.Column(db.Integer, db.ForeignKey("invoice.id"))
     # must belong to an organization
-    inventory_id = db.Column(db.Integer, db.ForeignKey('inventory.id'), nullable=False)
+    inventory_id = db.Column(db.Integer, db.ForeignKey("inventory.id"), nullable=False)
 
     # add a constructor
-    def __init__(self, name, description, quantity, measurement_unit, acquisition_price, invoice_id,
-                 inventory_id):
+    def __init__(
+        self,
+        name,
+        description,
+        quantity,
+        measurement_unit,
+        acquisition_price,
+        invoice_id,
+        inventory_id,
+    ):
         self.name = name
         self.description = description
         self.quantity = quantity
@@ -31,7 +41,7 @@ class InventoryItem(db.Model):
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        del state['_sa_instance_state']
+        del state["_sa_instance_state"]
         return state
 
     def __repr__(self):
