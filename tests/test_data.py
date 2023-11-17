@@ -112,7 +112,7 @@ test_data = {
     {
       "name": "test",
       "description": "test",
-      "quantity": "1",
+      "quantity": 1,
       "measurement_unit": "buc",
       "acquisition_price": "100",
       "inventory_id": "inventory_id",
@@ -121,7 +121,7 @@ test_data = {
     {
       "name": "paracetamol",
       "description": "medicament",
-      "quantity": "1",
+      "quantity": 1,
       "measurement_unit": "cutie",
       "acquisition_price": "100",
       "inventory_id": "inventory_id",

@@ -46,7 +46,8 @@ def inventory():
         json_data = json.dumps([row.__getstate__() for row in res], default=str)
         return json_data
 
-@bp.route("/items", methods=("GET", "POST"))
+
+@bp.route("/items/", methods=("GET", "POST"))
 def products():
     if request.method == "POST":
         logging.info('''Creating inventory item with the following data:''')
@@ -69,12 +70,15 @@ def products():
         if error is not None:
             flash(error)
         else:
-            product = InventoryItem(name=name, description=description, quantity=quantity,
-                                    measurement_unit=measurement_unit, acquisition_price=acquisition_price,
-                                    inventory_id=inventory_id, invoice_id=invoice_id)
-            db.session.add(product)
+            item = InventoryItem(name=name, description=description, quantity=quantity,
+                                 measurement_unit=measurement_unit, acquisition_price=acquisition_price,
+                                 inventory_id=inventory_id, invoice_id=invoice_id)
+            db.session.add(item)
             db.session.commit()
-            return jsonify(product)
+            response = jsonify()
+            response.status_code = 201
+            response.headers['location'] = '/inventory/items/' + str(item.id)
+            return response
     elif request.method == "GET":
         product = InventoryItem.query.all()
         json_data = json.dumps([row.__getstate__() for row in product], default=str)

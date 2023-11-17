@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from magic_ledger import db
-from enum import Enum
-
 
 @dataclass
 class InventoryItem(db.Model):

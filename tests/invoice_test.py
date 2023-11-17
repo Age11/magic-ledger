@@ -85,7 +85,7 @@ def test_inventory_items(client, app):
         "acquisition_price": 10,
         "invoice_id": 1
     }
-    response = client.post("/inventory/items", json=inv_item)
+    response = client.post("/inventory/items/", json=inv_item)
     assert response.status_code == 201
 
 

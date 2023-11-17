@@ -48,8 +48,11 @@ def invoices():
                                   currency=currency, issuer_name=issuer_name)
             db.session.add(new_invoice)
             db.session.commit()
-            return jsonify(new_invoice)
+            response = jsonify()
+            response.status_code = 201
+            response.headers['location'] = '/invoices/' + str(new_invoice.id)
+            return response
     elif request.method == "GET":
-        invoices = Invoice.query.all()
-        json_data = json.dumps([row.__getstate__() for row in invoices], default=str)
+        invs = Invoice.query.all()
+        json_data = json.dumps([row.__getstate__() for row in invs], default=str)
         return json_data

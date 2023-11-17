@@ -75,7 +75,7 @@ def test_post_get_entities(client, app):
     org_inventory["organization_id"] = org_id
     response = client.post("/inventory/",
                            json=org_inventory)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     #retrieve all inventoryes
     response = client.get("/inventory/")
@@ -96,7 +96,7 @@ def test_post_get_entities(client, app):
     org_invoice["client_id"] = org_id
     response = client.post("/invoices/",
                            json=org_invoice)
-    assert response.status_code == 200
+    assert response.status_code == 201
 
     #retrieve all invoices
     response = client.get("/invoices/")
@@ -122,11 +122,11 @@ def test_post_get_entities(client, app):
     item = test_data['items'][0]
     item["inventory_id"] = inventory_id
     item["invoice_id"] = invoice_id
-    response = client.post("/inventory_item/", json=item)
-    assert response.status_code == 200
+    response = client.post("/inventory/items/", json=item)
+    assert response.status_code == 201
 
     #retrieve all inventory items
-    response = client.get("/inventory_item/")
+    response = client.get("/inventory/items/")
     resp = json.loads(response.data)[0]
 
     #verify the response
@@ -138,6 +138,8 @@ def test_post_get_entities(client, app):
     assert resp["total_value"] == 100
     assert resp["inventory_id"] == inventory_id
     assert resp["invoice_id"] == invoice_id
+
+    #
 
     response = client.get("/account-plan/")
     assert response.status_code == 200
