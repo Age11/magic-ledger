@@ -2,6 +2,7 @@ import csv
 import json
 import pytest
 
+
 @pytest.fixture(autouse=True)
 def provision_organizations(client, app):
     # read the test data organizations csv file and map the data to dictionaries
@@ -50,13 +51,14 @@ def provision_organizations(client, app):
             "organization_id": org_id}
 
         response = client.post("/organizations/banking-details",
-                                 json=bank_details)
+                               json=bank_details)
         assert response.status_code == 200
 
     response = client.get("/organizations/")
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 5
+
 
 def test_inventory_items(client, app):
     response = client.get("/organizations/")
@@ -65,32 +67,45 @@ def test_inventory_items(client, app):
             org_id = org["id"]
             break
     inventory = {
-        "name" : "test",
-        "description" : "inventar1",
-        "inv_type" : "marfuri",
+        "name": "test",
+        "description": "inventar1",
+        "inv_type": "marfuri",
         "inventory_method": "lifo",
-        "organization_id" : org_id
+        "organization_id": org_id
     }
 
     response = client.post("/inventory/", json=inventory)
     assert response.status_code == 201
-    inv_id = response.headers['location'].split('/')[2]
+    inventory_id = response.headers['location'].split('/')[2]
+
+    chocolate_invoice = {
+        "inv_type": "invoice",
+        "number": "0002",
+        "serial": "FF",
+        "issue_date": "2023-11-11",
+        "receive_date": "2023-11-11",
+        "due_date": "2023-12-11",
+        "payment_status": "due",
+        "organization_id": 1,
+        "supplier_id": 2,
+        "client_id": 1,
+        "currency": "RON",
+        "amount": 100,
+        "issuer_name": "issuer_name"
+    }
+
+    response = client.post("/invoices/", json=chocolate_invoice)
+    assert response.status_code == 201
+    invoice_id = response.headers['location'].split('/')[2]
 
     inv_item = {
-        "inventory_id": inv_id,
+        "inventory_id": inventory_id,
         "name": "ciocolata",
         "description": "ciocolata cu lapte",
         "measurement_unit": "buc",
         "quantity": 10,
         "acquisition_price": 10,
-        "invoice_id": 1
+        "invoice_id": invoice_id
     }
     response = client.post("/inventory/items/", json=inv_item)
     assert response.status_code == 201
-
-
-
-
-
-
-

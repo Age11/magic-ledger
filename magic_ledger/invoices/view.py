@@ -56,3 +56,9 @@ def invoices():
         invs = Invoice.query.all()
         json_data = json.dumps([row.__getstate__() for row in invs], default=str)
         return json_data
+
+@bp.route("/<int:invoice_id>", methods=("GET", "PUT", "DELETE"))
+def invoice(invoice_id):
+    invoice = Invoice.query.filter_by(id=invoice_id).first()
+    if request.method == "GET":
+        return jsonify(invoice.__getstate__())
