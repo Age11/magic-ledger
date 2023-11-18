@@ -14,6 +14,8 @@ class Addressbook(db.Model):
     street = db.Column(db.String(255), nullable=False)
     apartment_or_suite = db.Column(db.String(255), nullable=False)
     postal_code = db.Column(db.String(10), nullable=False)
+    phone = db.Column(db.String(255))
+    email = db.Column(db.String(255))
     # must belong to an organization
     organization_id = db.Column(
         db.Integer, db.ForeignKey("organization.id"), nullable=False
@@ -29,6 +31,8 @@ class Addressbook(db.Model):
         apartment_or_suite,
         postal_code,
         organization_id,
+        phone,
+        email,
     ):
         self.country = country
         self.stat_or_province = stat_or_province
@@ -37,6 +41,8 @@ class Addressbook(db.Model):
         self.apartment_or_suite = apartment_or_suite
         self.postal_code = postal_code
         self.organization_id = organization_id
+        self.phone = phone
+        self.email = email
 
     def __getstate__(self):
         state = self.__dict__.copy()

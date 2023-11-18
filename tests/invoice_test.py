@@ -1,12 +1,16 @@
 import csv
 import json
+
 import pytest
 
 
 @pytest.fixture(autouse=True)
 def provision_organizations(client, app):
     # read the test data organizations csv file and map the data to dictionaries
-    with open(r'C:\Users\ageor\PycharmProjects\magic-ledger\tests\test_data\organizations.csv', mode='r') as csv_file:
+    with open(
+        r"C:\Users\ageor\PycharmProjects\magic-ledger\tests\test_data\organizations.csv",
+        mode="r",
+    ) as csv_file:
         csv_reader = csv.DictReader(csv_file)
         org_data = list(csv_reader)
         print(org_data)
@@ -16,20 +20,17 @@ def provision_organizations(client, app):
             "name": org["name"],
             "cif": org["cif"],
             "nrc": org["nrc"],
-            "phone": org["phone"],
-            "email": org["email"],
             "vat_mode": org["vat_mode"],
             "status": org["status"],
             "type": org["type"],
-            "caen_code": org["caen_code"]
+            "caen_code": org["caen_code"],
         }
 
         # create the organization
-        response = client.post("/organizations/",
-                               json=org_payload)
+        response = client.post("/organizations/", json=org_payload)
         assert response.status_code == 201
 
-        org_id = str(response.headers['location']).split('/')[2]
+        org_id = str(response.headers["location"]).split("/")[2]
 
         address = {
             "country": org["country"],
@@ -38,20 +39,21 @@ def provision_organizations(client, app):
             "street": org["street"],
             "apartment_or_suite": org["apartment_or_suite"],
             "postal_code": org["postal_code"],
-            "organization_id": org_id
+            "phone": org["phone"],
+            "email": org["email"],
+            "organization_id": org_id,
         }
 
-        response = client.post("/organizations/addressbook",
-                               json=address)
+        response = client.post("/organizations/addressbook", json=address)
         assert response.status_code == 200
 
         bank_details = {
             "account": org["account"],
             "details": org["details"],
-            "organization_id": org_id}
+            "organization_id": org_id,
+        }
 
-        response = client.post("/organizations/banking-details",
-                               json=bank_details)
+        response = client.post("/organizations/banking-details", json=bank_details)
         assert response.status_code == 200
 
     response = client.get("/organizations/")
@@ -71,12 +73,12 @@ def test_inventory_items(client, app):
         "description": "inventar1",
         "inv_type": "marfuri",
         "inventory_method": "lifo",
-        "organization_id": org_id
+        "organization_id": org_id,
     }
 
     response = client.post("/inventory/", json=inventory)
     assert response.status_code == 201
-    inventory_id = response.headers['location'].split('/')[2]
+    inventory_id = response.headers["location"].split("/")[2]
 
     chocolate_invoice = {
         "inv_type": "invoice",
@@ -91,12 +93,12 @@ def test_inventory_items(client, app):
         "client_id": 1,
         "currency": "RON",
         "amount": 100,
-        "issuer_name": "issuer_name"
+        "issuer_name": "issuer_name",
     }
 
     response = client.post("/invoices/", json=chocolate_invoice)
     assert response.status_code == 201
-    invoice_id = response.headers['location'].split('/')[2]
+    invoice_id = response.headers["location"].split("/")[2]
 
     inv_item = {
         "inventory_id": inventory_id,
@@ -105,12 +107,12 @@ def test_inventory_items(client, app):
         "measurement_unit": "buc",
         "quantity": 10,
         "acquisition_price": 10,
-        "invoice_id": invoice_id
+        "invoice_id": invoice_id,
     }
     response = client.post("/inventory/items/", json=inv_item)
     assert response.status_code == 201
 
-    #record the transaction
+    # record the transaction
     transaction = {
         "debit_account_id": "371",
         "credit_account_id": "401",

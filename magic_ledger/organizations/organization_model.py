@@ -34,9 +34,6 @@ class Organization(db.Model):
     cif = db.Column(db.String(10), nullable=False)
     # numar registru comrt
     nrc = db.Column(db.String(20), nullable=False)
-    # Adresa
-    phone = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(200))
 
     # Setari generale
     vat_mode = db.Column(db.Enum(VatModeEnum), nullable=False)
@@ -47,12 +44,10 @@ class Organization(db.Model):
     type = db.Column(db.Enum(TypeEnum), nullable=False)
 
     # add a constructor
-    def __init__(self, name, cif, nrc, type, status, phone, email, vat_mode, caen_code):
+    def __init__(self, name, cif, nrc, type, status, vat_mode, caen_code):
         self.name = name
         self.cif = cif
         self.nrc = nrc
-        self.phone = phone
-        self.email = email
         if vat_mode == "on_cash_in":
             self.vat_mode = VatModeEnum.ON_CASH_IN
         elif vat_mode == "on_invoice":

@@ -20,8 +20,6 @@ def organizations():
         name = request.json["name"]
         cif = request.json["cif"]
         nrc = request.json["nrc"]
-        phone = request.json["phone"]
-        email = request.json["email"]
         vat_mode = request.json["vat_mode"]
         caen_code = request.json["caen_code"]
         status = request.json["status"]
@@ -40,8 +38,6 @@ def organizations():
                 name=name,
                 cif=cif,
                 nrc=nrc,
-                phone=phone,
-                email=email,
                 vat_mode=vat_mode,
                 status=status,
                 type=type,
@@ -80,6 +76,8 @@ def addressbook():
         apartment_or_suite = request.json["apartment_or_suite"]
         postal_code = request.json["postal_code"]
         organization_id = request.json["organization_id"]
+        phone = request.json["phone"]
+        email = request.json["email"]
 
         error = None
 
@@ -98,6 +96,8 @@ def addressbook():
                 apartment_or_suite=apartment_or_suite,
                 postal_code=postal_code,
                 organization_id=organization_id,
+                phone=phone,
+                email=email,
             )
             db.session.add(address)
             db.session.commit()
