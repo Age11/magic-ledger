@@ -140,4 +140,9 @@ def test_post_get_entities(client, app):
 
     response = client.get("/account-plan/")
     assert response.status_code == 200
-    resp = json.loads(response.data)
+
+    # get all projects
+    response = client.get("/organizations/projects")
+    assert response.status_code == 200
+    response = json.loads(response.data)
+    assert len(response) == 1

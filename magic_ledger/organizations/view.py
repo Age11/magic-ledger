@@ -6,7 +6,7 @@ from flask import Blueprint, flash, jsonify, request
 from magic_ledger import db
 from magic_ledger.organizations.addressbook_model import Addressbook
 from magic_ledger.organizations.banking_details_model import BankingDetails
-from magic_ledger.organizations.organization_model import Organization
+from magic_ledger.organizations.organization_model import Organization, TypeEnum
 
 bp = Blueprint("companies", __name__, url_prefix="/organizations")
 
@@ -139,22 +139,29 @@ def bank_details():
         return json_data
 
 
-@bp.route("/<id>", methods=("GET",))
-def get_organization_by_id(id):
-    organization = Organization.query.filter_by(id=id).first()
+@bp.route("/<identifier>", methods=("GET",))
+def get_organization_by_id(identifier):
+    organization = Organization.query.filter_by(id=identifier).first()
     json_data = json.dumps(organization.__getstate__(), default=str)
     return json_data
 
 
-@bp.route("/<id>/addressbook", methods=("GET",))
-def get_address_by_organization_id(id):
-    address = Addressbook.query.filter_by(organization_id=id).first()
+@bp.route("/<identifier>/addressbook", methods=("GET",))
+def get_address_by_organization_id(identifier):
+    address = Addressbook.query.filter_by(organization_id=identifier).first()
     json_data = json.dumps(address.__getstate__(), default=str)
     return json_data
 
 
-@bp.route("/<id>/banking-details", methods=("GET",))
-def get_banking_details_by_organization_id(id):
-    bank_details = BankingDetails.query.filter_by(organization_id=id).first()
+@bp.route("/<identifier>/banking-details", methods=("GET",))
+def get_banking_details_by_organization_id(identifier):
+    bank_details = BankingDetails.query.filter_by(organization_id=identifier).first()
     json_data = json.dumps(bank_details.__getstate__(), default=str)
+    return json_data
+
+
+@bp.route("/projects")
+def get_projects():
+    projects = Organization.query.filter_by(type=TypeEnum.PROJECT).all()
+    json_data = json.dumps([row.__getstate__() for row in projects], default=str)
     return json_data
