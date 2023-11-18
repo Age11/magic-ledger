@@ -4,13 +4,24 @@ import requests
 
 
 class ProjectSelectorModel:
-    def __init__(self, url):
-        self.url = url
+    column_names = ["Nume", "CIF", "NRC", "Status"]
+
+    def __init__(self):
         self.projects = []
-        self.selected_project = None
-        self.config = configparser.ConfigParser().read("config.ini")
+        self.config = configparser.ConfigParser().read(
+            r"C:\Users\ageor\PycharmProjects\magic-ledger\magic_ledger_ui\config.ini"
+        )
 
     def get_projects(self):
-        response = requests.get(self.config["URL"] + self.config["PROJECTS"])
-        self.projects = response.json()
+        response = requests.get("http://127.0.0.1:5000/organizations/projects")
+        resp = response.json()
+        for project in resp:
+            self.projects.append(
+                {
+                    "name": project["name"],
+                    "cif": project["cif"],
+                    "nrc": project["nrc"],
+                    "status": project["status"],
+                }
+            )
         return self.projects

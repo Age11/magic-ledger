@@ -21,7 +21,7 @@ def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
 
-    # some deploy systems set the database url in the environ
+    # some deploy systems set the database url in the environment
     db_url = os.environ.get("DATABASE_URL")
 
     if db_url is None:
@@ -76,7 +76,7 @@ def init_db():
     db.session.commit()
 
 
-# add a python function that insers all the entries in the accounts.sql file into the database
+# add a python function that inserts all the entries in the accounts.sql file into the database
 def insert_account_plan():
     with open(
         r"C:\Users\ageor\PycharmProjects\magic-ledger\magic_ledger\accounts.sql",
@@ -93,3 +93,5 @@ def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
     click.echo("Initialized the database.")
+    insert_account_plan()
+    click.echo("provisionsed account plan.")
