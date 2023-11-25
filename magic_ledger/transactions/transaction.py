@@ -16,7 +16,8 @@ class Transaction(db.Model):
     credit_account_id = db.Column(
         db.String(255), db.ForeignKey("account_plan.account"), nullable=False
     )
-    amount = db.Column(db.Float, nullable=False)
+    debit_amount = db.Column(db.Float, nullable=False)
+    credit_amount = db.Column(db.Float, nullable=False)
     currency = db.Column(db.Enum(Currency), nullable=False)
     transaction_date = db.Column(db.DateTime, nullable=False)
     recorded_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -29,7 +30,8 @@ class Transaction(db.Model):
         self,
         debit_account_id,
         credit_account_id,
-        amount,
+        debit_amount,
+        credit_amount,
         currency,
         transaction_date,
         organization_id,
@@ -37,7 +39,8 @@ class Transaction(db.Model):
     ):
         self.debit_account_id = debit_account_id
         self.credit_account_id = credit_account_id
-        self.amount = amount
+        self.debit_amount = debit_amount
+        self.credit_amount = credit_amount
         self.currency = currency
         self.transaction_date = datetime.strptime(transaction_date, "%Y-%m-%d")
         self.organization_id = organization_id

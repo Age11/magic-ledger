@@ -19,7 +19,8 @@ def invoices():
         # The type will determin weather we add something to the inventory or not
         debit_account_id = request.json["debit_account_id"]
         credit_account_id = request.json["credit_account_id"]
-        amount = request.json["amount"]
+        debit_amount = request.json["debit_amount"]
+        credit_amount = request.json["credit_amount"]
         currency = request.json["currency"]
         transaction_date = request.json["transaction_date"]
         organization_id = request.json["organization_id"]
@@ -31,8 +32,6 @@ def invoices():
             error = "debit_account_id is required."
         if not credit_account_id:
             error = "credit_account_id id is required."
-        if not amount:
-            error = "amount is required."
         # TODO: add more validation
 
         if error is not None:
@@ -41,7 +40,8 @@ def invoices():
             new_transaction = Transaction(
                 debit_account_id=debit_account_id,
                 credit_account_id=credit_account_id,
-                amount=amount,
+                debit_amount=debit_amount,
+                credit_amount=credit_amount,
                 currency=currency,
                 transaction_date=transaction_date,
                 organization_id=organization_id,

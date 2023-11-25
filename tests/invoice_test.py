@@ -116,7 +116,8 @@ def test_inventory_items(client, app):
     transaction = {
         "debit_account_id": "371",
         "credit_account_id": "401",
-        "amount": 100,
+        "debit_amount": 100,
+        "credit_amount": 100,
         "currency": "RON",
         "transaction_date": "2023-11-11",
         "organization_id": org_id,
