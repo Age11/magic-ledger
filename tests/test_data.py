@@ -6,7 +6,7 @@ test_data = {
             "nrc": "1234567890",
             "vat_mode": "on_invoice",
             "status": "active",
-            "type": "project",
+            "org_type": "project",
             "caen_code": "1234",
         },
         {
@@ -15,7 +15,7 @@ test_data = {
             "nrc": "J29/747/1994",
             "vat_mode": "on_invoice",
             "status": "active",
-            "type": "project",
+            "org_type": "project",
             "caen_code": "4941",
         },
         {
@@ -24,7 +24,7 @@ test_data = {
             "nrc": "J01/375/2013",
             "vat_mode": "on_cash_in",
             "status": "active",
-            "type": "supplier",
+            "org_type": "supplier",
             "caen_code": "4791",
         },
     ],

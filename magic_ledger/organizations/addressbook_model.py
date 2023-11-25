@@ -9,7 +9,7 @@ from magic_ledger import db
 class Addressbook(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     country = db.Column(db.String(255), nullable=False)
-    stat_or_province = db.Column(db.String(255), nullable=False)
+    state_or_province = db.Column(db.String(255), nullable=False)
     city = db.Column(db.String(255), nullable=False)
     street = db.Column(db.String(255), nullable=False)
     apartment_or_suite = db.Column(db.String(255), nullable=False)
@@ -25,7 +25,7 @@ class Addressbook(db.Model):
     def __init__(
         self,
         country,
-        stat_or_province,
+        state_or_province,
         city,
         street,
         apartment_or_suite,
@@ -35,7 +35,7 @@ class Addressbook(db.Model):
         email,
     ):
         self.country = country
-        self.stat_or_province = stat_or_province
+        self.state_or_province = state_or_province
         self.city = city
         self.street = street
         self.apartment_or_suite = apartment_or_suite

@@ -1,0 +1,25 @@
+﻿Data,Document,Descriere,Cont Debit,Cont Credit,Suma Debit,Suma Credit
+2/12/2023,Factura numar 1001/02-12-2023,Vânzare autoturism,461,7583,15000.00,15000.00
+2/12/2023,Factura numar 1001/02.13,TVA Vanzare autoturism,461,4427,2850.00,2850.00
+2/12/2023,Fișa mijlocului fix,Scoatere din evidență autoturism. Amortizare,2813,2133,18000.00,18000.00
+2/12/2023,Fișa mijlocului fix,Scoatere din evidență autoturism,6583,2133,12000.00,12000.00
+5/12/2023,Contract de leasing,Inregistrare contract de leasing,2133,2133,95000.00,95000.00
+5/12/2023,Evidentierea dobanzii,,-,8051,14250.00,14250.00
+6/12/2023,Contract vânzare- cumpărare,Vânzare acțiuni,461,7642,500.00,500.00
+6/12/2023,Contract vânzare- cumpărare,Vânzare acțiuni,461,5081,125.00,125.00
+6/12/2023,Extras de cont,Comision bancar vanzare actiuni,668,461,12.50,12.50
+6/12/2023,Jurnal de banca,Incasare prin virament bancar,5121,461,12.50,12.50
+7/12/2023,Factura furnizor extern,Înregistrare achiziție mărfuri,371,4012,29750.00,29750.00
+7/12/2023,Factura transport extern,Înregistrare transport,371,4012,4950.00,4950.00
+7/12/2023,Document,Inregistrare taxe vamale,371,446,3000.00,3000.00
+7/12/2023,Document,Inregistrare comision vamal,371,446,150.00,150.00
+7/12/2023,,Inregistrare TVA import vamal,4426,446,6298.50,6298.50
+7/12/2023,Ordin de plată,Plata datorii vamale,446,5121,3000.00,3000.00
+7/12/2023,Ordin de plată,Plata comision vamal,446,5121,150.00,150.00
+7/12/2023,Ordin de plată,Plata TVA import,446,5121,6298.50,6298.50
+8/12/2023,Bon de consum,Consum materii prime,601,301,2500.00,2500.00
+9/12/2023,Ordin de schimb valutar,Înregistrare schimb valutar,5125,5121,49000.00,49000.00
+9/12/2023,Ordin de schimb valutar,Înregistrare schimb valutar,5124,5125,49000.00,49000.00
+9/12/2023,Ordin de plata in valuta,Plata BeBeBe datorii furnizor,4012,5124,19800.00,19800.00
+9/12/2023,Ordin de plata in valuta,Inregistrare diferenta favorabila de curs,4012,7651,200.00,200.00
+9/12/2023,Extras bancar in valuta,Înregistrare comision bancar,627,5124,247.50,247.50

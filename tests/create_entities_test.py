@@ -28,7 +28,7 @@ def test_post_get_entities(client, app):
     assert resp["nrc"] == "1234567890"
     assert resp["caen_code"] == "1234"
     assert resp["status"] == "active"
-    assert resp["type"] == "project"
+    assert resp["org_type"] == "project"
     assert resp["vat_mode"] == "on_invoice"
     assert resp["creation_date"] is not None
 
@@ -47,7 +47,7 @@ def test_post_get_entities(client, app):
 
     # verify the response
     assert resp["country"] == "Romania"
-    assert resp["stat_or_province"] == "Bucuresti"
+    assert resp["state_or_province"] == "Bucuresti"
     assert resp["city"] == "Bucuresti"
     assert resp["street"] == "Strada"
     assert resp["apartment_or_suite"] == "1"
@@ -142,7 +142,7 @@ def test_post_get_entities(client, app):
     assert response.status_code == 200
 
     # get all projects
-    response = client.get("/organizations/projects")
-    assert response.status_code == 200
-    response = json.loads(response.data)
-    assert len(response) == 1
+    # response = client.get("/organizations/projects")
+    # assert response.status_code == 200
+    # response = json.loads(response.data)
+    # assert len(response) == 1

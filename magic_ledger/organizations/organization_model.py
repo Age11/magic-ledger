@@ -13,7 +13,7 @@ class StatusEnum(Enum):
     DELETED = "deleted"
 
 
-class TypeEnum(Enum):
+class OrgTypeEnum(Enum):
     PROJECT = "project"
     SUPPLIER = "supplier"
     CLIENT = "client"
@@ -41,10 +41,10 @@ class Organization(db.Model):
     # Misc info
     creation_date = db.Column(db.DateTime, default=datetime.utcnow())
     status = db.Column(db.Enum(StatusEnum), nullable=False)
-    type = db.Column(db.Enum(TypeEnum), nullable=False)
+    org_type = db.Column(db.Enum(OrgTypeEnum), nullable=False)
 
     # add a constructor
-    def __init__(self, name, cif, nrc, type, status, vat_mode, caen_code):
+    def __init__(self, name, cif, nrc, org_type, status, vat_mode, caen_code):
         self.name = name
         self.cif = cif
         self.nrc = nrc
@@ -63,12 +63,12 @@ class Organization(db.Model):
         elif status == "inactive":
             self.status = StatusEnum.INACTIVE
 
-        if type == "project":
-            self.type = TypeEnum.PROJECT
-        elif type == "supplier":
-            self.type = TypeEnum.SUPPLIER
-        elif type == "client":
-            self.type = TypeEnum.CLIENT
+        if org_type == "project":
+            self.org_type = OrgTypeEnum.PROJECT
+        elif org_type == "supplier":
+            self.org_type = OrgTypeEnum.SUPPLIER
+        elif org_type == "client":
+            self.org_type = OrgTypeEnum.CLIENT
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -82,12 +82,12 @@ class Organization(db.Model):
             state["status"] = "deleted"
         state["creation_date"] = str(state["creation_date"])
 
-        if state.get("type") is TypeEnum.PROJECT:
-            state["type"] = "project"
-        elif state.get("type") is TypeEnum.SUPPLIER:
-            state["type"] = "supplier"
-        elif state.get("type") is TypeEnum.CLIENT:
-            state["type"] = "client"
+        if state.get("org_type") is OrgTypeEnum.PROJECT:
+            state["org_type"] = "project"
+        elif state.get("org_type") is OrgTypeEnum.SUPPLIER:
+            state["org_type"] = "supplier"
+        elif state.get("org_type") is OrgTypeEnum.CLIENT:
+            state["org_type"] = "client"
 
         if state.get("vat_mode") is VatModeEnum.ON_CASH_IN:
             state["vat_mode"] = "on_cash_in"

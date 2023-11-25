@@ -22,7 +22,7 @@ def provision_organizations(client, app):
             "nrc": org["nrc"],
             "vat_mode": org["vat_mode"],
             "status": org["status"],
-            "type": org["type"],
+            "org_type": org["org_type"],
             "caen_code": org["caen_code"],
         }
 
@@ -34,7 +34,7 @@ def provision_organizations(client, app):
 
         address = {
             "country": org["country"],
-            "stat_or_province": org["stat_or_province"],
+            "state_or_province": org["state_or_province"],
             "city": org["city"],
             "street": org["street"],
             "apartment_or_suite": org["apartment_or_suite"],
@@ -65,7 +65,7 @@ def provision_organizations(client, app):
 def test_inventory_items(client, app):
     response = client.get("/organizations/")
     for org in json.loads(response.data):
-        if org["type"] == "project":
+        if org["org_type"] == "project":
             org_id = org["id"]
             break
     inventory = {
