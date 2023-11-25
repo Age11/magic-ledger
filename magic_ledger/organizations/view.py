@@ -57,11 +57,8 @@ def organizations():
             return response
 
     elif request.method == "GET":
-        organizations = Organization.query.all()
-        json_data = json.dumps(
-            [row.__getstate__() for row in organizations], default=str
-        )
-        return json_data
+        orgs = Organization.query.all()
+        return jsonify([row.__getstate__() for row in orgs])
 
 
 @bp.route("/addressbook", methods=("GET", "POST"))
@@ -105,8 +102,7 @@ def addressbook():
             return jsonify(address)
     elif request.method == "GET":
         addresses = Addressbook.query.all()
-        json_data = json.dumps([row.__getstate__() for row in addresses], default=str)
-        return json_data
+        return jsonify([row.__getstate__() for row in addresses])
 
 
 @bp.route("/banking-details", methods=("GET", "POST"))
@@ -136,29 +132,25 @@ def bank_details():
             return jsonify(address)
     elif request.method == "GET":
         addresses = BankingDetails.query.all()
-        json_data = json.dumps([row.__getstate__() for row in addresses], default=str)
-        return json_data
+        return jsonify([row.__getstate__() for row in addresses])
 
 
 @bp.route("/<identifier>", methods=("GET",))
 def get_organization_by_id(identifier):
     organization = Organization.query.filter_by(id=identifier).first()
-    json_data = json.dumps(organization.__getstate__(), default=str)
-    return json_data
+    return jsonify(organization.__getstate__())
 
 
 @bp.route("/<identifier>/addressbook", methods=("GET",))
 def get_address_by_organization_id(identifier):
     address = Addressbook.query.filter_by(organization_id=identifier).first()
-    json_data = json.dumps(address.__getstate__(), default=str)
-    return json_data
+    return jsonify(address.__getstate__())
 
 
 @bp.route("/<identifier>/banking-details", methods=("GET",))
 def get_banking_details_by_organization_id(identifier):
     bank_details = BankingDetails.query.filter_by(organization_id=identifier).first()
-    json_data = json.dumps(bank_details.__getstate__(), default=str)
-    return json_data
+    return jsonify(bank_details.__getstate__())
 
 
 @bp.route("/projects", methods=("GET", "POST"))
@@ -237,5 +229,4 @@ def projects():
 
     elif request.method == "GET":
         projects = Organization.query.filter_by(type=OrgTypeEnum.PROJECT).all()
-        json_data = json.dumps([row.__getstate__() for row in projects], default=str)
-        return json_data
+        return jsonify([row.__getstate__() for row in projects], default=str)

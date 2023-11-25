@@ -15,5 +15,4 @@ def accounts():
         l = []
         for act in res:
             l.append(act.__getstate__())
-        json_data = json.dumps([row.__getstate__() for row in res], default=str)
-        return json_data
+        return [row.__getstate__() for row in res]

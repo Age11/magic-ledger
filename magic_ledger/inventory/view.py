@@ -43,8 +43,7 @@ def inventory():
             return response
     elif request.method == "GET":
         res = Inventory.query.all()
-        json_data = json.dumps([row.__getstate__() for row in res], default=str)
-        return json_data
+        return jsonify([row.__getstate__() for row in res])
 
 
 @bp.route("/items/", methods=("GET", "POST"))
@@ -87,5 +86,4 @@ def products():
             return response
     elif request.method == "GET":
         product = InventoryItem.query.all()
-        json_data = json.dumps([row.__getstate__() for row in product], default=str)
-        return json_data
+        return [row.__getstate__() for row in product]

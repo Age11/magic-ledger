@@ -55,8 +55,7 @@ def invoices():
             return response
     elif request.method == "GET":
         txs = Transaction.query.all()
-        json_data = json.dumps([row.__getstate__() for row in txs], default=str)
-        return json_data
+        return jsonify([row.__getstate__() for row in txs])
 
 
 @bp.route("/<int:transaction_id>")
@@ -69,5 +68,4 @@ def get_transaction(transaction_id):
         inv["credit_account_name"] = (
             AccountPlan.query.filter_by(account=inv["credit_account_id"]).first().name
         )
-        json_data = json.dumps(inv, default=str)
-        return json_data
+        return jsonify(inv)
