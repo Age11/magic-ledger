@@ -31,7 +31,7 @@ test_data = {
     "address": [
         {
             "country": "Romania",
-            "stat_or_province": "Bucuresti",
+            "state_or_province": "Bucuresti",
             "city": "Bucuresti",
             "street": "Strada",
             "apartment_or_suite": "1",
@@ -42,7 +42,7 @@ test_data = {
         },
         {
             "country": "Romania",
-            "stat_or_province": "Prahova",
+            "state_or_province": "Prahova",
             "city": "Sinaia",
             "street": "Stanjeneilor",
             "apartment_or_suite": "16",
@@ -53,7 +53,7 @@ test_data = {
         },
         {
             "country": "Romania",
-            "stat_or_province": "Alba",
+            "state_or_province": "Alba",
             "city": "Petresti",
             "street": "1 Mai",
             "apartment_or_suite": "308 Et. P Ap. 8",
@@ -123,5 +123,17 @@ test_data = {
             "inventory_id": "inventory_id",
             "total_value": 100,
         },
+    ],
+    "account_plan": [
+        {
+            "name": "office",
+            "description": "a house",
+            "asset_class": "2",
+            "total_amount": 100000,
+            "depreciation_method": "straight_line",
+            "total_duration": 360,
+            "acquisition_date": "2020-01-01",
+            "organization_id": "org_id",
+        }
     ],
 }

@@ -105,9 +105,9 @@ def test_post_get_entities(client, app):
     assert resp["inv_type"] == "invoice"
     assert resp["number"] == "0001"
     assert resp["serial"] == "FF"
-    assert resp["receive_date"] == "2020-01-01 00:00:00"
-    assert resp["due_date"] == "2020-01-01 00:00:00"
-    assert resp["issue_date"] == "2020-01-01 00:00:00"
+    assert resp["receive_date"] == "Wed, 01 Jan 2020 00:00:00 GMT"
+    assert resp["due_date"] == "Wed, 01 Jan 2020 00:00:00 GMT"
+    assert resp["issue_date"] == "Wed, 01 Jan 2020 00:00:00 GMT"
     assert resp["payment_status"] == "paid"
     assert resp["organization_id"] == org_id
     assert resp["supplier_id"] == org_id
@@ -140,6 +140,12 @@ def test_post_get_entities(client, app):
 
     response = client.get("/account-plan/")
     assert response.status_code == 200
+
+    # add account plan
+    asset = test_data["account_plan"][0]
+    asset["organization_id"] = org_id
+    response = client.post("/assets/", json=asset)
+    assert response.status_code == 201
 
     # get all projects
     # response = client.get("/organizations/projects")
