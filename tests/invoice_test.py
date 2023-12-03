@@ -14,6 +14,28 @@ def provision_organizations(client, app):
         csv_reader = csv.DictReader(csv_file)
         org_data = list(csv_reader)
         print(org_data)
+    # create a new project
+    prj_data = {
+        "project_name": "ABC",
+        "vat_mode": "on_invoice",
+        "status": "active",
+        "organization_name": "CARMEN IMPEX TM SRL",
+        "cif": "5420048",
+        "nrc": "J29/747/1994",
+        "caen_code": "4941",
+        "country": "Romania",
+        "state_or_province": "Prahova",
+        "city": "Sinaia",
+        "street": "Stanjeneilor",
+        "apartment_or_suite": "16",
+        "postal_code": "106100",
+        "phone": "0721222222",
+        "email": "contact@carmenimpextm.com",
+        "account": "RO49AAAA1B31007593840000",
+        "details": "AAAA BANK",
+    }
+    response = client.post("/projects/", json=prj_data)
+    owner_id = str(response.headers["location"]).split("/")[2]
     for org in org_data:
         # map the data to the organization model
         org_payload = {
@@ -24,15 +46,7 @@ def provision_organizations(client, app):
             "status": org["status"],
             "org_type": org["org_type"],
             "caen_code": org["caen_code"],
-        }
-
-        # create the organization
-        response = client.post("/organizations/", json=org_payload)
-        assert response.status_code == 201
-
-        org_id = str(response.headers["location"]).split("/")[2]
-
-        address = {
+            "owner_id": owner_id,
             "country": org["country"],
             "state_or_province": org["state_or_province"],
             "city": org["city"],
@@ -41,20 +55,13 @@ def provision_organizations(client, app):
             "postal_code": org["postal_code"],
             "phone": org["phone"],
             "email": org["email"],
-            "organization_id": org_id,
-        }
-
-        response = client.post("/organizations/addressbook", json=address)
-        assert response.status_code == 200
-
-        bank_details = {
             "account": org["account"],
             "details": org["details"],
-            "organization_id": org_id,
         }
 
-        response = client.post("/organizations/banking-details", json=bank_details)
-        assert response.status_code == 200
+        # create the organization
+        response = client.post("/organizations/", json=org_payload)
+        assert response.status_code == 201
 
     response = client.get("/organizations/")
     assert response.status_code == 200

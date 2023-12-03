@@ -46,9 +46,14 @@ def create_app(test_config=None):
     app.cli.add_command(init_db_command)
 
     # apply the blueprints to the app
-    from magic_ledger import organizations
 
-    app.register_blueprint(organizations.bp)
+    from magic_ledger import projects
+
+    app.register_blueprint(projects.bp)
+
+    from magic_ledger import third_prties
+
+    app.register_blueprint(third_prties.bp)
 
     from magic_ledger import inventory
 

@@ -3,11 +3,11 @@ import logging
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
-from magic_ledger.organizations.addressbook_model import Addressbook
-from magic_ledger.organizations.banking_details_model import BankingDetails
-from magic_ledger.organizations.organization_model import Organization, OrgTypeEnum
+from magic_ledger.third_prties.addressbook import Addressbook
+from magic_ledger.third_prties.banking_details import BankingDetails
+from magic_ledger.third_prties.organization import Organization, OrgTypeEnum
 
-bp = Blueprint("companies", __name__, url_prefix="/organizations")
+bp = Blueprint("organizations", __name__, url_prefix="/organizations")
 
 
 @bp.route("/", methods=("GET", "POST"))
@@ -16,13 +16,27 @@ def organizations():
         logging.info("""Creating company with the following data:""")
         logging.info(request.json)
 
+        # Organization info
         name = request.json["name"]
         cif = request.json["cif"]
         nrc = request.json["nrc"]
-        vat_mode = request.json["vat_mode"]
         caen_code = request.json["caen_code"]
-        status = request.json["status"]
         org_type = request.json["org_type"]
+        owner_id = request.json["owner_id"]
+
+        # Address
+        country = request.json["country"]
+        state_or_province = request.json["state_or_province"]
+        city = request.json["city"]
+        street = request.json["street"]
+        apartment_or_suite = request.json["apartment_or_suite"]
+        postal_code = request.json["postal_code"]
+        phone = request.json["phone"]
+        email = request.json["email"]
+
+        # Banking details
+        account = request.json["account"]
+        details = request.json["details"]
 
         error = None
 
@@ -37,20 +51,39 @@ def organizations():
                 name=name,
                 cif=cif,
                 nrc=nrc,
-                vat_mode=vat_mode,
-                status=status,
                 org_type=org_type,
                 caen_code=caen_code,
+                owner_id=owner_id,
             )
             db.session.add(new_organization)
             db.session.commit()
             # retrieve the id of the newly created organization
-            org_id = str(Organization.query.filter_by(cif=cif).first().id)
+            org_id = new_organization.id
+
+            address = Addressbook(
+                country=country,
+                state_or_province=state_or_province,
+                city=city,
+                street=street,
+                apartment_or_suite=apartment_or_suite,
+                postal_code=postal_code,
+                organization_id=org_id,
+                phone=phone,
+                email=email,
+            )
+            db.session.add(address)
+            db.session.commit()
+
+            banking_details = BankingDetails(
+                account=account, organization_id=org_id, details=details
+            )
+            db.session.add(banking_details)
+            db.session.commit()
 
             response = jsonify()
             response.status_code = 201
 
-            response.headers["location"] = "/organizations/" + org_id
+            response.headers["location"] = "/organizations/" + str(org_id)
             response.autocorrect_location_header = False
 
             return response
@@ -123,15 +156,15 @@ def bank_details():
         if error is not None:
             flash(error)
         else:
-            address = BankingDetails(
+            banking_details = BankingDetails(
                 account=account, organization_id=organization_id, details=details
             )
-            db.session.add(address)
+            db.session.add(banking_details)
             db.session.commit()
-            return jsonify(address)
+            return jsonify(banking_details)
     elif request.method == "GET":
-        addresses = BankingDetails.query.all()
-        return jsonify([row.__getstate__() for row in addresses])
+        bd = BankingDetails.query.all()
+        return jsonify([row.__getstate__() for row in bd])
 
 
 @bp.route("/<identifier>", methods=("GET",))
@@ -150,82 +183,3 @@ def get_address_by_organization_id(identifier):
 def get_banking_details_by_organization_id(identifier):
     bank_details = BankingDetails.query.filter_by(organization_id=identifier).first()
     return jsonify(bank_details.__getstate__())
-
-
-@bp.route("/projects", methods=("GET", "POST"))
-def projects():
-    if request.method == "POST":
-        # Organization info
-        name = request.json["name"]
-        cif = request.json["cif"]
-        nrc = request.json["nrc"]
-        vat_mode = request.json["vat_mode"]
-        caen_code = request.json["caen_code"]
-        status = request.json["status"]
-        org_type = request.json["org_type"]
-        # Address info
-        country = request.json["country"]
-        state_or_province = request.json["state_or_province"]
-        city = request.json["city"]
-        street = request.json["street"]
-        apartment_or_suite = request.json["apartment_or_suite"]
-        postal_code = request.json["postal_code"]
-        phone = request.json["phone"]
-        email = request.json["email"]
-        # Bank details
-        account = request.json["account"]
-        details = request.json["details"]
-
-        error = None
-        if not name:
-            error = "Name is required."
-        # TODO: add more validation
-
-        if error is not None:
-            flash(error)
-        else:
-            new_organization = Organization(
-                name=name,
-                cif=cif,
-                nrc=nrc,
-                vat_mode=vat_mode,
-                status=status,
-                org_type=org_type,
-                caen_code=caen_code,
-            )
-            db.session.add(new_organization)
-            db.session.commit()
-
-            # retrieve the id of the newly created organization
-            org_id = str(Organization.query.filter_by(cif=cif).first().id)
-
-            address = Addressbook(
-                country=country,
-                state_or_province=state_or_province,
-                city=city,
-                street=street,
-                apartment_or_suite=apartment_or_suite,
-                postal_code=postal_code,
-                organization_id=org_id,
-                phone=phone,
-                email=email,
-            )
-            db.session.add(address)
-            db.session.commit()
-
-            address = BankingDetails(
-                account=account, organization_id=org_id, details=details
-            )
-            db.session.add(address)
-            db.session.commit()
-
-            response = jsonify()
-            response.status_code = 201
-            response.headers["location"] = "/organizations/" + org_id
-            response.autocorrect_location_header = False
-
-            return response
-
-    elif request.method == "GET":
-        projects = Organization.query.filter_by(type=OrgTypeEnum.PROJECT).all()
-        return jsonify([row.__getstate__() for row in projects], default=str)

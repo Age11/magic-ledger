@@ -5,10 +5,17 @@ from tests.test_data import test_data
 
 def test_post_get_entities(client, app):
     # create an organization
+    prj_data = test_data["projects"][0]
+    response = client.post("/projects/", json=prj_data)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/projects/1"
+    owner_id = response.headers["location"].split("/")[-1]
+
     org_data = test_data["organizations"][0]
+    org_data["owner_id"] = owner_id
     response = client.post("/organizations/", json=org_data)
     assert response.status_code == 201
-    assert response.headers["location"] == "/organizations/1"
+    assert response.headers["location"] == "/organizations/2"
 
     org_path = response.headers["location"]
     response = client.get(org_path)
@@ -23,13 +30,11 @@ def test_post_get_entities(client, app):
 
     # verify the response
     resp = json.loads(response.data)[0]
-    assert resp["name"] == "test"
-    assert resp["cif"] == "1234567890"
-    assert resp["nrc"] == "1234567890"
-    assert resp["caen_code"] == "1234"
-    assert resp["status"] == "active"
+    assert resp["name"] == "CARMEN IMPEX TM SRL"
+    assert resp["cif"] == "5420048"
+    assert resp["nrc"] == "J29/747/1994"
+    assert resp["caen_code"] == "4941"
     assert resp["org_type"] == "project"
-    assert resp["vat_mode"] == "on_invoice"
     assert resp["creation_date"] is not None
 
     # save the id
@@ -47,14 +52,14 @@ def test_post_get_entities(client, app):
 
     # verify the response
     assert resp["country"] == "Romania"
-    assert resp["state_or_province"] == "Bucuresti"
-    assert resp["city"] == "Bucuresti"
-    assert resp["street"] == "Strada"
-    assert resp["apartment_or_suite"] == "1"
-    assert resp["postal_code"] == "123456"
+    assert resp["state_or_province"] == "Prahova"
+    assert resp["city"] == "Sinaia"
+    assert resp["street"] == "Stanjeneilor"
+    assert resp["apartment_or_suite"] == "16"
+    assert resp["postal_code"] == "106100"
     assert resp["organization_id"] == org_id
-    assert resp["phone"] == "1234567890"
-    assert resp["email"] == "asdasd@asd.com"
+    assert resp["phone"] == "0721222222"
+    assert resp["email"] == "contact@carmenimpextm.com"
 
     # add organization banking details
     bank_details = test_data["banking_details"][0]
@@ -67,8 +72,8 @@ def test_post_get_entities(client, app):
     resp = json.loads(response.data)[0]
 
     # verify the response
-    assert resp["account"] == "test"
-    assert resp["details"] == "test"
+    assert resp["account"] == "RO49AAAA1B31007593840000"
+    assert resp["details"] == "AAAA BANK"
     assert resp["organization_id"] == org_id
 
     # add organization inventory

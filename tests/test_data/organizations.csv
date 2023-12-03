@@ -1,5 +1,4 @@
-name,cif,nrc,phone,email,vat_mode,status,org_type,caen_code,country,state_or_province,city,street,apartment_or_suite,postal_code,account,details,
-Carmen Impex Tm S.R.L,5420048,J29/747/1994,+40721555666,contact@carmen-impex.ro,on_invoice,active,project,4691,Romania,Prahova,Sinaia,Str. Stanjeneilor,nr. 16,106100,RO50PORL7392662869823871,Banca Transilvania
+name,cif,nrc,phone,email,vat_mode,status,org_type,caen_code,country,state_or_province,city,street,apartment_or_suite,postal_code,account,details,project_name
 ELECTRONIC TUDOR INVEST SRL,19939500,J40/21026/2006,+40722255333,contact@tudor.ro,on_invoice,active,supplier,4941,Romania,Bucuresti,Bucuresti,Str. Tudor Vladimirescu,nr. 1,010281,RO78PORL9261237185447585,BRF
 ADA ONLINE SRL,31845110,J01/375/2013,0721222223,contact@ada.com,on_invoice,active,supplier,4941,Romania,Alba,Petresti,1 Mai,308 Et. P Ap. 8,515850,RO06RZBR5846691594614497,Zarzavat Bank
 BORG DESIGN SRL,14837428,J40/8118/2002,+402112345678,borg@borg.org,on_invoice,active,supplier,6201,Romania,Bucuresti,Bucuresti, Buciumului,nr. 121,010281,RO86PORL9285245353137629,Sommmelier Bank
