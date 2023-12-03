@@ -16,12 +16,7 @@ class Addressbook(db.Model):
     postal_code = db.Column(db.String(10), nullable=False)
     phone = db.Column(db.String(255))
     email = db.Column(db.String(255))
-    # must belong to an organization
-    organization_id = db.Column(
-        db.Integer, db.ForeignKey("organization.id"), nullable=False
-    )
 
-    # add a constructor
     def __init__(
         self,
         country,
@@ -30,7 +25,6 @@ class Addressbook(db.Model):
         street,
         apartment_or_suite,
         postal_code,
-        organization_id,
         phone,
         email,
     ):
@@ -40,7 +34,6 @@ class Addressbook(db.Model):
         self.street = street
         self.apartment_or_suite = apartment_or_suite
         self.postal_code = postal_code
-        self.organization_id = organization_id
         self.phone = phone
         self.email = email
 

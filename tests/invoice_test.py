@@ -60,17 +60,17 @@ def provision_organizations(client, app):
         }
 
         # create the organization
-        response = client.post("/organizations/", json=org_payload)
+        response = client.post("/third-parties/organizations/", json=org_payload)
         assert response.status_code == 201
 
-    response = client.get("/organizations/")
+    response = client.get("/third-parties/organizations/")
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 5
 
 
 def test_inventory_items(client, app):
-    response = client.get("/organizations/")
+    response = client.get("/third-parties/organizations/")
     for org in json.loads(response.data):
         if org["org_type"] == "project":
             org_id = org["id"]

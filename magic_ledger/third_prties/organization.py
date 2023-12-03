@@ -29,14 +29,29 @@ class Organization(db.Model):
     # Misc info
     creation_date = db.Column(db.DateTime, default=datetime.utcnow())
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    address_id = db.Column(db.Integer, db.ForeignKey("addressbook.id"), nullable=False)
+    banking_details_id = db.Column(
+        db.Integer, db.ForeignKey("banking_details.id"), nullable=False
+    )
 
-    # add a constructor
-    def __init__(self, name, cif, nrc, org_type, caen_code, owner_id):
+    def __init__(
+        self,
+        name,
+        cif,
+        nrc,
+        org_type,
+        caen_code,
+        owner_id,
+        address_id,
+        banking_details_id,
+    ):
         self.name = name
         self.cif = cif
         self.nrc = nrc
         self.caen_code = caen_code
         self.owner_id = owner_id
+        self.address_id = address_id
+        self.banking_details_id = banking_details_id
 
         if org_type == "affiliate":
             self.org_type = OrgTypeEnum.AFFILIATE

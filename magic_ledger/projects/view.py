@@ -57,17 +57,6 @@ def projects():
             db.session.add(new_project)
             db.session.commit()
 
-            new_organization = Organization(
-                name=org_name,
-                cif=cif,
-                nrc=nrc,
-                org_type=org_type,
-                caen_code=caen_code,
-                owner_id=new_project.id,
-            )
-            db.session.add(new_organization)
-            db.session.commit()
-
             address = Addressbook(
                 country=country,
                 state_or_province=state_or_province,
@@ -75,17 +64,27 @@ def projects():
                 street=street,
                 apartment_or_suite=apartment_or_suite,
                 postal_code=postal_code,
-                organization_id=new_organization.id,
                 phone=phone,
                 email=email,
             )
             db.session.add(address)
             db.session.commit()
 
-            address = BankingDetails(
-                account=account, organization_id=new_organization.id, details=details
+            banking_details = BankingDetails(account=account, details=details)
+            db.session.add(banking_details)
+            db.session.commit()
+
+            new_organization = Organization(
+                name=org_name,
+                cif=cif,
+                nrc=nrc,
+                org_type=org_type,
+                caen_code=caen_code,
+                owner_id=new_project.id,
+                address_id=address.id,
+                banking_details_id=banking_details.id,
             )
-            db.session.add(address)
+            db.session.add(new_organization)
             db.session.commit()
 
             response = jsonify()

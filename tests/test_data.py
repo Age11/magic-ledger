@@ -1,7 +1,7 @@
 test_data = {
     "projects": [
         {
-            "project_name": "test",
+            "project_name": "ABC",
             "vat_mode": "on_invoice",
             "status": "active",
             "organization_name": "CARMEN IMPEX TM SRL",
@@ -57,6 +57,26 @@ test_data = {
             "account": "RO49AAAA1B31007593840000",
             "details": "AAAA BANK",
         },
+    ],
+    "agents": [
+        {
+            "name": "Emilian",
+            "middle_name": "-",
+            "surname": "Ionescu",
+            "cnp": "1880202226699",
+            "agent_type": "client",
+            "owner_id": "owner_id",
+            "country": "Romania",
+            "state_or_province": "Prahova",
+            "city": "Sinaia",
+            "street": "AAAAAA",
+            "apartment_or_suite": "100",
+            "postal_code": "106100",
+            "phone": "0721666555",
+            "email": "ionemi@email.com",
+            "account": "RO49AAAA1B31007593840001",
+            "details": "AAAA BANK",
+        }
     ],
     "address": [
         {
