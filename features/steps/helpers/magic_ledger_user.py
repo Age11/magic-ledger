@@ -11,7 +11,8 @@ class MagicLedgerUser:
     def create_project(self, context_table):
         for row in context_table:
             req = {
-                "name": row["nume"],
+                "project_name": row["nume"],
+                "organization_name": row["organizatie"],
                 "cif": row["cif"],
                 "nrc": row["nrc"],
                 "vat_mode": "on_invoice",
@@ -27,11 +28,11 @@ class MagicLedgerUser:
                 "phone": row["telefon"],
                 "email": row["email"],
                 "account": row["cont_bancar"],
-                "details": row["detalii"],
+                "details": row["detalii"]
             }
             response = self.client.post(
-                self.base_url + "/organizations/projects", json=req
+                self.base_url + "/projects/", json=req
             )
-            response.headers["location"].split("/")[2]
+            assert response.status_code == 201
             self.selected_project = response.headers["location"].split("/")[2]
             return response

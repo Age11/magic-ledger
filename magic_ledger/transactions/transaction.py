@@ -41,14 +41,16 @@ class Transaction(db.Model):
         self.credit_account_id = credit_account_id
         self.debit_amount = debit_amount
         self.credit_amount = credit_amount
-        self.currency = currency
+        self.currency = Currency[currency]
         self.transaction_date = datetime.strptime(transaction_date, "%Y-%m-%d")
         self.organization_id = organization_id
         self.details = details
 
     def __getstate__(self):
         state = self.__dict__.copy()
+        state["currency"] = state["currency"].name
         del state["_sa_instance_state"]
+
         return state
 
     def __repr__(self):

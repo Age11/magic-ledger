@@ -3,6 +3,8 @@ import logging
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
+from magic_ledger.account_balance.account_balance import AccountBalance
+from magic_ledger.account_balance.view import account_exists
 from magic_ledger.account_plan.model import AccountPlan
 from magic_ledger.transactions.transaction import Transaction
 
@@ -16,8 +18,8 @@ def invoices():
         logging.info(request.json)
 
         # The type will determin weather we add something to the inventory or not
-        debit_account_id = request.json["debit_account_id"]
-        credit_account_id = request.json["credit_account_id"]
+        debit_account = request.json["debit_account"]
+        credit_account = request.json["credit_account"]
         debit_amount = request.json["debit_amount"]
         credit_amount = request.json["credit_amount"]
         currency = request.json["currency"]
@@ -27,18 +29,37 @@ def invoices():
 
         error = None
 
-        if not debit_account_id:
+        if not debit_account:
             error = "debit_account_id is required."
-        if not credit_account_id:
+        if not credit_account:
             error = "credit_account_id id is required."
         # TODO: add more validation
 
         if error is not None:
             flash(error)
         else:
+            if account_exists(debit_account):
+                account = AccountBalance.query.filter_by(
+                    analytical_account=debit_account
+                ).first()
+                account.initial_debit += debit_amount
+                db.session.commit()
+            else:
+                account = AccountBalance(analytical_account=debit_account, debit=debit_amount, credit=0, owner_id=organization_id)
+                db.session.add(account)
+
+            if account_exists(credit_account):
+                account = AccountBalance.query.filter_by(
+                    analytical_account=credit_account
+                ).first()
+                account.initial_credit += credit_amount
+                db.session.commit()
+            else:
+                account = AccountBalance(analytical_account=credit_account, debit=0, credit=credit_amount, owner_id=organization_id)
+                db.session.add(account)
             new_transaction = Transaction(
-                debit_account_id=debit_account_id,
-                credit_account_id=credit_account_id,
+                debit_account_id=debit_account,
+                credit_account_id=credit_account,
                 debit_amount=debit_amount,
                 credit_amount=credit_amount,
                 currency=currency,

@@ -157,7 +157,7 @@ def test_post_get_entities(client, app):
     assert response.status_code == 201
 
     # get all projects
-    # response = client.get("/organizations/projects")
-    # assert response.status_code == 200
-    # response = json.loads(response.data)
-    # assert len(response) == 1
+    response = client.get("/projects/")
+    assert response.status_code == 200
+    response = json.loads(response.data)
+    assert len(response) == 1

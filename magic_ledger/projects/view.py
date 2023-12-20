@@ -95,5 +95,5 @@ def projects():
             return response
 
     elif request.method == "GET":
-        projects = Organization.query.filter_by(type=OrgTypeEnum.PROJECT).all()
-        return jsonify([row.__getstate__() for row in projects], default=str)
+        projects = Organization.query.filter_by(org_type=OrgTypeEnum.PROJECT).all()
+        return jsonify([row.__getstate__() for row in projects])

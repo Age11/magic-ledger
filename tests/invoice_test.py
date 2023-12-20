@@ -121,8 +121,8 @@ def test_inventory_items(client, app):
 
     # record the transaction
     transaction = {
-        "debit_account_id": "371",
-        "credit_account_id": "401",
+        "debit_account": "371",
+        "credit_account": "401",
         "debit_amount": 100,
         "credit_amount": 100,
         "currency": "RON",
@@ -132,3 +132,10 @@ def test_inventory_items(client, app):
     }
     response = client.post("/transactions/", json=transaction)
     assert response.status_code == 201
+
+    # retrieve all transactions
+    response = client.get("/transactions/")
+    assert response.status_code == 200
+    resp = json.loads(response.data)
+    assert len(resp) == 1
+
