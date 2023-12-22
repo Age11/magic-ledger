@@ -139,3 +139,12 @@ def test_inventory_items(client, app):
     resp = json.loads(response.data)
     assert len(resp) == 1
 
+    response = client.get("/third-parties/clients/" + str(org_id))
+    assert response.status_code == 200
+    resp = json.loads(response.data)
+    assert len(resp) == 1
+
+    response = client.get("/third-parties/suppliers/" + str(org_id))
+    assert response.status_code == 200
+    resp = json.loads(response.data)
+    assert len(resp) == 3

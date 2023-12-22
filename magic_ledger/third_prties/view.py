@@ -6,7 +6,7 @@ from magic_ledger import db
 from magic_ledger.third_prties.addressbook import Addressbook
 from magic_ledger.third_prties.agent import Agent
 from magic_ledger.third_prties.banking_details import BankingDetails
-from magic_ledger.third_prties.organization import Organization
+from magic_ledger.third_prties.organization import Organization, OrgTypeEnum
 
 bp = Blueprint("third-parties", __name__, url_prefix="/third-parties")
 
@@ -234,13 +234,22 @@ def bank_details():
 
 
 @bp.route("/organizations/<identifier>", methods=("GET",))
-def get_organization_by_id(identifier):
+def get_organizations_by_id(identifier):
     organization = Organization.query.filter_by(id=identifier).first()
     return jsonify(organization.__getstate__())
 
+@bp.route("/clients/<identifier>", methods=("GET",))
+def get_clients_by_id(identifier):
+    organizations = Organization.query.filter_by(owner_id=identifier, org_type=OrgTypeEnum.CLIENT).all()
+    return jsonify([row.__getstate__() for row in organizations])
+
+@bp.route("/suppliers/<identifier>", methods=("GET",))
+def get_suppliers_by_id(identifier):
+    organizations = Organization.query.filter_by(owner_id=identifier, org_type=OrgTypeEnum.SUPPLIER).all()
+    return jsonify([row.__getstate__() for row in organizations])
 
 # add route to get agent by id
 @bp.route("/agents/<identifier>", methods=("GET",))
-def get_agent_by_id(identifier):
+def get_agents_by_id(identifier):
     agent = Agent.query.filter_by(id=identifier).first()
     return jsonify(agent.__getstate__())
