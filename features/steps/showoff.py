@@ -8,3 +8,8 @@ mg = MagicLedgerUser(base_url="http://127.0.0.1:5000")
 def step_impl(context):
     response = mg.create_project(context.table)
     assert response.status_code == 201
+
+@given("creez un furnizor nou")
+def step_impl(context):
+    response = mg.create_supplier(context.table)
+    assert response.status_code == 201

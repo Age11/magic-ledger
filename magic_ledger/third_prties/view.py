@@ -1,20 +1,19 @@
 import logging
 
 from flask import Blueprint, flash, jsonify, request
-
 from magic_ledger import db
 from magic_ledger.third_prties.addressbook import Addressbook
 from magic_ledger.third_prties.agent import Agent
 from magic_ledger.third_prties.banking_details import BankingDetails
 from magic_ledger.third_prties.organization import Organization, OrgTypeEnum
 
-bp = Blueprint("third-parties", __name__, url_prefix="/third-parties")
+bp = Blueprint("third-parties", __name__, url_prefix="/<project_id>/third-parties")
 
 
 @bp.route("/organizations/", methods=("GET", "POST"))
-def organizations():
+def organizations(project_id):
     if request.method == "POST":
-        logging.info("""Creating company with the following data:""")
+        logging.info("""Creating organization with the following data:""")
         logging.info(request.json)
 
         # Organization info
@@ -23,7 +22,7 @@ def organizations():
         nrc = request.json["nrc"]
         caen_code = request.json["caen_code"]
         org_type = request.json["org_type"]
-        owner_id = request.json["owner_id"]
+        owner_id = project_id
 
         # Address
         country = request.json["country"]
@@ -80,19 +79,19 @@ def organizations():
 
             response = jsonify()
             response.status_code = 201
-            response.headers["location"] = "/third-parties/organizations/" + str(
+            response.headers["location"] = "/" + project_id + "/third-parties/organizations/" + str(
                 new_organization.id
             )
             response.autocorrect_location_header = False
             return response
 
     elif request.method == "GET":
-        orgs = Organization.query.all()
+        orgs = Organization.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in orgs])
 
 
 @bp.route("/agents/", methods=("GET", "POST"))
-def agents():
+def agents(project_id):
     if request.method == "POST":
         logging.info("""Creating agent with the following data:""")
         logging.info(request.json)
@@ -103,7 +102,7 @@ def agents():
         surname = request.json["surname"]
         cnp = request.json["cnp"]
         agent_type = request.json["agent_type"]
-        owner_id = request.json["owner_id"]
+        owner_id = project_id
 
         # Address
         country = request.json["country"]
@@ -159,17 +158,17 @@ def agents():
             db.session.commit()
             response = jsonify()
             response.status_code = 201
-            response.headers["location"] = "/third-parties/agents/" + str(new_agent.id)
+            response.headers["location"] = "/" + project_id + "/third-parties/agents/" + str(new_agent.id)
             response.autocorrect_location_header = False
             return response
 
     elif request.method == "GET":
-        orgs = Organization.query.all()
+        orgs = Organization.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in orgs])
 
 
 @bp.route("/addressbook", methods=("GET", "POST"))
-def addressbook():
+def addressbook(project_id):
     if request.method == "POST":
         logging.info("""Creating address with the following data:""")
         logging.info(request.json)
@@ -209,7 +208,7 @@ def addressbook():
 
 
 @bp.route("/banking-details", methods=("GET", "POST"))
-def bank_details():
+def bank_details(project_id):
     if request.method == "POST":
         logging.info("""Creating banking details with the following data:""")
         logging.info(request.json)
@@ -233,23 +232,31 @@ def bank_details():
         return jsonify([row.__getstate__() for row in bd])
 
 
-@bp.route("/organizations/<identifier>", methods=("GET",))
-def get_organizations_by_id(identifier):
-    organization = Organization.query.filter_by(id=identifier).first()
+@bp.route("/organizations/<org_id>", methods=("GET",))
+def get_organizations_by_id(project_id, org_id):
+    organization = Organization.query.filter_by(id=org_id, owner_id=project_id).first()
     return jsonify(organization.__getstate__())
 
-@bp.route("/clients/<identifier>", methods=("GET",))
-def get_clients_by_id(identifier):
-    organizations = Organization.query.filter_by(owner_id=identifier, org_type=OrgTypeEnum.CLIENT).all()
-    return jsonify([row.__getstate__() for row in organizations])
 
-@bp.route("/suppliers/<identifier>", methods=("GET",))
-def get_suppliers_by_id(identifier):
-    organizations = Organization.query.filter_by(owner_id=identifier, org_type=OrgTypeEnum.SUPPLIER).all()
-    return jsonify([row.__getstate__() for row in organizations])
+@bp.route("/clients/", methods=("GET",))
+def get_clients_by_id(project_id):
+    orgs = Organization.query.filter_by(owner_id=project_id, org_type=OrgTypeEnum.CLIENT).all()
+    return jsonify([row.__getstate__() for row in orgs])
 
-# add route to get agent by id
-@bp.route("/agents/<identifier>", methods=("GET",))
-def get_agents_by_id(identifier):
-    agent = Agent.query.filter_by(id=identifier).first()
-    return jsonify(agent.__getstate__())
+
+@bp.route("/suppliers/", methods=("GET",))
+def get_suppliers_by_id(project_id):
+    orgs = Organization.query.filter_by(owner_id=project_id, org_type=OrgTypeEnum.SUPPLIER).all()
+    return jsonify([row.__getstate__() for row in orgs])
+
+
+@bp.route("/suppliers/", methods=("GET",))
+def get_suppliers_full_details_by_id(project_id):
+    orgs = Organization.query.join(Addressbook, Organization.address_id == Addressbook.id) \
+        .join(BankingDetails, Organization.banking_details_id == BankingDetails.id) \
+        .add_columns(Addressbook, BankingDetails) \
+        .filter(Organization.owner_id == project_id,
+                Organization.org_type == OrgTypeEnum.SUPPLIER).all()
+
+    return jsonify(
+        [{**org[0].__getstate__(), **org[1].__getstate__(), **org[2].__getstate__()} for org in orgs])

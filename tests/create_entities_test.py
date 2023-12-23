@@ -12,10 +12,9 @@ def test_post_get_entities(client, app):
     owner_id = response.headers["location"].split("/")[-1]
 
     org_data = test_data["organizations"][0]
-    org_data["owner_id"] = owner_id
-    response = client.post("/third-parties/organizations/", json=org_data)
+    response = client.post("/" + owner_id + "/third-parties/organizations/", json=org_data)
     assert response.status_code == 201
-    assert response.headers["location"] == "/third-parties/organizations/2"
+    assert response.headers["location"] == "/" + owner_id +  "/third-parties/organizations/2"
 
     org_path = response.headers["location"]
     response = client.get(org_path)
@@ -25,7 +24,7 @@ def test_post_get_entities(client, app):
 
     # retrieve all organization
 
-    response = client.get("/third-parties/organizations/")
+    response = client.get("/" + owner_id + "/third-parties/organizations/")
     assert response.status_code == 200
 
     # verify the response
@@ -41,19 +40,18 @@ def test_post_get_entities(client, app):
     org_id = resp["id"]
 
     org_data = test_data["agents"][0]
-    org_data["owner_id"] = owner_id
-    response = client.post("/third-parties/agents/", json=org_data)
+    response = client.post("/" + owner_id + "/third-parties/agents/", json=org_data)
     assert response.status_code == 201
-    assert response.headers["location"] == "/third-parties/agents/1"
+    assert response.headers["location"] == "/" + owner_id + "/third-parties/agents/1"
 
     # add organization address
     org_address = test_data["address"][0]
     org_address["organization_id"] = org_id
-    response = client.post("/third-parties/addressbook", json=org_address)
+    response = client.post("/" + owner_id +  "/third-parties/addressbook", json=org_address)
     assert response.status_code == 200
 
     # retrieve all addresses
-    response = client.get("/third-parties/addressbook")
+    response = client.get("/" + owner_id +  "/third-parties/addressbook")
     resp = json.loads(response.data)[0]
 
     # verify the response
@@ -69,11 +67,11 @@ def test_post_get_entities(client, app):
     # add organization banking details
     bank_details = test_data["banking_details"][0]
     bank_details["organization_id"] = org_id
-    response = client.post("/third-parties/banking-details", json=bank_details)
+    response = client.post("/" + owner_id + "/third-parties/banking-details", json=bank_details)
     assert response.status_code == 200
 
     # retrieve all banking details
-    response = client.get("/third-parties/banking-details")
+    response = client.get("/" + owner_id + "/third-parties/banking-details")
     resp = json.loads(response.data)[0]
 
     # verify the response

@@ -3,9 +3,9 @@ import json
 
 import pytest
 
+project_id = None
 
-@pytest.fixture(autouse=True)
-def provision_organizations(client, app):
+def test_inventory_items(client, app):
     # read the test data organizations csv file and map the data to dictionaries
     with open(
         r"C:\Users\ageor\PycharmProjects\magic-ledger\tests\test_data\organizations.csv",
@@ -35,7 +35,7 @@ def provision_organizations(client, app):
         "details": "AAAA BANK",
     }
     response = client.post("/projects/", json=prj_data)
-    owner_id = str(response.headers["location"]).split("/")[2]
+    project_id = str(response.headers["location"]).split("/")[2]
     for org in org_data:
         # map the data to the organization model
         org_payload = {
@@ -46,7 +46,6 @@ def provision_organizations(client, app):
             "status": org["status"],
             "org_type": org["org_type"],
             "caen_code": org["caen_code"],
-            "owner_id": owner_id,
             "country": org["country"],
             "state_or_province": org["state_or_province"],
             "city": org["city"],
@@ -60,17 +59,15 @@ def provision_organizations(client, app):
         }
 
         # create the organization
-        response = client.post("/third-parties/organizations/", json=org_payload)
+        response = client.post("/" + project_id + "/third-parties/organizations/", json=org_payload)
         assert response.status_code == 201
 
-    response = client.get("/third-parties/organizations/")
+    response = client.get("/" + project_id + "/third-parties/organizations/")
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 5
 
-
-def test_inventory_items(client, app):
-    response = client.get("/third-parties/organizations/")
+    response = client.get("/" + project_id + "/third-parties/organizations/")
     for org in json.loads(response.data):
         if org["org_type"] == "project":
             org_id = org["id"]
@@ -139,12 +136,17 @@ def test_inventory_items(client, app):
     resp = json.loads(response.data)
     assert len(resp) == 1
 
-    response = client.get("/third-parties/clients/" + str(org_id))
+    response = client.get("/" + project_id + "/third-parties/clients/")
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 1
 
-    response = client.get("/third-parties/suppliers/" + str(org_id))
+    response = client.get("/" + project_id + "/third-parties/suppliers/")
+    assert response.status_code == 200
+    resp = json.loads(response.data)
+    assert len(resp) == 3
+
+    response = client.get("/" + project_id + "/third-parties/suppliers/")
     assert response.status_code == 200
     resp = json.loads(response.data)
     assert len(resp) == 3
