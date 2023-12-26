@@ -97,3 +97,7 @@ def projects():
     elif request.method == "GET":
         projects = Organization.query.filter_by(org_type=OrgTypeEnum.PROJECT).all()
         return jsonify([row.__getstate__() for row in projects])
+
+@bp.route("/<project_id>", methods=("GET",))
+def get_project(project_id):
+    return jsonify(Project.query.filter_by(id=project_id).first().__getstate__())

@@ -5,11 +5,11 @@ from flask import Blueprint, flash, jsonify, request
 from magic_ledger import db
 from magic_ledger.invoices.invoice import Invoice
 
-bp = Blueprint("invoices", __name__, url_prefix="/invoices")
+bp = Blueprint("invoices", __name__, url_prefix="/<project_id>/invoices")
 
 
 @bp.route("/", methods=("GET", "POST"))
-def invoices():
+def invoices(project_id):
     if request.method == "POST":
         logging.info("""Creating invoice with the following data:""")
         logging.info(request.json)
@@ -22,7 +22,6 @@ def invoices():
         due_date = request.json["due_date"]
         issue_date = request.json["issue_date"]
         payment_status = request.json["payment_status"]
-        org_id = request.json["organization_id"]
         supplier_id = request.json["supplier_id"]
         client_id = request.json["client_id"]
         amount = request.json["amount"]
@@ -32,8 +31,6 @@ def invoices():
 
         if not number:
             error = "Number is required."
-        if not org_id:
-            error = "Company id is required."
         # TODO: add more validation
 
         if error is not None:
@@ -47,7 +44,7 @@ def invoices():
                 issue_date=issue_date,
                 due_date=due_date,
                 payment_status=payment_status,
-                organization_id=org_id,
+                owner_id=project_id,
                 supplier_id=supplier_id,
                 client_id=client_id,
                 amount=amount,
@@ -58,16 +55,16 @@ def invoices():
             db.session.commit()
             response = jsonify()
             response.status_code = 201
-            response.headers["location"] = "/invoices/" + str(new_invoice.id)
+            response.headers["location"] = "/" + project_id + "/invoices/" + str(new_invoice.id)
             return response
     elif request.method == "GET":
-        invs = Invoice.query.all()
+        invs = Invoice.query.filter_by(owner_id=project_id).all()
 
         return jsonify([row.__getstate__() for row in invs])
 
 
 @bp.route("/<int:invoice_id>", methods=("GET", "PUT", "DELETE"))
-def invoice(invoice_id):
-    invoice = Invoice.query.filter_by(id=invoice_id).first()
+def invoice(project_id, invoice_id):
+    invoice = Invoice.query.filter_by(owner_id=project_id, id=invoice_id).first()
     if request.method == "GET":
         return jsonify(invoice.__getstate__())

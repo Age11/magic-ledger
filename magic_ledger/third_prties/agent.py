@@ -68,6 +68,7 @@ class Agent(db.Model):
             state["agent_type"] = "client"
         elif state.get("agent_type") is AgentTypeEnum.EMPLOYEE:
             state["agent_type"] = "employee"
+        return state
 
     def __repr__(self):
         return str(self.__getstate__())

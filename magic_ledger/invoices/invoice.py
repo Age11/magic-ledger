@@ -23,8 +23,8 @@ class Invoice(db.Model):
     receive_date = db.Column(db.DateTime, nullable=False)
     due_date = db.Column(db.DateTime, nullable=False)
     payment_status = db.Column(db.Enum(InventoryMethodEnum), nullable=False)
-    organization_id = db.Column(
-        db.Integer, db.ForeignKey("organization.id"), nullable=False
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey("project.id"), nullable=False
     )
     supplier_id = db.Column(db.Integer, db.ForeignKey("organization.id"))
     client_id = db.Column(db.Integer, db.ForeignKey("organization.id"), nullable=False)
@@ -34,20 +34,20 @@ class Invoice(db.Model):
 
     # add a constructor
     def __init__(
-        self,
-        inv_type,
-        number,
-        serial,
-        receive_date,
-        due_date,
-        issue_date,
-        payment_status,
-        organization_id,
-        supplier_id,
-        client_id,
-        currency,
-        issuer_name,
-        amount,
+            self,
+            inv_type,
+            number,
+            serial,
+            receive_date,
+            due_date,
+            issue_date,
+            payment_status,
+            owner_id,
+            supplier_id,
+            client_id,
+            currency,
+            issuer_name,
+            amount,
     ):
         self.inv_type = inv_type
         self.number = number
@@ -55,7 +55,7 @@ class Invoice(db.Model):
         self.receive_date = datetime.strptime(receive_date, "%Y-%m-%d")
         self.due_date = datetime.strptime(due_date, "%Y-%m-%d")
         self.issue_date = datetime.strptime(issue_date, "%Y-%m-%d")
-        self.organization_id = organization_id
+        self.owner_id = owner_id
         self.supplier_id = supplier_id
         self.client_id = client_id
         self.issuer_name = issuer_name

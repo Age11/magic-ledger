@@ -19,8 +19,8 @@ class Asset(db.Model):
     monthly_amount = db.Column(db.Float, nullable=False)
     total_duration = db.Column(db.Integer, nullable=False)
     acquisition_date = db.Column(db.DateTime, nullable=False)
-    organization_id = db.Column(
-        db.Integer, db.ForeignKey("organization.id"), nullable=False
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey("project.id"), nullable=False
     )
 
     # add a constructor
@@ -33,7 +33,7 @@ class Asset(db.Model):
         depreciation_method,
         total_duration,
         acquisition_date,
-        organization_id,
+        owner_id
     ):
         self.name = name
         self.description = description
@@ -41,7 +41,7 @@ class Asset(db.Model):
         self.total_amount = total_amount
         self.total_duration = total_duration
         self.depreciation_method = depreciation_method
-        self.organization_id = organization_id
+        self.owner_id = owner_id
         if depreciation_method == "straight_line":
             self.remaining_value = total_amount
             self.monthly_amount = total_amount / total_duration

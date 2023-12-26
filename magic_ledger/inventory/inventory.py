@@ -21,12 +21,12 @@ class Inventory(db.Model):
     description = db.Column(db.String(500), nullable=False)
     inventory_method = db.Column(db.Enum(InventoryMethodEnum), nullable=False)
     # must belong to an organization
-    organization_id = db.Column(
-        db.Integer, db.ForeignKey("organization.id"), nullable=False
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey("project.id"), nullable=False
     )
 
     # add a constructor
-    def __init__(self, inv_type, name, description, inventory_method, organization_id):
+    def __init__(self, inv_type, name, description, inventory_method, owner_id):
         self.inv_type = inv_type
         self.name = name
         self.description = description
@@ -38,7 +38,7 @@ class Inventory(db.Model):
             self.inventory_method = InventoryMethodEnum.AVERAGE
         elif inventory_method == "specific":
             self.inventory_method = InventoryMethodEnum.SPECIFIC
-        self.organization_id = organization_id
+        self.owner_id = owner_id
 
     def __getstate__(self):
         state = self.__dict__.copy()

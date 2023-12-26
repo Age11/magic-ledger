@@ -20,16 +20,14 @@ class AccountBalance(db.Model):
     def __init__(
         self,
         analytical_account,
-        debit,
-        credit,
         owner_id,
     ):
         self.analytical_account = analytical_account
         self.initial_debit = 0
         self.initial_credit = 0
         self.owner_id = owner_id
-        self.debit = debit
-        self.credit = credit
+        self.debit = 0
+        self.credit = 0
 
     def update_current_debit(self, amount):
         self.debit += amount

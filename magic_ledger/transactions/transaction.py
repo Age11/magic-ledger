@@ -21,8 +21,8 @@ class Transaction(db.Model):
     currency = db.Column(db.Enum(Currency), nullable=False)
     transaction_date = db.Column(db.DateTime, nullable=False)
     recorded_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    organization_id = db.Column(
-        db.Integer, db.ForeignKey("organization.id"), nullable=False
+    owner_id = db.Column(
+        db.Integer, db.ForeignKey("project.id"), nullable=False
     )
     details = db.Column(db.String(255), nullable=False)
 
@@ -34,7 +34,7 @@ class Transaction(db.Model):
         credit_amount,
         currency,
         transaction_date,
-        organization_id,
+        owner_id,
         details,
     ):
         self.debit_account_id = debit_account_id
@@ -43,7 +43,7 @@ class Transaction(db.Model):
         self.credit_amount = credit_amount
         self.currency = Currency[currency]
         self.transaction_date = datetime.strptime(transaction_date, "%Y-%m-%d")
-        self.organization_id = organization_id
+        self.owner_id = owner_id
         self.details = details
 
     def __getstate__(self):
