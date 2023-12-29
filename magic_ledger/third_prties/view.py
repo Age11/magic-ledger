@@ -497,6 +497,7 @@ def get_suppliers_full_details(project_id):
     return jsonify(
         [{**org[0].__getstate__(), **org[1].__getstate__(), **org[2].__getstate__()} for org in orgs])
 
+
 @bp.route("/organizations/clients/full/", methods=("GET",))
 def get_client_full_details(project_id):
     orgs = Organization.query.join(Addressbook, Organization.address_id == Addressbook.id) \
@@ -529,3 +530,117 @@ def get_supplier_agent_full_details(project_id):
 
     return jsonify(
         [{**org[0].__getstate__(), **org[1].__getstate__(), **org[2].__getstate__()} for org in agts])
+
+@bp.route("/organizations/suppliers/<org_id>", methods=("PUT",))
+def edit_supplier(project_id, org_id):
+    if request.method == "PUT":
+        logging.info("""Editing supplier with the following data:""")
+        logging.info(request.json)
+
+        # Organization info
+        name = request.json["name"]
+        cif = request.json["cif"]
+        nrc = request.json["nrc"]
+        caen_code = request.json["caen_code"]
+        org_type = "supplier"
+        owner_id = project_id
+
+        # Address
+        country = request.json["country"]
+        state_or_province = request.json["state_or_province"]
+        city = request.json["city"]
+        street = request.json["street"]
+        apartment_or_suite = request.json["apartment_or_suite"]
+        postal_code = request.json["postal_code"]
+        phone = request.json["phone"]
+        email = request.json["email"]
+
+        # Banking details
+        account = request.json["account"]
+        details = request.json["details"]
+
+        organization = Organization.query.filter_by(id=org_id, owner_id=project_id).first()
+        organization.name = name
+        organization.cif = cif
+        organization.nrc = nrc
+        organization.caen_code = caen_code
+
+
+
+        address = Addressbook.query.filter_by(id=organization.address_id).first()
+        address.country = country
+        address.state_or_province = state_or_province
+        address.city = city
+        address.street = street
+        address.apartment_or_suite = apartment_or_suite
+        address.postal_code = postal_code
+        address.phone = phone
+        address.email = email
+
+
+        banking_details = BankingDetails.query.filter_by(id=organization.banking_details_id).first()
+        banking_details.account = account
+        banking_details.details = details
+
+        db.session.commit()
+
+        response = jsonify()
+        response.status_code = 201
+        return response
+
+@bp.route("/organizations/clients/<org_id>", methods=("PUT",))
+def edit_client(project_id, org_id):
+    if request.method == "PUT":
+        logging.info("""Editing supplier with the following data:""")
+        logging.info(request.json)
+
+        # Organization info
+        name = request.json["name"]
+        cif = request.json["cif"]
+        nrc = request.json["nrc"]
+        caen_code = request.json["caen_code"]
+        org_type = "client"
+        owner_id = project_id
+
+        # Address
+        country = request.json["country"]
+        state_or_province = request.json["state_or_province"]
+        city = request.json["city"]
+        street = request.json["street"]
+        apartment_or_suite = request.json["apartment_or_suite"]
+        postal_code = request.json["postal_code"]
+        phone = request.json["phone"]
+        email = request.json["email"]
+
+        # Banking details
+        account = request.json["account"]
+        details = request.json["details"]
+
+        organization = Organization.query.filter_by(id=org_id, owner_id=project_id).first()
+        organization.name = name
+        organization.cif = cif
+        organization.nrc = nrc
+        organization.caen_code = caen_code
+
+
+
+        address = Addressbook.query.filter_by(id=organization.address_id).first()
+        address.country = country
+        address.state_or_province = state_or_province
+        address.city = city
+        address.street = street
+        address.apartment_or_suite = apartment_or_suite
+        address.postal_code = postal_code
+        address.phone = phone
+        address.email = email
+
+
+        banking_details = BankingDetails.query.filter_by(id=organization.banking_details_id).first()
+        banking_details.account = account
+        banking_details.details = details
+
+        db.session.commit()
+
+        response = jsonify()
+        response.status_code = 201
+        return response

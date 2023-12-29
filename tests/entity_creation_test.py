@@ -122,6 +122,24 @@ def test_create_supplier_organization(client):
 
     assert data["creation_date"] is not None
 
+def test_update_supplier(client):
+    test_create_supplier_organization(client)
+    organization_AAA["name"] = "AAA ONLINE SRL"
+    organization_AAA["details"] = "BBBB BANK"
+    resp = client.put("/1/third-parties/organizations/suppliers/2", json=organization_AAA)
+    assert resp.status_code == 201
+
+    response = client.get("/1/third-parties/organizations/suppliers/full/")
+    assert response.status_code == 200
+    resp_data = json.loads(response.data)
+    assert len(resp_data) == 1
+    data = resp_data[0]
+    assert data["name"] == 'AAA ONLINE SRL'
+    assert data["details"] == 'BBBB BANK'
+
+    assert data["postal_code"] == '106100'
+
+
 
 organization_AAB = {
     "name": "XXX AMSTERFARM SRL",
@@ -209,6 +227,22 @@ def test_create_client_organization(client):
 
     assert data["creation_date"] is not None
 
+def test_update_client(client):
+    test_create_client_organization(client)
+    organization_AAA["name"] = "AAA ONLINE SRL"
+    organization_AAA["details"] = "BBBB BANK"
+    resp = client.put("/1/third-parties/organizations/clients/2", json=organization_AAA)
+    assert resp.status_code == 201
+
+    response = client.get("/1/third-parties/organizations/clients/full/")
+    assert response.status_code == 200
+    resp_data = json.loads(response.data)
+    assert len(resp_data) == 1
+    data = resp_data[0]
+    assert data["name"] == 'AAA ONLINE SRL'
+    assert data["details"] == 'BBBB BANK'
+
+    assert data["postal_code"] == '106100'
 
 agent_EI = {
     "name": "Emilian",
