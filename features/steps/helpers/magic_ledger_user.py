@@ -57,7 +57,6 @@ class MagicLedgerUser:
                 "email": row["email"],
                 "account": row["cont_bancar"],
                 "details": row["detalii"],
-                "owner_id": self.selected_project
             }
             response = self.client.post(
                 self.base_url + "/1/third-parties/organizations/suppliers/", json=req
@@ -85,10 +84,35 @@ class MagicLedgerUser:
                 "email": row["email"],
                 "account": row["cont_bancar"],
                 "details": row["detalii"],
-                "owner_id": self.selected_project
             }
             response = self.client.post(
                 self.base_url + "/1/third-parties/organizations/clients/", json=req
+            )
+            assert response.status_code == 201
+            return response
+
+    def create_client_agent(self, context_table):
+        for row in context_table:
+            req = {
+
+                "name": row["nume"],
+                "middle_name": row["prenume1"],
+                "surname": row["prenume"],
+                "cnp": row["cnp"],
+                "country": row["tara"],
+                "state_or_province": row["judet"],
+                "city": row["oras"],
+                "street": row["strada"],
+                "apartment_or_suite": row["numar"],
+                "postal_code": row["cod_postal"],
+                "phone": row["telefon"],
+                "email": row["email"],
+                "account": row["cont"],
+                "details": row["detalii"],
+
+            }
+            response = self.client.post(
+                self.base_url + "/1/third-parties/agents/clients/", json=req
             )
             assert response.status_code == 201
             return response

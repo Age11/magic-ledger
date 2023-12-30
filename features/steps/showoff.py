@@ -18,3 +18,8 @@ def step_impl(context):
 def step_impl(context):
     response = mg.create_client(context.table)
     assert response.status_code == 201
+
+@given("creez un client agent nou")
+def step_impl(context):
+    response = mg.create_client_agent(context.table)
+    assert response.status_code == 201
