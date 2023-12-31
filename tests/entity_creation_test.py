@@ -30,10 +30,19 @@ def test_create_project(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data["id"] == 1
-    assert data["name"] == "ABC"
+    assert data["project_name"] == "ABC"
     assert data["vat_mode"] == "on_invoice"
     assert data["status"] == "active"
     assert data["creation_date"] is not None
+
+    response = client.get("/projects/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) == 1
+    assert data[0]["id"] == 1
+    assert data[0]["project_name"] == "ABC"
+    assert data[0]["city"] == "Sinaia"
+    assert data[0]["details"] == "AAAA BANK"
 
 
 organization_AAA = {
