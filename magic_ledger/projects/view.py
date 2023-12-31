@@ -49,7 +49,7 @@ def projects():
             flash(error)
         else:
             new_project = Project(
-                name=project_name,
+                project_name=project_name,
                 vat_mode=vat_mode,
                 status=status,
                 caen_code=caen_code,
@@ -95,8 +95,13 @@ def projects():
             return response
 
     elif request.method == "GET":
-        projects = Organization.query.filter_by(org_type=OrgTypeEnum.PROJECT).all()
-        return jsonify([row.__getstate__() for row in projects])
+        projects = Project.query.join(Project, Project.id == Organization.owner_id) \
+            .join(Addressbook, Organization.address_id == Addressbook.id) \
+            .join(BankingDetails, Organization.banking_details_id == BankingDetails.id) \
+            .add_columns(Organization, Addressbook, BankingDetails) \
+            .filter(Organization.org_type == OrgTypeEnum.PROJECT).all()
+
+        return  jsonify([{**prj[0].__getstate__(), **prj[1].__getstate__(), **prj[2].__getstate__(), **prj[3].__getstate__()} for prj in projects])
 
 @bp.route("/<project_id>", methods=("GET",))
 def get_project(project_id):

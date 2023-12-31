@@ -23,14 +23,14 @@ class VatModeEnum(Enum):
 @dataclass
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(255), nullable=False)
+    project_name = db.Column(db.String(255), nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow())
     status = db.Column(db.Enum(StatusEnum), nullable=False)
     vat_mode = db.Column(db.Enum(VatModeEnum), nullable=False)
 
     # add a constructor
-    def __init__(self, name, status, vat_mode, caen_code):
-        self.name = name
+    def __init__(self, project_name, status, vat_mode, caen_code):
+        self.project_name = project_name
 
         if status == "active":
             self.status = StatusEnum.ACTIVE
