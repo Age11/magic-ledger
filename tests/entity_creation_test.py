@@ -270,6 +270,32 @@ agent_EI = {
     "details": "AAAA BANK",
 }
 
+def test_create_affiliate_organization(client):
+    client.post("/projects/", json=project_ABC)
+    response = client.post("/1/third-parties/organizations/affiliates/", json=organization_AAB)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/third-parties/organizations/2"
+
+    org_id = response.headers["location"].split("/")[-1]
+
+    response = client.get("/1/third-parties/organizations/2")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+
+    assert data["name"] == 'XXX AMSTERFARM SRL'
+    assert data["cif"] == '31105210'
+    assert data["caen_code"] == '4791'
+    assert data["nrc"] == 'J11/275/2003'
+    assert data["org_type"] == 'affiliate'
+    assert data["owner_id"] == 1
+    assert data["id"] == 2
+    assert data["banking_details_id"] == 2
+    assert data["address_id"] == 2
+
+    response = client.get("/1/third-parties/organizations/affiliates/")
+    assert response.status_code == 200
+    resp_data = json.loads(response.data)
+    assert len(resp_data) == 1
 
 def test_create_agent_client(client):
     client.post("/projects/", json=project_ABC)
