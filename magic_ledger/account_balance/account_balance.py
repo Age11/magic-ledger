@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from magic_ledger import db
-
+from magic_ledger.misc.clock import CLOCK
 
 @dataclass
 class AccountBalance(db.Model):
@@ -15,12 +15,12 @@ class AccountBalance(db.Model):
     debit = db.Column(db.Float, nullable=False)
     credit = db.Column(db.Float, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
-    calculated_date = db.Column(db.DateTime, default=datetime.utcnow())
-
+    balance_date = db.Column(db.String(10), nullable=False)
     def __init__(
         self,
         analytical_account,
         owner_id,
+        balance_date=CLOCK.strftime("%Y-%m")
     ):
         self.analytical_account = analytical_account
         self.initial_debit = 0
@@ -28,12 +28,7 @@ class AccountBalance(db.Model):
         self.owner_id = owner_id
         self.debit = 0
         self.credit = 0
-
-    def update_current_debit(self, amount):
-        self.debit += amount
-
-    def update_current_credit(self, amount):
-        self.credit += amount
+        self.balance_date = datetime.strptime(balance_date, "%Y-%m")
 
     def __getstate__(self):
         state = self.__dict__.copy()

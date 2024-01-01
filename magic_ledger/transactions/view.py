@@ -1,9 +1,11 @@
 import logging
+from datetime import datetime
 
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
 from magic_ledger.account_balance.account_balance import AccountBalance
+from magic_ledger.account_balance.account_ballance_service import AccountBalanceService
 from magic_ledger.account_balance.view import account_exists
 from magic_ledger.account_plan.model import AccountPlan
 from magic_ledger.transactions.transaction import Transaction
@@ -34,30 +36,25 @@ def invoices(project_id):
             error = "credit_account_id id is required."
         # TODO: add more validation
 
+        abs = AccountBalanceService()
+
         if error is not None:
             flash(error)
         else:
-            if account_exists(debit_account):
-                account = AccountBalance.query.filter_by(
-                    analytical_account=debit_account
-                ).first()
-                account.initial_debit += debit_amount
-                db.session.commit()
-            else:
-                account = AccountBalance(analytical_account=debit_account, owner_id=project_id)
-                account.update_current_debit(debit_amount)
-                db.session.add(account)
+            # update account balance
+            abs.update_account_balance(
+                project_id=project_id,
+                analytical_account=debit_account,
+                current_debit=debit_amount,
+                balance_date=datetime.strptime(transaction_date, "%Y-%m-%d").strftime("%Y-%m"),
+            )
 
-            if account_exists(credit_account):
-                account = AccountBalance.query.filter_by(
-                    analytical_account=credit_account
-                ).first()
-                account.initial_credit += credit_amount
-                db.session.commit()
-            else:
-                account = AccountBalance(analytical_account=credit_account, owner_id=project_id)
-                account.update_current_credit(credit_amount)
-                db.session.add(account)
+            abs.update_account_balance(
+                project_id=project_id,
+                analytical_account=credit_account,
+                current_debit=credit_amount,
+                balance_date=datetime.strptime(transaction_date, "%Y-%m-%d").strftime("%Y-%m"),
+            )
 
             new_transaction = Transaction(
                 debit_account_id=debit_account,

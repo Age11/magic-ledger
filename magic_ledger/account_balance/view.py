@@ -4,6 +4,8 @@ from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
 from magic_ledger.account_balance.account_balance import AccountBalance
+from magic_ledger.account_balance.account_ballance_service import AccountBalanceService
+from magic_ledger.misc.clock import CLOCK
 
 bp = Blueprint("account_balance", __name__, url_prefix="/<project_id>/account-balance")
 
@@ -36,25 +38,20 @@ def account_balance(project_id):
 
         if error is not None:
             flash(error)
-        if account_exists(analytical_account):
-            account = AccountBalance.query.filter_by(
-                analytical_account=analytical_account
-            ).first()
-            account.initial_debit = initial_debit
-            account.initial_credit = initial_credit
-            db.session.commit()
-        else:
-            account = AccountBalance(
-                analytical_account=analytical_account,
-                owner_id=project_id,
-            )
-            account.initial_debit = initial_debit
-            account.initial_credit = initial_credit
-            db.session.add(account)
-            db.session.commit()
+        account = AccountBalanceService.update_account_balance(
+            project_id=project_id,
+            analytical_account=analytical_account,
+            initial_debit=initial_debit,
+            initial_credit=initial_credit,
+            current_debit=0,
+            current_credit=0,
+            balance_date=CLOCK.strftime("%Y-%m"),
+        )
+        db.session.add(account)
+        db.session.commit()
         response = jsonify()
         response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/invoices/" + str(account.id)
+        response.headers["location"] = "/" + project_id + "/balance/" + str(account.id)
         return response
     elif request.method == "GET":
         balance = AccountBalance.query.all()

@@ -579,38 +579,6 @@ def test_create_item(client):
     assert data["inventory_id"] == 1
     assert data["total_value"] == 100
 
-fixed_asset = {
-    "name": "laptop",
-    "description": "laptop",
-    "asset_class": "213",
-    "depreciation_method": "straight_line",
-    "total_amount": 100000,
-    "total_duration": 5,
-    "acquisition_date": "2020-01-01",
-}
-
-def test_create_fixed_asset(client):
-    test_create_all_types(client)
-    response = client.post("/1/assets/", json=fixed_asset)
-    assert response.status_code == 201
-    assert response.headers["location"] == "/1/assets/1"
-
-    response = client.get("/1/assets/")
-    assert response.status_code == 200
-    data = json.loads(response.data)
-    assert len(data) == 1
-
-    data = data[0]
-    assert data["name"] == "laptop"
-    assert data["description"] == "laptop"
-    assert data["asset_class"] == "213"
-    assert data["depreciation_method"] == "straight_line"
-    assert data["total_amount"] == 100000
-    assert data["total_duration"] == 5
-    assert data["acquisition_date"] is not None
-    assert data["owner_id"] == 1
-    assert data["id"] == 1
-
 transaction = {
     "debit_account": "371",
     "credit_account": "401",
@@ -637,5 +605,50 @@ def test_create_transaction(client):
     assert data["credit_amount"] == 100
     assert data["currency"] == "RON"
     assert data["details"] == "achizitie marfuri"
+
+car = {
+        "name": "masina",
+        "description": "o masina",
+        "asset_class": "21",
+        "analytical_account": "2133",
+        "deprecation_analytical_account": "2813",
+        "total_amount": 30000,
+        "depreciation_method": "straight_line",
+        "total_duration": 5,
+        "acquisition_date": "2021-09",
+        "owner_id": 1,
+        "recording_date": "2023-11"
+}
+
+def test_create_asset(client):
+    test_create_all_types(client)
+    response = client.post("/1/assets/", json=car)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/assets/1"
+
+    response = client.get("/1/assets/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) == 1
+    data = data[0]
+    assert data["name"] == "masina"
+    assert data["description"] == "o masina"
+    assert data["asset_class"] == "21"
+    assert data["depreciation_method"] == "straight_line"
+    assert data["total_amount"] == 30000
+    assert data["total_duration"] == 5
+    assert data["owner_id"] == 1
+    assert data["id"] == 1
+    assert data["remaining_duration"] == 35
+    assert data["remaining_amount"] == 17500
+    assert data["deprecated_amount"] == 12500
+    assert data["monthly_amount"] == 500
+    assert data["analytical_account"] == "2133"
+    assert data["deprecation_analytical_account"] == "2813"
+
+    #TODO fix this
+    assert data["acquisition_date"] == "Wed, 01 Sep 2021 00:00:00 GMT"
+
+
 
 
