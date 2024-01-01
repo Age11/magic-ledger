@@ -28,3 +28,10 @@ def step_impl(context):
 def step_impl(context):
     response = mg.create_affiliate_organization(context.table)
     assert response.status_code == 201
+
+@given("adaug o imobilizare corporala")
+def step_impl(context):
+    response = mg.add_asset(context.table)
+    assert response.status_code == 201
+
+

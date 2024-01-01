@@ -15,7 +15,7 @@ def assets(project_id):
         logging.info("""Creating asset with the following data:""")
         logging.info(request.json)
 
-        name = request.json["name"]
+        asset_name = request.json["asset_name"]
         description = request.json["description"]
         asset_class = request.json["asset_class"]
         depreciation_method = request.json["depreciation_method"]
@@ -27,7 +27,7 @@ def assets(project_id):
         deprecation_analytical_account = request.json["deprecation_analytical_account"]
 
         asset = Asset(
-            name=name,
+            asset_name=asset_name,
             description=description,
             asset_class=asset_class,
             depreciation_method=depreciation_method,

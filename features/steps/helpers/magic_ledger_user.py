@@ -143,3 +143,24 @@ class MagicLedgerUser:
             )
             assert response.status_code == 201
             return response
+
+    def add_asset(self, context_table):
+        for row in context_table:
+            req = {
+                "asset_name": row["asset_name"],
+                "description": row["descriere"],
+                "asset_class": row["clasa"],
+                "analytical_account": row["cont_analitic"],
+                "deprecation_analytical_account": row["cont_analitic_amortizare"],
+                "depreciation_method": "straight_line" if row["tip_amortizare"] == "liniara" else row["tip_amortizare"],
+                "total_duration": int(row["durata_utilizare"]),
+                "total_amount": int(row["valoare_totala"]),
+                "acquisition_date": row["data_achizitie"],
+                "recording_date": row["data_inregistrare"],
+            }
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/assets/", json=req
+            )
+            assert response.status_code == 201
+            return response
+

@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 @dataclass
 class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(255), nullable=False)
+    asset_name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255))
     asset_class = db.Column(db.String(255), nullable=False)
 
@@ -35,7 +35,7 @@ class Asset(db.Model):
     # add a constructor
     def __init__(
             self,
-            name,
+            asset_name,
             description,
             asset_class,
             total_amount,
@@ -47,7 +47,7 @@ class Asset(db.Model):
             deprecation_analytical_account,
             recording_date=datetime.now().strftime("%Y-%m"),
     ):
-        self.name = name
+        self.asset_name = asset_name
         self.description = description
         self.asset_class = asset_class
         self.analytical_account = analytical_account

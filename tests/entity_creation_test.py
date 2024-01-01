@@ -607,7 +607,7 @@ def test_create_transaction(client):
     assert data["details"] == "achizitie marfuri"
 
 car = {
-        "name": "masina",
+        "asset_name": "masina",
         "description": "o masina",
         "asset_class": "21",
         "analytical_account": "2133",
@@ -616,7 +616,6 @@ car = {
         "depreciation_method": "straight_line",
         "total_duration": 5,
         "acquisition_date": "2021-09",
-        "owner_id": 1,
         "recording_date": "2023-11"
 }
 
@@ -631,7 +630,7 @@ def test_create_asset(client):
     data = json.loads(response.data)
     assert len(data) == 1
     data = data[0]
-    assert data["name"] == "masina"
+    assert data["asset_name"] == "masina"
     assert data["description"] == "o masina"
     assert data["asset_class"] == "21"
     assert data["depreciation_method"] == "straight_line"

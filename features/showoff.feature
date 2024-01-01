@@ -7,14 +7,20 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | ABC  | SC. "ABC" S.A | R910910 | J40/65703/200 | proiect | 0721222333 | contact@abc.com | facturare | 4778     | Romania | Bucuresti | Bucuresti | Panselutelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
 
     * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155 | contact@aaa.com | facturare | 6201     | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
-    * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882 | contact@bbb.com | facturare | 771      | Romania | Bucuresti | Bucuresti | Zambilelor | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
-    * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | 9003     | Romania | Bucuresti | Bucuresti | Liliacului | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
+      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155  | contact@aaa.com | facturare | 6201     | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
+      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882  | contact@bbb.com | facturare | 771      | Romania | Bucuresti | Bucuresti | Zambilelor  | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
+      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | 9003     | Romania | Bucuresti | Bucuresti | Liliacului  | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
+
+      # actiuni si titluri de plasament
+
+    * adaug o imobilizare corporala
+      | asset_name         | clasa | cont_analitic | cont_analitic_amortizare | tip_amortizare | valoare_totala | durata_utilizare | data_achizitie | data_inregistrare | descriere                            |
+      | masina tip A       | 21    | 2133          | 2813                     | liniara        | 30000          | 5                | 2020-10        | 2023-11           | renault clio, 2019, 1.5 diesel, 90cp |
+      | cladire depozit    | 21    | 212           | 2812                     | liniara        | 180000         | 50               | 2014-07        | 2023-11           | cladire depozit, zona pipera         |
+      | program informatic | 208   | 208           | 2808                     | liniara        | 3600           | 36               | 2021-04        | 2023-11           | program informatic gestiune depozit  |
+      | program informatic | 214   | 214           | 2814                     | liniara        | 4800           | 48               | 2023-06        | 2023-11           | mobilier de birou                    |
+
 
 
     * creez un furnizor:
