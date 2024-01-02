@@ -16,6 +16,12 @@ class AccountBalance(db.Model):
     credit = db.Column(db.Float, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     balance_date = db.Column(db.String(10), nullable=False)
+    total_debit = db.Column(db.Float, nullable=False)
+    total_credit = db.Column(db.Float, nullable=False)
+    final_debit_balance = db.Column(db.Float, nullable=False)
+    final_credit_balance = db.Column(db.Float, nullable=False)
+    completed = db.Column(db.Boolean, nullable=False)
+
     def __init__(
         self,
         analytical_account,
@@ -28,7 +34,12 @@ class AccountBalance(db.Model):
         self.owner_id = owner_id
         self.debit = 0
         self.credit = 0
+        self.total_debit = 0
+        self.total_credit = 0
+        self.final_debit_balance = 0
+        self.final_credit_balance = 0
         self.balance_date = datetime.strptime(balance_date, "%Y-%m")
+        self.completed = False
 
     def __getstate__(self):
         state = self.__dict__.copy()

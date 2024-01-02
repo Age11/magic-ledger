@@ -669,5 +669,23 @@ def test_create_financial_holding(client):
     data = json.loads(response.data)
     assert len(data) == 1
 
+currency_reserve = {
+    "currency_type": "EUR",
+    "quantity": 10417,
+    "acquisition_price": 4.799,
+    "analytical_account": "5124",
+    "acquisition_date": "2023-09-01",
+}
+def test_create_foreign_currency_reserve(client):
+    test_create_all_types(client)
+    response = client.post("/1/liquidity/reserve/", json=currency_reserve)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/liquidity/reserve/1"
+
+    response = client.get("/1/liquidity/reserve/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) == 1
+
 
 

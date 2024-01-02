@@ -39,4 +39,9 @@ def step_impl(context, holding_type):
     response = mg.add_financial_holding(context.table, holding_type)
     assert response.status_code == 201
 
+@given("actualizez rezerva de valuta")
+def step_impl(context):
+    response = mg.add_liquidity_reserve(context.table)
+    assert response.status_code == 201
+
 

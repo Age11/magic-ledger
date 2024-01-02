@@ -182,3 +182,20 @@ class MagicLedgerUser:
             assert response.status_code == 201
             return response
 
+    def add_liquidity_reserve(self, context_table):
+        for row in context_table:
+            req = {
+                "owner_id": self.selected_project,
+                "currency_type": row["moneda"],
+                "quantity": int(row["cantitate"]),
+                "acquisition_price": float(row["pret_achizitie"]),
+                "analytical_account": row["cont_analitic"],
+                "acquisition_date": row["data_achizitie"],
+            }
+
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/liquidity/reserve/", json=req
+            )
+            assert response.status_code == 201
+            return response
+

@@ -37,9 +37,9 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | program informatic | 208   | 208           | 2808                     | liniara        | 3600           | 36               | 2021-04        | 2023-11           | program informatic gestiune depozit  |
       | program informatic | 214   | 214           | 2814                     | liniara        | 4800           | 48               | 2023-06        | 2023-11           | mobilier de birou                    |
 
-
-    #preluarea balantei initiale
-
+    * actualizez rezerva de valuta:
+      | moneda | cantitate | pret_achizitie | cont_analitic | data_achizitie |
+      | EUR    | 10417     | 4.799          | 5124          | 2023-09-01     |
 
     * creez un furnizor:
       | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | cod_caen | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
