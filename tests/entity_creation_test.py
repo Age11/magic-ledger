@@ -605,6 +605,7 @@ def test_create_transaction(client):
     assert data["credit_amount"] == 100
     assert data["currency"] == "RON"
     assert data["details"] == "achizitie marfuri"
+    #TODO check that the account balance is updated
 
 car = {
         "asset_name": "masina",
@@ -648,6 +649,25 @@ def test_create_asset(client):
     #TODO fix this
     assert data["acquisition_date"] == "Wed, 01 Sep 2021 00:00:00 GMT"
 
+holding = {
+    "owner_id": 1,
+    "organization_id": 2,
+    "holding_type": "shares",
+    "quantity": 100,
+    "aquisition_price": 100,
+    "analytical_account": "261",
+    "aquisition_date": "2021-09-01",
+}
+def test_create_financial_holding(client):
+    test_create_all_types(client)
+    response = client.post("/1/financial-holdings/", json=holding)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/financial-holdings/1"
+
+    response = client.get("/1/financial-holdings/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert len(data) == 1
 
 
 

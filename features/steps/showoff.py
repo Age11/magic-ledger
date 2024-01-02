@@ -34,4 +34,9 @@ def step_impl(context):
     response = mg.add_asset(context.table)
     assert response.status_code == 201
 
+@given('adaug "{holding_type}" detinute la entitatea afiliata')
+def step_impl(context, holding_type):
+    response = mg.add_financial_holding(context.table, holding_type)
+    assert response.status_code == 201
+
 

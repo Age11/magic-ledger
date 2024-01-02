@@ -75,6 +75,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(assets.bp)
 
+    from magic_ledger import financial_holdings
+
+    app.register_blueprint(financial_holdings.bp)
+
     return app
 
 

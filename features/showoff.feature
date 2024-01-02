@@ -7,12 +7,28 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | ABC  | SC. "ABC" S.A | R910910 | J40/65703/200 | proiect | 0721222333 | contact@abc.com | facturare | 4778     | Romania | Bucuresti | Bucuresti | Panselutelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
 
     * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155  | contact@aaa.com | facturare | 6201     | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
-      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882  | contact@bbb.com | facturare | 771      | Romania | Bucuresti | Bucuresti | Zambilelor  | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
-      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | 9003     | Romania | Bucuresti | Bucuresti | Liliacului  | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
+      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155 | contact@aaa.com | facturare | 6201     | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
 
-      # actiuni si titluri de plasament
+    * adaug "actiuni" detinute la entitatea afiliata:
+      | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
+      | S.C.„AAA” SA | 2              | 500       | 500            | 261           | 2021-09-01     |
+
+    * creez o entitate afiliata:
+      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882 | contact@bbb.com | facturare | 771      | Romania | Bucuresti | Bucuresti | Zambilelor | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
+
+    * adaug "titluri de plasament" detinute la entitatea afiliata:
+      | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
+      | S.C.„BBB” SA | 3              | 100       | 20             | 5081          | 2022-11-01     |
+
+    * creez o entitate afiliata:
+      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | 9003     | Romania | Bucuresti | Bucuresti | Liliacului | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
+
+    * adaug "titluri de plasament" detinute la entitatea afiliata:
+      | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
+      | S.C.„CCC” SA | 4              | 200       | 50             | 5081          | 2023-10-11     |
 
     * adaug o imobilizare corporala
       | asset_name         | clasa | cont_analitic | cont_analitic_amortizare | tip_amortizare | valoare_totala | durata_utilizare | data_achizitie | data_inregistrare | descriere                            |
@@ -21,6 +37,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | program informatic | 208   | 208           | 2808                     | liniara        | 3600           | 36               | 2021-04        | 2023-11           | program informatic gestiune depozit  |
       | program informatic | 214   | 214           | 2814                     | liniara        | 4800           | 48               | 2023-06        | 2023-11           | mobilier de birou                    |
 
+
+    #preluarea balantei initiale
 
 
     * creez un furnizor:

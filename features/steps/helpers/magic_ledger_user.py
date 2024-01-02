@@ -164,3 +164,21 @@ class MagicLedgerUser:
             assert response.status_code == 201
             return response
 
+    def add_financial_holding(self, context_table, holding_type):
+        for row in context_table:
+            req = {
+                "owner_id": self.selected_project,
+                "organization_id": int(row["id_organizatie"]),
+                "holding_type": holding_type,
+                "quantity": int(row["cantitate"]),
+                "aquisition_price": int(row["pret_achizitie"]),
+                "analytical_account": row["cont_analitic"],
+                "aquisition_date": row["data_achizitie"],
+            }
+
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/financial-holdings/", json=req
+            )
+            assert response.status_code == 201
+            return response
+
