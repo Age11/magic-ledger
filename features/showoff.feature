@@ -120,8 +120,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 7651 | 0.00          | 0.00           | 0.00       | 0.00      |
       | 766  | 0.00          | 0.00           | 800.00     | 800.00    |
 
-#    * inchid luna "2023-11"
-
+    * inchid luna "2023-11"
 
     * creez un furnizor:
       | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | cod_caen | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |

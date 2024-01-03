@@ -704,14 +704,14 @@ def test_create_foreign_currency_reserve(client):
     assert len(data) == 1
 
 
-init_balance = [{"balance_date": "2021-11",
+init_balance = [{"balance_date": "2023-11",
                  "analytical_account": "371",
                  "initial_debit": 10,
                  "initial_credit": 100,
                  "debit": 100,
                  "credit": 100
                  },
-                {"balance_date": "2021-11",
+                {"balance_date": "2023-11",
                  "analytical_account": "401",
                  "initial_debit": 500,
                  "initial_credit": 100,
@@ -729,3 +729,13 @@ def test_take_initial_balance(client):
     assert resp.status_code == 200
     data = json.loads(resp.data)
     assert len(data) == 2
+
+def test_close_balance(client):
+    test_take_initial_balance(client)
+    resp = client.post("/1/account-balance/close/2023-11")
+    assert resp.status_code == 201
+
+    resp = client.get("/1/account-balance/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 4

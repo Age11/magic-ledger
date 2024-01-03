@@ -50,3 +50,13 @@ def account_balance(project_id):
     elif request.method == "GET":
         balance = AccountBalance.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in balance])
+
+@bp.route("/close/<balance_date>", methods=("GET", "POST"))
+def close_month(project_id, balance_date):
+    if request.method == "POST":
+        logging.info("""closing balance for the following month:""" + balance_date)
+        abs.close_balance_accounts(project_id=project_id, balance_date=balance_date)
+        response = jsonify()
+        response.status_code = 201
+        return response
+

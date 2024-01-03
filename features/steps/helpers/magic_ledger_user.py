@@ -205,10 +205,10 @@ class MagicLedgerUser:
             req = {
                 "balance_date": month,
                 "analytical_account": row["cont"],
-                "initial_debit": row["debit_initial"],
-                "initial_credit": row["credit_initial"],
-                "debit": row["debit"],
-                "credit": row["credit"]
+                "initial_debit": float(row["debit_initial"]),
+                "initial_credit": float(row["credit_initial"]),
+                "debit": float(row["debit"]),
+                "credit": float(row["credit"])
             }
             req_body.append(req)
         response = self.client.post(
@@ -216,3 +216,13 @@ class MagicLedgerUser:
         )
         assert response.status_code == 201
         return response
+
+    close_month = get_initial_account_balance
+
+    def close_balance_for_month(self, month):
+        response = self.client.post(
+            self.base_url + "/" + self.selected_project + "/account-balance/close/" + month
+        )
+        assert response.status_code == 201
+        return response
+

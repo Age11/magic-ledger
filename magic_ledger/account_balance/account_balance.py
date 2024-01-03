@@ -26,7 +26,7 @@ class AccountBalance(db.Model):
         self,
         analytical_account,
         owner_id,
-        balance_date=CLOCK.strftime("%Y-%m")
+        balance_date
     ):
         self.analytical_account = analytical_account
         self.initial_debit = 0
@@ -38,8 +38,21 @@ class AccountBalance(db.Model):
         self.total_credit = 0
         self.final_debit_balance = 0
         self.final_credit_balance = 0
-        self.balance_date = datetime.strptime(balance_date, "%Y-%m")
+        self.balance_date = balance_date
         self.completed = False
+
+    def calculate_totals(self):
+        self.total_debit = self.initial_debit + self.debit
+        self.total_credit = self.initial_credit + self.credit
+        if self.total_debit > self.total_credit:
+            self.final_debit_balance = self.total_debit - self.total_credit
+            self.final_credit_balance = 0
+        elif self.total_credit > self.total_debit:
+            self.final_credit_balance = self.total_credit - self.total_debit
+            self.final_debit_balance = 0
+        else:
+            self.final_credit_balance = 0
+            self.final_debit_balance = 0
 
     def __getstate__(self):
         state = self.__dict__.copy()

@@ -1,7 +1,9 @@
 from datetime import datetime
 
-from magic_ledger.account_balance.account_balance import AccountBalance
+from dateutil.relativedelta import relativedelta
 
+from magic_ledger.account_balance.account_balance import AccountBalance
+from magic_ledger import db
 
 class AccountBalanceService:
 
@@ -46,3 +48,23 @@ class AccountBalanceService:
             account.current_debit = current_debit
             account.current_credit = current_credit
             return account
+
+    def close_balance_accounts(self,project_id, balance_date):
+        accounts = AccountBalance.query.filter_by(balance_date=balance_date, owner_id=project_id).all()
+        open_date = (datetime.strptime(balance_date, "%Y-%m") + relativedelta(months=1)).strftime("%Y-%m")
+        for account in accounts:
+            account.calculate_totals()
+            new_account = AccountBalance(
+                analytical_account=account.analytical_account,
+                owner_id=account.owner_id,
+                balance_date= open_date
+            )
+            new_account.initial_debit = account.final_debit_balance
+            new_account.initial_credit = account.final_credit_balance
+            account.completed = True
+            db.session.add(new_account)
+        db.session.commit()
+
+
+
+
