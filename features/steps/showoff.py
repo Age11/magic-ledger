@@ -44,4 +44,10 @@ def step_impl(context):
     response = mg.add_liquidity_reserve(context.table)
     assert response.status_code == 201
 
+@given('preiau balanta de verificare pentru luna "{month}"')
+def step_impl(context, month):
+    print(month)
+    response = mg.get_initial_account_balance(context.table, month)
+    assert response.status_code == 201
+
 

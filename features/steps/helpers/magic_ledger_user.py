@@ -199,3 +199,20 @@ class MagicLedgerUser:
             assert response.status_code == 201
             return response
 
+    def get_initial_account_balance(self, context_table, month):
+        req_body = []
+        for row in context_table:
+            req = {
+                "balance_date": month,
+                "analytical_account": row["cont"],
+                "initial_debit": row["debit_initial"],
+                "initial_credit": row["credit_initial"],
+                "debit": row["debit"],
+                "credit": row["credit"]
+            }
+            req_body.append(req)
+        response = self.client.post(
+            self.base_url + "/" + self.selected_project + "/account-balance/", json=req_body
+        )
+        assert response.status_code == 201
+        return response

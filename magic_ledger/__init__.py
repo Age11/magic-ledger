@@ -83,6 +83,10 @@ def create_app(test_config=None):
 
     app.register_blueprint(liquidity.bp)
 
+    from magic_ledger import account_balance
+
+    app.register_blueprint(account_balance.bp)
+
     return app
 
 

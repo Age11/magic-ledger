@@ -9,50 +9,44 @@ from magic_ledger.misc.clock import CLOCK
 
 bp = Blueprint("account_balance", __name__, url_prefix="/<project_id>/account-balance")
 
-
-def account_exists(analytical_account):
-    account = AccountBalance.query.filter_by(
-        analytical_account=analytical_account
-    ).first()
-    if account:
-        return True
-    else:
-        return False
-
-
-@bp.route("/set-initial", methods=("GET", "POST"))
+abs = AccountBalanceService()
+@bp.route("/", methods=("GET", "POST"))
 def account_balance(project_id):
     if request.method == "POST":
-        logging.info("""adding account balance with the following data:""")
+        logging.info("""adding initial account balance with the following data:""")
         logging.info(request.json)
-
-        analytical_account = request.json["analytical_account"]
-        initial_debit = request.json["initial_debit"]
-        initial_credit = request.json["initial_credit"]
 
         error = None
 
-        if not analytical_account:
-            error = "account is required."
+        if not len(request.json) > 0:
+            error = "provide some balance entries"
         # TODO: add more validation
 
-        if error is not None:
-            flash(error)
-        account = AccountBalanceService.update_account_balance(
-            project_id=project_id,
-            analytical_account=analytical_account,
-            initial_debit=initial_debit,
-            initial_credit=initial_credit,
-            current_debit=0,
-            current_credit=0,
-            balance_date=CLOCK.strftime("%Y-%m"),
-        )
-        db.session.add(account)
+        for balance in request.json:
+            analytical_account = balance["analytical_account"]
+            initial_debit = balance["initial_debit"]
+            initial_credit = balance["initial_credit"]
+            debit = balance["debit"]
+            credit = balance["credit"]
+            balance_date = balance["balance_date"]
+
+            account = abs.update_account_balance(
+                project_id=project_id,
+                analytical_account=analytical_account,
+                initial_debit=initial_debit,
+                initial_credit=initial_credit,
+                current_debit=debit,
+                current_credit=credit,
+                balance_date=balance_date,
+            )
+            db.session.add(account)
         db.session.commit()
+
         response = jsonify()
         response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/balance/" + str(account.id)
+        response.headers["location"] = "/" + project_id + "/account-balance/set-initial/"
+        response.autocorrect_location_header = False
         return response
     elif request.method == "GET":
-        balance = AccountBalance.query.all()
+        balance = AccountBalance.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in balance])

@@ -4,9 +4,7 @@ from datetime import datetime
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
-from magic_ledger.account_balance.account_balance import AccountBalance
 from magic_ledger.account_balance.account_ballance_service import AccountBalanceService
-from magic_ledger.account_balance.view import account_exists
 from magic_ledger.account_plan.model import AccountPlan
 from magic_ledger.transactions.transaction import Transaction
 

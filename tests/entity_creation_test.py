@@ -131,6 +131,7 @@ def test_create_supplier_organization(client):
 
     assert data["creation_date"] is not None
 
+
 def test_update_supplier(client):
     test_create_supplier_organization(client)
     organization_AAA["name"] = "AAA ONLINE SRL"
@@ -147,7 +148,6 @@ def test_update_supplier(client):
     assert data["details"] == 'BBBB BANK'
 
     assert data["postal_code"] == '106100'
-
 
 
 organization_AAB = {
@@ -236,6 +236,7 @@ def test_create_client_organization(client):
 
     assert data["creation_date"] is not None
 
+
 def test_update_client(client):
     test_create_client_organization(client)
     organization_AAA["name"] = "AAA ONLINE SRL"
@@ -253,6 +254,7 @@ def test_update_client(client):
 
     assert data["postal_code"] == '106100'
 
+
 agent_EI = {
     "name": "Emilian",
     "middle_name": "-",
@@ -269,6 +271,7 @@ agent_EI = {
     "account": "RO49AAAA1B31007593840001",
     "details": "AAAA BANK",
 }
+
 
 def test_create_affiliate_organization(client):
     client.post("/projects/", json=project_ABC)
@@ -296,6 +299,7 @@ def test_create_affiliate_organization(client):
     assert response.status_code == 200
     resp_data = json.loads(response.data)
     assert len(resp_data) == 1
+
 
 def test_create_agent_client(client):
     client.post("/projects/", json=project_ABC)
@@ -534,6 +538,7 @@ invoice = {
     "issuer_name": "Valise Vasile",
 }
 
+
 def test_create_invoice(client):
     test_create_all_types(client)
     response = client.post("/1/invoices/", json=invoice)
@@ -548,7 +553,6 @@ def test_create_invoice(client):
     data['id'] = 1
 
 
-
 item = {
     "name": "paracetamol",
     "description": "medicament",
@@ -558,6 +562,7 @@ item = {
     "total_value": 100,
     "invoice_id": 1,
 }
+
 
 def test_create_item(client):
     test_create_inventory(client)
@@ -579,6 +584,7 @@ def test_create_item(client):
     assert data["inventory_id"] == 1
     assert data["total_value"] == 100
 
+
 transaction = {
     "debit_account": "371",
     "credit_account": "401",
@@ -588,6 +594,8 @@ transaction = {
     "transaction_date": "2020-01-01",
     "details": "achizitie marfuri",
 }
+
+
 def test_create_transaction(client):
     test_create_all_types(client)
     response = client.post("/1/transactions/", json=transaction)
@@ -605,20 +613,22 @@ def test_create_transaction(client):
     assert data["credit_amount"] == 100
     assert data["currency"] == "RON"
     assert data["details"] == "achizitie marfuri"
-    #TODO check that the account balance is updated
+    # TODO check that the account balance is updated
+
 
 car = {
-        "asset_name": "masina",
-        "description": "o masina",
-        "asset_class": "21",
-        "analytical_account": "2133",
-        "deprecation_analytical_account": "2813",
-        "total_amount": 30000,
-        "depreciation_method": "straight_line",
-        "total_duration": 5,
-        "acquisition_date": "2021-09",
-        "recording_date": "2023-11"
+    "asset_name": "masina",
+    "description": "o masina",
+    "asset_class": "21",
+    "analytical_account": "2133",
+    "deprecation_analytical_account": "2813",
+    "total_amount": 30000,
+    "depreciation_method": "straight_line",
+    "total_duration": 5,
+    "acquisition_date": "2021-09",
+    "recording_date": "2023-11"
 }
+
 
 def test_create_asset(client):
     test_create_all_types(client)
@@ -646,8 +656,9 @@ def test_create_asset(client):
     assert data["analytical_account"] == "2133"
     assert data["deprecation_analytical_account"] == "2813"
 
-    #TODO fix this
+    # TODO fix this
     assert data["acquisition_date"] == "Wed, 01 Sep 2021 00:00:00 GMT"
+
 
 holding = {
     "owner_id": 1,
@@ -658,6 +669,8 @@ holding = {
     "analytical_account": "261",
     "aquisition_date": "2021-09-01",
 }
+
+
 def test_create_financial_holding(client):
     test_create_all_types(client)
     response = client.post("/1/financial-holdings/", json=holding)
@@ -669,6 +682,7 @@ def test_create_financial_holding(client):
     data = json.loads(response.data)
     assert len(data) == 1
 
+
 currency_reserve = {
     "currency_type": "EUR",
     "quantity": 10417,
@@ -676,6 +690,8 @@ currency_reserve = {
     "analytical_account": "5124",
     "acquisition_date": "2023-09-01",
 }
+
+
 def test_create_foreign_currency_reserve(client):
     test_create_all_types(client)
     response = client.post("/1/liquidity/reserve/", json=currency_reserve)
@@ -688,4 +704,28 @@ def test_create_foreign_currency_reserve(client):
     assert len(data) == 1
 
 
+init_balance = [{"balance_date": "2021-11",
+                 "analytical_account": "371",
+                 "initial_debit": 10,
+                 "initial_credit": 100,
+                 "debit": 100,
+                 "credit": 100
+                 },
+                {"balance_date": "2021-11",
+                 "analytical_account": "401",
+                 "initial_debit": 500,
+                 "initial_credit": 100,
+                 "debit": 350,
+                 "credit": 250
+                 }]
 
+
+def test_take_initial_balance(client):
+    test_create_all_types(client)
+    resp = client.post("/1/account-balance/", json=init_balance)
+    assert resp.status_code == 201
+
+    resp = client.get("/1/account-balance/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 2
