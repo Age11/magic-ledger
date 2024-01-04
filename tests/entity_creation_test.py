@@ -525,14 +525,16 @@ def test_create_inventory(client):
 
 invoice = {
     "inv_type": "invoice",
-    "number": "0001",
-    "serial": "FF",
+    "serial_number": "FF0001",
+
     "issue_date": "2020-01-01",
     "receive_date": "2020-01-01",
     "due_date": "2020-01-01",
-    "payment_status": "paid",
+
+    "payment_status": "due",
     "supplier_id": "2",
     "client_id": "1",
+
     "currency": "RON",
     "amount": "100",
     "issuer_name": "Valise Vasile",
@@ -559,17 +561,27 @@ item = {
     "quantity": 1,
     "measurement_unit": "cutie",
     "acquisition_price": 100,
+    "vat_rate": 19,
+    "in_analytical_account": "371",
+    "out_analytical_account": "707",
     "total_value": 100,
     "invoice_id": 1,
+    "inventory_id": 1
 }
 
 
 def test_create_item(client):
     test_create_inventory(client)
+
+    response = client.post("/1/invoices/", json=invoice)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/invoices/1"
+
+
     response = client.post("/1/inventory/1/items/", json=item)
     assert response.status_code == 201
     assert response.headers["location"] == "/1/inventory/1/items/1"
-    #
+
     response = client.get("/1/inventory/1/items/")
     assert response.status_code == 200
     data = json.loads(response.data)
@@ -582,7 +594,12 @@ def test_create_item(client):
     assert data["measurement_unit"] == "cutie"
     assert data["acquisition_price"] == 100
     assert data["inventory_id"] == 1
-    assert data["total_value"] == 100
+    assert data["total_value"] == 119
+    assert data["vat_rate"] == 19
+    assert data["vat_amount"] == 19
+    assert data["in_analytical_account"] == "371"
+    assert data["out_analytical_account"] == "707"
+
 
 
 transaction = {
@@ -689,10 +706,11 @@ currency_reserve = {
     "acquisition_price": 4.799,
     "analytical_account": "5124",
     "acquisition_date": "2023-09-01",
+    "roll_type": "cash"
 }
 
 
-def test_create_foreign_currency_reserve(client):
+def test_create_foreign_currency_roll(client):
     test_create_all_types(client)
     response = client.post("/1/liquidity/reserve/", json=currency_reserve)
     assert response.status_code == 201

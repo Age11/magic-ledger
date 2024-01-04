@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
+
 from magic_ledger import db
 
 from datetime import datetime
 from magic_ledger.misc.currency import Currency
 
+class RollType(Enum):
+    RECEIVABLE = "receivable"
+    PAYABLE = "payable"
+    CASH = "cash"
+
+
 @dataclass
-class ForeignCurrencyReserves(db.Model):
+class ForeignCurrencyRoll(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     owner_id = db.Column(
         db.Integer, db.ForeignKey("project.id"), nullable=False
@@ -19,8 +27,9 @@ class ForeignCurrencyReserves(db.Model):
     total_amount = db.Column(db.Float, nullable=False)
     analytical_account = db.Column(db.String(255), foreign_key="account_plan.account", nullable=False)
     acquisition_date = db.Column(db.DateTime, nullable=False)
+    roll_type = db.Column(db.Enum(RollType), nullable=False)
 
-    # add a constructor
+
     def __init__(
             self,
             owner_id,
@@ -28,6 +37,7 @@ class ForeignCurrencyReserves(db.Model):
             quantity,
             acquisition_price,
             analytical_account,
+            roll_type,
             acquisition_date=datetime.now().strftime("%Y-%m-%d"),
     ):
         self.owner_id = owner_id
@@ -38,11 +48,18 @@ class ForeignCurrencyReserves(db.Model):
         self.analytical_account = analytical_account
         self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m-%d")
 
+        if roll_type == "receivable":
+            self.roll_type = RollType.RECEIVABLE
+        elif roll_type == "payable":
+            self.roll_type = RollType.PAYABLE
+        elif roll_type == "cash":
+            self.roll_type = RollType.CASH
 
     def __getstate__(self):
         state = self.__dict__.copy()
         state["currency_type"] = state["currency_type"].value
         state["acquisition_date"] = state["acquisition_date"].strftime("%Y-%m-%d")
+        state["roll_type"] = state["roll_type"].value
         del state["_sa_instance_state"]
         return state
 

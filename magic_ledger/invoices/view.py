@@ -16,20 +16,19 @@ def invoices(project_id):
 
         # The type will determin weather we add something to the inventory or not
         inv_type = request.json["inv_type"]
-        number = request.json["number"]
-        serial = request.json["serial"]
+        serial_number = request.json["serial_number"]
         receive_date = request.json["receive_date"]
         due_date = request.json["due_date"]
         issue_date = request.json["issue_date"]
         payment_status = request.json["payment_status"]
         supplier_id = request.json["supplier_id"]
         client_id = request.json["client_id"]
-        amount = request.json["amount"]
         currency = request.json["currency"]
         issuer_name = request.json["issuer_name"]
+
         error = None
 
-        if not number:
+        if not serial_number:
             error = "Number is required."
         # TODO: add more validation
 
@@ -38,8 +37,7 @@ def invoices(project_id):
         else:
             new_invoice = Invoice(
                 inv_type=inv_type,
-                number=number,
-                serial=serial,
+                serial_number=serial_number,
                 receive_date=receive_date,
                 issue_date=issue_date,
                 due_date=due_date,
@@ -47,7 +45,6 @@ def invoices(project_id):
                 owner_id=project_id,
                 supplier_id=supplier_id,
                 client_id=client_id,
-                amount=amount,
                 currency=currency,
                 issuer_name=issuer_name,
             )

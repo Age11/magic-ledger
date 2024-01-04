@@ -5,7 +5,7 @@ from flask import Blueprint, flash, jsonify, request
 from magic_ledger import db
 from magic_ledger.assets.assets import Asset
 from magic_ledger.financial_holdings.financial_holdings import FinancialHoldings
-from magic_ledger.liquidity.ForeignCurrencyReserves import ForeignCurrencyReserves
+from magic_ledger.liquidity.ForeignCurrencyRoll import ForeignCurrencyRoll
 
 bp = Blueprint("liquidity_reserves", __name__, url_prefix="/<project_id>/liquidity")
 
@@ -22,14 +22,16 @@ def add_liquidity(project_id):
         acquisition_price = request.json["acquisition_price"]
         analytical_account = request.json["analytical_account"]
         acquisition_date = request.json["acquisition_date"]
+        roll_type = request.json["roll_type"]
 
-        currency_reserve = ForeignCurrencyReserves(
+        currency_reserve = ForeignCurrencyRoll(
             owner_id=owner_id,
             currency_type=currency_type,
             quantity=quantity,
             acquisition_price=acquisition_price,
             analytical_account=analytical_account,
             acquisition_date=acquisition_date,
+            roll_type=roll_type
         )
 
         db.session.add(currency_reserve)
@@ -40,5 +42,5 @@ def add_liquidity(project_id):
         response.autocorrect_location_header = False
         return response
     elif request.method == "GET":
-        res = ForeignCurrencyReserves.query.filter_by(owner_id=project_id).all()
+        res = ForeignCurrencyRoll.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in res])

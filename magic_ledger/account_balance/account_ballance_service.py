@@ -34,8 +34,8 @@ class AccountBalanceService:
             ).first()
             account.initial_debit += initial_debit
             account.initial_credit += initial_credit
-            account.current_debit += current_debit
-            account.current_debit += current_credit
+            account.debit += current_debit
+            account.debit += current_credit
             return account
         else:
             account = AccountBalance(
@@ -45,8 +45,8 @@ class AccountBalanceService:
             )
             account.initial_debit = initial_debit
             account.initial_credit = initial_credit
-            account.current_debit = current_debit
-            account.current_credit = current_credit
+            account.credit = current_debit
+            account.credit = current_credit
             return account
 
     def close_balance_accounts(self,project_id, balance_date):

@@ -1,0 +1,2 @@
+class LiquidityService:
+    pass

@@ -86,3 +86,13 @@ def get_transaction(project_id, transaction_id):
             AccountPlan.query.filter_by(account=inv["credit_account_id"]).first().acc_name
         )
         return jsonify(inv)
+
+@bp.route("/purchase", methods=("PUT",))
+def purchase(project_id):
+    pass
+
+@bp.route("/sale", methods=("PUT",))
+def sale(project_id):
+    pass
+
+

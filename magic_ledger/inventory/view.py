@@ -56,6 +56,10 @@ def inventory_items(project_id, inventory_id):
         measurement_unit = request.json["measurement_unit"]
         acquisition_price = request.json["acquisition_price"]
         invoice_id = request.json["invoice_id"]
+        vat_rate = request.json["vat_rate"]
+        in_analytical_account = request.json["in_analytical_account"]
+        out_analytical_account = request.json["out_analytical_account"]
+
 
         error = None
 
@@ -72,6 +76,9 @@ def inventory_items(project_id, inventory_id):
                 quantity=quantity,
                 measurement_unit=measurement_unit,
                 acquisition_price=acquisition_price,
+                vat_rate=vat_rate,
+                in_analytical_account=in_analytical_account,
+                out_analytical_account=out_analytical_account,
                 inventory_id=inventory_id,
                 invoice_id=invoice_id,
             )

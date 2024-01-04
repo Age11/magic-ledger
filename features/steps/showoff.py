@@ -56,4 +56,8 @@ def step_impl(context, month):
     response = mg.close_balance_for_month(month)
     assert response.status_code == 201
 
+@given("inregistrez tranzactii")
+def step_impl(context):
+    response = mg.add_transaction(context.table)
+
 

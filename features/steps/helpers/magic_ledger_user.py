@@ -226,3 +226,21 @@ class MagicLedgerUser:
         assert response.status_code == 201
         return response
 
+    def add_transaction(self, context_table):
+        for row in context_table:
+            req = {
+                "debit_account": row["cont_debit"],
+                "credit_account": row["cont_credit"],
+                "debit_amount": float(row["suma_debit"]),
+                "credit_amount": float(row["suma_credit"]),
+                "transaction_date": row["data"],
+                "details": row["descriere"],
+                "currency": "RON",
+                "owner_id": self.selected_project
+             }
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/transactions/", json=req
+            )
+            assert response.status_code == 201
+        return True
+
