@@ -38,6 +38,8 @@ def organizations(project_id):
         account = request.json["account"]
         details = request.json["details"]
 
+        vat_mode = request.json["vat_mode"]
+
         error = None
 
         if not name:
@@ -73,6 +75,7 @@ def organizations(project_id):
                 owner_id=owner_id,
                 address_id=address.id,
                 banking_details_id=banking_details.id,
+                vat_mode=vat_mode
             )
             db.session.add(new_organization)
             db.session.commit()
@@ -102,6 +105,7 @@ def create_supplier(project_id):
         caen_code = request.json["caen_code"]
         org_type = "supplier"
         owner_id = project_id
+        vat_mode = request.json["vat_mode"]
 
         # Address
         country = request.json["country"]
@@ -152,6 +156,7 @@ def create_supplier(project_id):
                 owner_id=owner_id,
                 address_id=address.id,
                 banking_details_id=banking_details.id,
+                vat_mode=vat_mode
             )
             db.session.add(new_organization)
             db.session.commit()
@@ -181,6 +186,7 @@ def create_client(project_id):
         caen_code = request.json["caen_code"]
         org_type = "client"
         owner_id = project_id
+        vat_mode = request.json["vat_mode"]
 
         # Address
         country = request.json["country"]
@@ -231,6 +237,7 @@ def create_client(project_id):
                 owner_id=owner_id,
                 address_id=address.id,
                 banking_details_id=banking_details.id,
+                vat_mode=vat_mode
             )
             db.session.add(new_organization)
             db.session.commit()
@@ -274,6 +281,7 @@ def create_affiliate(project_id):
         # Banking details
         account = request.json["account"]
         details = request.json["details"]
+        vat_mode = request.json["vat_mode"]
 
         error = None
 
@@ -310,6 +318,7 @@ def create_affiliate(project_id):
                 owner_id=owner_id,
                 address_id=address.id,
                 banking_details_id=banking_details.id,
+                vat_mode=vat_mode
             )
             db.session.add(new_organization)
             db.session.commit()

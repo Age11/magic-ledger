@@ -16,15 +16,15 @@ def projects():
     if request.method == "POST":
         # Project info
         project_name = request.json["project_name"]
-        vat_mode = request.json["vat_mode"]
         status = "active"
+        caen_code = request.json["caen_code"]
 
         # Organization info
         org_name = request.json["organization_name"]
         cif = request.json["cif"]
         nrc = request.json["nrc"]
-        caen_code = request.json["caen_code"]
         org_type = "project"
+        vat_mode = request.json["vat_mode"]
 
         # Address info
         country = request.json["country"]
@@ -50,7 +50,6 @@ def projects():
         else:
             new_project = Project(
                 project_name=project_name,
-                vat_mode=vat_mode,
                 status=status,
                 caen_code=caen_code,
             )
@@ -83,6 +82,7 @@ def projects():
                 owner_id=new_project.id,
                 address_id=address.id,
                 banking_details_id=banking_details.id,
+                vat_mode=vat_mode,
             )
             db.session.add(new_organization)
             db.session.commit()

@@ -31,7 +31,6 @@ def test_create_project(client):
     data = json.loads(response.data)
     assert data["id"] == 1
     assert data["project_name"] == "ABC"
-    assert data["vat_mode"] == "on_invoice"
     assert data["status"] == "active"
     assert data["creation_date"] is not None
 
@@ -60,6 +59,7 @@ organization_AAA = {
     "email": "contact@carmenimpextm.com",
     "account": "RO49AAAA1B31007593840000",
     "details": "AAAA BANK",
+    "vat_mode": "on_invoice",
 }
 
 
@@ -165,6 +165,7 @@ organization_AAB = {
     "email": "contact@amst.com",
     "account": "RO49AAAA1B31006591820999",
     "details": "AAAA BANK",
+    "vat_mode": "on_invoice",
 }
 
 
