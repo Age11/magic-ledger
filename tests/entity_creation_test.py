@@ -758,3 +758,33 @@ def test_close_balance(client):
     assert resp.status_code == 200
     data = json.loads(resp.data)
     assert len(data) == 4
+
+exchange_rate1 = {
+    "currency_type": "EUR",
+    "value_in_ref_currency": 4.799,
+    "reference_currency": "RON",
+    "date": "2023-09-01"
+}
+
+exchange_rate2 = {
+    "currency_type": "EUR",
+    "value_in_ref_currency": 4.97,
+    "reference_currency": "RON",
+    "date": "2023-09-01"
+}
+
+def test_exchange_rate_entr(client):
+    r1 = client.post("/exchange/", json=exchange_rate1)
+    assert r1.status_code == 201
+    assert r1.headers["location"] == "/exchange/1"
+
+    r2 = client.post("/exchange/", json=exchange_rate2)
+    assert r2.status_code == 201
+    assert r2.headers["location"] == "/exchange/2"
+
+    resp = client.get("/exchange/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 2
+
+

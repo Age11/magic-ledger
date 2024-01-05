@@ -87,6 +87,9 @@ def create_app(test_config=None):
 
     app.register_blueprint(account_balance.bp)
 
+    from magic_ledger import exchange
+    app.register_blueprint(exchange.bp)
+
     return app
 
 

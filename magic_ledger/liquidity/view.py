@@ -1,13 +1,11 @@
 import logging
 
-from flask import Blueprint, flash, jsonify, request
+from flask import Blueprint, jsonify, request
 
 from magic_ledger import db
-from magic_ledger.assets.assets import Asset
-from magic_ledger.financial_holdings.financial_holdings import FinancialHoldings
 from magic_ledger.liquidity.ForeignCurrencyRoll import ForeignCurrencyRoll
 
-bp = Blueprint("liquidity_reserves", __name__, url_prefix="/<project_id>/liquidity")
+bp = Blueprint("liquidity", __name__, url_prefix="/<project_id>/liquidity")
 
 
 @bp.route("/reserve/", methods=("GET", "POST"))
@@ -44,3 +42,5 @@ def add_liquidity(project_id):
     elif request.method == "GET":
         res = ForeignCurrencyRoll.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in res])
+
+
