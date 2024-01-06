@@ -40,11 +40,10 @@ class MagicLedgerUser:
     def create_supplier(self, context_table):
         for row in context_table:
             req = {
-                "name": row["organizatie"],
+                "organization_name": row["organizatie"],
                 "cif": row["cif"],
                 "nrc": row["nrc"],
                 "vat_mode": "on_invoice",
-                "caen_code": row["cod_caen"],
                 "status": "active",
                 "org_type": row["tip"],
                 "country": row["tara"],
@@ -67,11 +66,10 @@ class MagicLedgerUser:
     def create_client(self, context_table):
         for row in context_table:
             req = {
-                "name": row["organizatie"],
+                "organization_name": row["organizatie"],
                 "cif": row["cif"],
                 "nrc": row["nrc"],
                 "vat_mode": "on_invoice",
-                "caen_code": row["cod_caen"],
                 "status": "active",
                 "org_type": row["tip"],
                 "country": row["tara"],
@@ -95,9 +93,8 @@ class MagicLedgerUser:
         for row in context_table:
             req = {
 
-                "name": row["nume"],
-                "middle_name": row["prenume1"],
-                "surname": row["prenume"],
+                "agent_name": row["nume"],
+                "last_name": row["prenume"],
                 "cnp": row["cnp"],
                 "country": row["tara"],
                 "state_or_province": row["judet"],
@@ -120,11 +117,10 @@ class MagicLedgerUser:
     def create_affiliate_organization(self, context_table):
         for row in context_table:
             req = {
-                "name": row["organizatie"],
+                "organization_name": row["organizatie"],
                 "cif": row["cif"],
                 "nrc": row["nrc"],
                 "vat_mode": "on_invoice",
-                "caen_code": row["cod_caen"],
                 "status": "active",
                 "org_type": row["tip"],
                 "country": row["tara"],
@@ -186,11 +182,12 @@ class MagicLedgerUser:
         for row in context_table:
             req = {
                 "owner_id": self.selected_project,
-                "currency_type": row["moneda"],
+                "currency": row["moneda"],
                 "quantity": int(row["cantitate"]),
                 "acquisition_price": float(row["pret_achizitie"]),
                 "analytical_account": row["cont_analitic"],
                 "acquisition_date": row["data_achizitie"],
+                "roll_type": row["tip_rulaj_valuta"],
             }
 
             response = self.client.post(

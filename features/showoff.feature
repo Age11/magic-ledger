@@ -14,8 +14,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #     de S.C.„AAA” SA, cumpărate pentru 500 lei/bucata și evidențiate în contul 261
 
     * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155 | contact@aaa.com | facturare | 6201     | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
+      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155 | contact@aaa.com | facturare | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
 
     * adaug "actiuni" detinute la entitatea afiliata:
       | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
@@ -30,16 +30,16 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #     cumpărate pentru 50 lei/bucata; conturile contabile utilizate sunt 5081/ BBB și 5081/CCC.
 
     * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882 | contact@bbb.com | facturare | 771      | Romania | Bucuresti | Bucuresti | Zambilelor | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
+      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„BBB” SA | 2255048 | J42/111/2006 | afiliat | 0763999882 | contact@bbb.com | facturare | Romania | Bucuresti | Bucuresti | Zambilelor | 11    | 031183     | RO50PORL777777286982666 | Zarzavat Bank |
 
     * adaug "titluri de plasament" detinute la entitatea afiliata:
       | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
       | S.C.„BBB” SA | 3              | 100       | 20             | 5081          | 2022-11-01     |
 
     * creez o entitate afiliata:
-      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | 9003     | Romania | Bucuresti | Bucuresti | Liliacului | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
+      | organizatie  | cif     | nrc          | tip     | telefon     | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | S.C.„CCC” SA | 4589721 | J29/235/1989 | afiliat | 07442236666 | contact@ccc.com | facturare | Romania | Bucuresti | Bucuresti | Liliacului | 76B   | 031183     | RO50PORL666666286980066 | Zarzavat Bank |
 
     * adaug "titluri de plasament" detinute la entitatea afiliata:
       | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
@@ -55,9 +55,9 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | program informatic | 208   | 208           | 2808                     | liniara        | 3600           | 36               | 2021-04        | 2023-11           | program informatic gestiune depozit  |
       | program informatic | 214   | 214           | 2814                     | liniara        | 4800           | 48               | 2023-06        | 2023-11           | mobilier de birou                    |
 
-    * actualizez rezerva de valuta:
-      | moneda | cantitate | pret_achizitie | cont_analitic | data_achizitie |
-      | EUR    | 10417     | 4.799          | 5124          | 2023-09-01     |
+    * actualizez rulaj valutar:
+      | moneda | cantitate | pret_achizitie | cont_analitic | data_achizitie | tip_rulaj_valuta |
+      | EUR    | 10417     | 4.799          | 5124          | 2023-09-01     | cash             |
 
     * preiau balanta de verificare pentru luna "2023-11":
       | cont | debit_initial | credit_initial | debit      | credit    |
@@ -141,14 +141,14 @@ Functionalitate:  Inregistrari pentru luna decembrie
     * inchid luna "2023-11"
 
     * creez un furnizor:
-      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | cod_caen | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
-      | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | 4511     | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
+      | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
     * creez un client:
-      | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | cod_caen | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-      | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | 6611     | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
+      | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
     * creez un client agent:
-      | nume    | prenume1 | prenume | telefon    | cnp     | tara    | judet   | oras   | strada | numar | cod_postal | email            | cont                     | detalii  |
-      | Ionescu | -        | Emilian | 0721666555 | Emilian | Romania | Prahova | Sinaia | Strazi | 99    | 106100     | ionemi@email.com | RO49AAAA1B31007593840001 | AAA BANK |
+      | nume    | prenume | telefon    | cnp     | tara    | judet   | oras   | strada | numar | cod_postal | email            | cont                     | detalii  |
+      | Ionescu | Emilian | 0721666555 | Emilian | Romania | Prahova | Sinaia | Strazi | 99    | 106100     | ionemi@email.com | RO49AAAA1B31007593840001 | AAA BANK |
 
 
 #     02 decembrie Se vinde domnului Ionescu Emilian, CNP 1790718341701, mijlocul de transport cu 15.000 lei,
@@ -163,24 +163,24 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #     lei/euro;
 
     * creez un furnizor:
-      | organizatie | cif | nrc | tip      | telefon      | email             | mod_tva   | cod_caen | tara      | judet | oras | strada | numar | cod_postal | cont_bancar | detalii               |
-      | „BaBeB”     | -   | -   | supplier | 02 9876 5432 | contact@bebebe.au | facturare | 6611     | Australia | -     | -    | -      | -     | -          | 062-001     | Zarzavat Bank BSB COD |
+      | organizatie | cif | nrc | tip      | telefon      | email             | mod_tva   | tara      | judet | oras | strada | numar | cod_postal | cont_bancar | detalii               |
+      | „BaBeB”     | -   | -   | supplier | 02 9876 5432 | contact@bebebe.au | facturare | Australia | -     | -    | -      | -     | -          | 062-001     | Zarzavat Bank BSB COD |
 
-    * inregistrez import de marfuri
+#    * inregistrez import de marfuri
 
 
-    * inregistrez tranzactii:
-      | data       | document                 | descriere                      | cont_debit | cont_credit | suma_debit | suma_credit |
-
-      | 2023-07-12 | Factura furnizor extern  | Înregistrare achiziție mărfuri | 371        | 401         | 24750.00   | 24750.00    |
-      | 2023-07-12 | Factura transport extern | Înregistrare transport         | 371        | 401         | 4950.00    | 4950.00     |
-
-      | 2023-07-12 | Document                 | Inregistrare taxe vamale       | 371        | 446         | 3000.00    | 3000.00     |
-      | 2023-07-12 | Document                 | Inregistrare comision vamal    | 371        | 446         | 150.00     | 150.00      |
-      | 2023-07-12 |                          | Inregistrare TVA import vamal  | 4426       | 446         | 6298.50    | 6298.50     |
-      | 2023-07-12 | Ordin de plată           | Plata datorii vamale           | 446        | 5121        | 3000.00    | 3000.00     |
-      | 2023-07-12 | Ordin de plată           | Plata comision vamal           | 446        | 5121        | 150.00     | 150.00      |
-      | 2023-07-12 | Ordin de plată           | Plata TVA import               | 446        | 5121        | 6298.50    | 6298.50     |
+#    * inregistrez tranzactii:
+#      | data       | document                 | descriere                      | cont_debit | cont_credit | suma_debit | suma_credit |
+#
+#      | 2023-07-12 | Factura furnizor extern  | Înregistrare achiziție mărfuri | 371        | 401         | 24750.00   | 24750.00    |
+#      | 2023-07-12 | Factura transport extern | Înregistrare transport         | 371        | 401         | 4950.00    | 4950.00     |
+#
+#      | 2023-07-12 | Document                 | Inregistrare taxe vamale       | 371        | 446         | 3000.00    | 3000.00     |
+#      | 2023-07-12 | Document                 | Inregistrare comision vamal    | 371        | 446         | 150.00     | 150.00      |
+#      | 2023-07-12 |                          | Inregistrare TVA import vamal  | 4426       | 446         | 6298.50    | 6298.50     |
+#      | 2023-07-12 | Ordin de plată           | Plata datorii vamale           | 446        | 5121        | 3000.00    | 3000.00     |
+#      | 2023-07-12 | Ordin de plată           | Plata comision vamal           | 446        | 5121        | 150.00     | 150.00      |
+#      | 2023-07-12 | Ordin de plată           | Plata TVA import               | 446        | 5121        | 6298.50    | 6298.50     |
 
     * inregistrez tranzactii:
       | data       | document                          | descriere                                          | cont_debit | cont_credit | suma_debit | suma_credit |
