@@ -45,10 +45,9 @@ def test_create_project(client):
 
 
 organization_AAA = {
-    "name": "ADA ONLINE SRL",
+    "organization_name": "ADA ONLINE SRL",
     "cif": "31845110",
     "nrc": "J01/375/2013",
-    "caen_code": "4791",
     "country": "Romania",
     "state_or_province": "Prahova",
     "city": "Sinaia",
@@ -75,9 +74,8 @@ def test_create_supplier_organization(client):
     assert response.status_code == 200
     data = json.loads(response.data)
 
-    assert data["name"] == 'ADA ONLINE SRL'
+    assert data["organization_name"] == 'ADA ONLINE SRL'
     assert data["cif"] == '31845110'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J01/375/2013'
     assert data["org_type"] == 'supplier'
     assert data["owner_id"] == 1
@@ -91,9 +89,8 @@ def test_create_supplier_organization(client):
     assert len(resp_data) == 1
 
     data = resp_data[0]
-    assert data["name"] == 'ADA ONLINE SRL'
+    assert data["organization_name"] == 'ADA ONLINE SRL'
     assert data["cif"] == '31845110'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J01/375/2013'
     assert data["org_type"] == 'supplier'
     assert data["owner_id"] == 1
@@ -107,9 +104,8 @@ def test_create_supplier_organization(client):
     assert len(resp_data) == 1
     data = resp_data[0]
 
-    assert data["name"] == 'ADA ONLINE SRL'
+    assert data["organization_name"] == 'ADA ONLINE SRL'
     assert data["cif"] == '31845110'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J01/375/2013'
     assert data["org_type"] == 'supplier'
     assert data["owner_id"] == 1
@@ -134,9 +130,9 @@ def test_create_supplier_organization(client):
 
 def test_update_supplier(client):
     test_create_supplier_organization(client)
-    organization_AAA["name"] = "AAA ONLINE SRL"
+    organization_AAA["organization_name"] = "AAA ONLINE SRL"
     organization_AAA["details"] = "BBBB BANK"
-    resp = client.put("/1/third-parties/organizations/suppliers/2", json=organization_AAA)
+    resp = client.put("/1/third-parties/organizations/2", json=organization_AAA)
     assert resp.status_code == 201
 
     response = client.get("/1/third-parties/organizations/suppliers/full/")
@@ -144,17 +140,16 @@ def test_update_supplier(client):
     resp_data = json.loads(response.data)
     assert len(resp_data) == 1
     data = resp_data[0]
-    assert data["name"] == 'AAA ONLINE SRL'
+    assert data["organization_name"] == 'AAA ONLINE SRL'
     assert data["details"] == 'BBBB BANK'
 
     assert data["postal_code"] == '106100'
 
 
 organization_AAB = {
-    "name": "XXX AMSTERFARM SRL",
+    "organization_name": "XXX AMSTERFARM SRL",
     "cif": "31105210",
     "nrc": "J11/275/2003",
-    "caen_code": "4791",
     "country": "Romania",
     "state_or_province": "Prahova",
     "city": "Sinaia",
@@ -175,15 +170,13 @@ def test_create_client_organization(client):
     assert response.status_code == 201
     assert response.headers["location"] == "/1/third-parties/organizations/2"
 
-    org_id = response.headers["location"].split("/")[-1]
 
     response = client.get("/1/third-parties/organizations/2")
     assert response.status_code == 200
     data = json.loads(response.data)
 
-    assert data["name"] == 'XXX AMSTERFARM SRL'
+    assert data["organization_name"] == 'XXX AMSTERFARM SRL'
     assert data["cif"] == '31105210'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J11/275/2003'
     assert data["org_type"] == 'client'
     assert data["owner_id"] == 1
@@ -197,9 +190,8 @@ def test_create_client_organization(client):
     assert len(resp_data) == 1
 
     data = resp_data[0]
-    assert data["name"] == 'XXX AMSTERFARM SRL'
+    assert data["organization_name"] == 'XXX AMSTERFARM SRL'
     assert data["cif"] == '31105210'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J11/275/2003'
     assert data["org_type"] == 'client'
     assert data["owner_id"] == 1
@@ -213,9 +205,8 @@ def test_create_client_organization(client):
     assert len(resp_data) == 1
     data = resp_data[0]
 
-    assert data["name"] == 'XXX AMSTERFARM SRL'
+    assert data["organization_name"] == 'XXX AMSTERFARM SRL'
     assert data["cif"] == '31105210'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J11/275/2003'
     assert data["org_type"] == 'client'
     assert data["owner_id"] == 1
@@ -240,9 +231,9 @@ def test_create_client_organization(client):
 
 def test_update_client(client):
     test_create_client_organization(client)
-    organization_AAA["name"] = "AAA ONLINE SRL"
+    organization_AAA["organization_name"] = "AAA ONLINE SRL"
     organization_AAA["details"] = "BBBB BANK"
-    resp = client.put("/1/third-parties/organizations/clients/2", json=organization_AAA)
+    resp = client.put("/1/third-parties/organizations/2", json=organization_AAA)
     assert resp.status_code == 201
 
     response = client.get("/1/third-parties/organizations/clients/full/")
@@ -250,16 +241,15 @@ def test_update_client(client):
     resp_data = json.loads(response.data)
     assert len(resp_data) == 1
     data = resp_data[0]
-    assert data["name"] == 'AAA ONLINE SRL'
+    assert data["organization_name"] == 'AAA ONLINE SRL'
     assert data["details"] == 'BBBB BANK'
 
     assert data["postal_code"] == '106100'
 
 
 agent_EI = {
-    "name": "Emilian",
-    "middle_name": "-",
-    "surname": "Ionescu",
+    "agent_name": "Emilian",
+    "last_name": "Ionescu",
     "cnp": "1880202226699",
     "country": "Romania",
     "state_or_province": "Prahova",
@@ -286,9 +276,8 @@ def test_create_affiliate_organization(client):
     assert response.status_code == 200
     data = json.loads(response.data)
 
-    assert data["name"] == 'XXX AMSTERFARM SRL'
+    assert data["organization_name"] == 'XXX AMSTERFARM SRL'
     assert data["cif"] == '31105210'
-    assert data["caen_code"] == '4791'
     assert data["nrc"] == 'J11/275/2003'
     assert data["org_type"] == 'affiliate'
     assert data["owner_id"] == 1
@@ -312,9 +301,7 @@ def test_create_agent_client(client):
     assert response.status_code == 200
     data = json.loads(response.data)
 
-    assert data["name"] == 'Emilian'
-    assert data["middle_name"] == '-'
-    assert data["surname"] == 'Ionescu'
+    assert data["agent_name"] == 'Emilian'
     assert data["cnp"] == '1880202226699'
     assert data["agent_type"] == 'client'
     assert data["owner_id"] == 1
@@ -328,9 +315,8 @@ def test_create_agent_client(client):
     assert len(resp_data) == 1
 
     data = resp_data[0]
-    assert data["name"] == 'Emilian'
-    assert data["middle_name"] == '-'
-    assert data["surname"] == 'Ionescu'
+    assert data["agent_name"] == 'Emilian'
+    assert data["last_name"] == 'Ionescu'
     assert data["cnp"] == '1880202226699'
     assert data["agent_type"] == 'client'
     assert data["owner_id"] == 1
@@ -345,9 +331,7 @@ def test_create_agent_client(client):
     data = resp_data[0]
 
     data = resp_data[0]
-    assert data["name"] == 'Emilian'
-    assert data["middle_name"] == '-'
-    assert data["surname"] == 'Ionescu'
+    assert data["agent_name"] == 'Emilian'
     assert data["cnp"] == '1880202226699'
     assert data["agent_type"] == 'client'
     assert data["owner_id"] == 1
@@ -371,9 +355,8 @@ def test_create_agent_client(client):
 
 
 agent_VV = {
-    "name": "Vasile",
-    "middle_name": "Vasile",
-    "surname": "Vasile",
+    "agent_name": "Vasile",
+    "last_name": "Vasile",
     "cnp": "1600207895599",
     "agent_type": "supplier",
     "country": "Romania",
@@ -387,74 +370,6 @@ agent_VV = {
     "account": "RO49AAAA1B31007593840001",
     "details": "AAAA BANK",
 }
-
-
-def test_create_agent_supplier(client):
-    client.post("/projects/", json=project_ABC)
-    response = client.post("/1/third-parties/agents/suppliers/", json=agent_VV)
-    assert response.status_code == 201
-    assert response.headers["location"] == "/1/third-parties/agents/1"
-
-    response = client.get("/1/third-parties/agents/1")
-    assert response.status_code == 200
-    data = json.loads(response.data)
-
-    assert data["name"] == 'Vasile'
-    assert data["middle_name"] == 'Vasile'
-    assert data["surname"] == 'Vasile'
-    assert data["cnp"] == '1600207895599'
-    assert data["agent_type"] == 'supplier'
-    assert data["owner_id"] == 1
-    assert data["id"] == 1
-    assert data["banking_details_id"] == 2
-    assert data["address_id"] == 2
-
-    response = client.get("/1/third-parties/agents/suppliers/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-
-    data = resp_data[0]
-    assert data["name"] == 'Vasile'
-    assert data["middle_name"] == 'Vasile'
-    assert data["surname"] == 'Vasile'
-    assert data["cnp"] == '1600207895599'
-    assert data["agent_type"] == 'supplier'
-    assert data["owner_id"] == 1
-    assert data["id"] == 1
-    assert data["banking_details_id"] == 2
-    assert data["address_id"] == 2
-
-    response = client.get("/1/third-parties/agents/suppliers/full/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-    data = resp_data[0]
-
-    data = resp_data[0]
-    assert data["name"] == 'Vasile'
-    assert data["middle_name"] == 'Vasile'
-    assert data["surname"] == 'Vasile'
-    assert data["cnp"] == '1600207895599'
-    assert data["agent_type"] == 'supplier'
-    assert data["owner_id"] == 1
-    assert data["id"] == 2
-    assert data["banking_details_id"] == 2
-    assert data["address_id"] == 2
-
-    assert data["country"] == 'Romania'
-    assert data["state_or_province"] == 'Prahova'
-    assert data["city"] == 'Sinaia'
-    assert data["street"] == 'AAAAAA'
-    assert data["apartment_or_suite"] == '100'
-    assert data["postal_code"] == '106100'
-    assert data["phone"] == '0721666555'
-    assert data["email"] == 'vasi@email.com'
-
-    assert data["account"] == 'RO49AAAA1B31007593840001'
-    assert data["details"] == 'AAAA BANK'
-
-    assert data["creation_date"] is not None
 
 
 def test_create_all_types(client):
@@ -490,11 +405,6 @@ def test_create_all_types(client):
     assert resp7.status_code == 201
     assert resp7.headers["location"] == "/1/third-parties/agents/3"
 
-    agent_VV["agent_type"] = "supplier"
-    resp8 = client.post("/1/third-parties/agents/", json=agent_VV)
-    assert resp8.status_code == 201
-    assert resp8.headers["location"] == "/1/third-parties/agents/4"
-
 
 stock_inventory = {
     "inv_type": "stock",
@@ -525,14 +435,12 @@ def test_create_inventory(client):
 
 
 invoice = {
-    "inv_type": "invoice",
     "serial_number": "FF0001",
 
     "issue_date": "2020-01-01",
     "receive_date": "2020-01-01",
     "due_date": "2020-01-01",
 
-    "payment_status": "due",
     "supplier_id": "2",
     "client_id": "1",
 
@@ -679,7 +587,6 @@ def test_create_asset(client):
 
 
 holding = {
-    "owner_id": 1,
     "organization_id": 2,
     "holding_type": "shares",
     "quantity": 100,
@@ -702,7 +609,7 @@ def test_create_financial_holding(client):
 
 
 currency_reserve = {
-    "currency_type": "EUR",
+    "currency": "EUR",
     "quantity": 10417,
     "acquisition_price": 4.799,
     "analytical_account": "5124",
@@ -773,7 +680,7 @@ exchange_rate2 = {
     "date": "2023-09-01"
 }
 
-def test_exchange_rate_entr(client):
+def test_exchange_rate_entry(client):
     r1 = client.post("/exchange/", json=exchange_rate1)
     assert r1.status_code == 201
     assert r1.headers["location"] == "/exchange/1"

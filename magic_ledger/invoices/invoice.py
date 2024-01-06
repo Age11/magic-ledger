@@ -20,6 +20,7 @@ class Invoice(db.Model):
     owner_id = db.Column(
         db.Integer, db.ForeignKey("project.id"), nullable=False
     )
+    document_type = db.Column(db.String(255), nullable=False)
     serial_number = db.Column(db.String(255), nullable=False)
     issuer_name = db.Column(db.String(255))
 
@@ -27,12 +28,12 @@ class Invoice(db.Model):
     receive_date = db.Column(db.DateTime, nullable=False)
 
     due_date = db.Column(db.DateTime, nullable=False)
-    payment_status = db.Column(db.Enum(PaymentStatus), nullable=False)
+    payment_status = db.Column(db.String(25), nullable=False)
 
     supplier_id = db.Column(db.Integer, db.ForeignKey("organization.id"))
     client_id = db.Column(db.Integer, db.ForeignKey("organization.id"), nullable=False)
 
-    currency = db.Column(db.Enum(Currency), nullable=False)
+    currency = db.Column(db.String(25), nullable=False)
 
     value = db.Column(db.Float, nullable=False)
     vat_amount = db.Column(db.Float, nullable=False)
@@ -40,7 +41,7 @@ class Invoice(db.Model):
 
     def __init__(
             self,
-            inv_type,
+            document_type,
             serial_number,
             receive_date,
             due_date,
@@ -55,7 +56,7 @@ class Invoice(db.Model):
             vat_amount=0,
 
     ):
-        self.inv_type = inv_type
+        self.document_type = document_type
         self.serial_number = serial_number
         self.receive_date = datetime.strptime(receive_date, "%Y-%m-%d")
         self.due_date = datetime.strptime(due_date, "%Y-%m-%d")
@@ -69,29 +70,12 @@ class Invoice(db.Model):
         self.vat_amount = vat_amount
         self.total_value = self.value + self.vat_amount
 
-        if payment_status == "paid":
-            self.payment_status = PaymentStatus.PAID
-        elif payment_status == "due":
-            self.payment_status = PaymentStatus.DUE
-
-        if currency == "RON":
-            self.currency = Currency.RON
-        elif currency == "EUR":
-            self.currency = Currency.EUR
+        self.payment_status = payment_status
+        self.currency = currency
 
     def __getstate__(self):
         state = self.__dict__.copy()
         del state["_sa_instance_state"]
-        if state["payment_status"] == PaymentStatus.PAID:
-            state["payment_status"] = "paid"
-        elif state["payment_status"] == PaymentStatus.DUE:
-            state["payment_status"] = "due"
-
-        if state["currency"] == Currency.RON:
-            state["currency"] = "RON"
-        elif state["currency"] == Currency.EUR:
-            state["currency"] = "EUR"
-
         state["receive_date"] = state["receive_date"].strftime("%Y-%m-%d")
         state["due_date"] = state["due_date"].strftime("%Y-%m-%d")
         state["issue_date"] = state["issue_date"].strftime("%Y-%m-%d")

@@ -22,3 +22,8 @@ class BankingDetails(db.Model):
 
     def __repr__(self):
         return str(self.__getstate__())
+
+    def update_fields(self, var):
+        for key, value in var.items():
+            setattr(self, key, value)
+

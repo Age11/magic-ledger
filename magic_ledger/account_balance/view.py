@@ -1,15 +1,16 @@
 import logging
+from datetime import datetime
 
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
 from magic_ledger.account_balance.account_balance import AccountBalance
-from magic_ledger.account_balance.account_ballance_service import AccountBalanceService
+import magic_ledger.account_balance.account_ballance_service as abs
 from magic_ledger.misc.clock import CLOCK
 
 bp = Blueprint("account_balance", __name__, url_prefix="/<project_id>/account-balance")
 
-abs = AccountBalanceService()
+
 @bp.route("/", methods=("GET", "POST"))
 def account_balance(project_id):
     if request.method == "POST":
@@ -23,24 +24,12 @@ def account_balance(project_id):
         # TODO: add more validation
 
         for balance in request.json:
-            analytical_account = balance["analytical_account"]
-            initial_debit = balance["initial_debit"]
-            initial_credit = balance["initial_credit"]
-            debit = balance["debit"]
-            credit = balance["credit"]
-            balance_date = balance["balance_date"]
-
+            balance["owner_id"] = project_id
+            # TODO this is the only date I pass as date instead of string. Fix it. You need to add a way to get date as String easily
+            balance["balance_date"] = datetime.strptime(balance["balance_date"], "%Y-%m")
             account = abs.update_account_balance(
-                project_id=project_id,
-                analytical_account=analytical_account,
-                initial_debit=initial_debit,
-                initial_credit=initial_credit,
-                current_debit=debit,
-                current_credit=credit,
-                balance_date=balance_date,
+                **balance
             )
-            db.session.add(account)
-        db.session.commit()
 
         response = jsonify()
         response.status_code = 201
@@ -51,6 +40,7 @@ def account_balance(project_id):
         balance = AccountBalance.query.filter_by(owner_id=project_id).all()
         return jsonify([row.__getstate__() for row in balance])
 
+
 @bp.route("/close/<balance_date>", methods=("GET", "POST"))
 def close_month(project_id, balance_date):
     if request.method == "POST":
@@ -59,4 +49,3 @@ def close_month(project_id, balance_date):
         response = jsonify()
         response.status_code = 201
         return response
-

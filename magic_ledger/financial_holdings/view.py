@@ -4,6 +4,7 @@ from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
 from magic_ledger.assets.assets import Asset
+from magic_ledger.financial_holdings import financial_holdings_service
 from magic_ledger.financial_holdings.financial_holdings import FinancialHoldings
 
 bp = Blueprint("financial_holdings", __name__, url_prefix="/<project_id>/financial-holdings")
@@ -13,25 +14,10 @@ bp = Blueprint("financial_holdings", __name__, url_prefix="/<project_id>/financi
 def financial_holdings(project_id):
     if request.method == "POST":
         logging.info("""Creating financial holding with the following data:""")
+        request.json["owner_id"] = project_id
         logging.info(request.json)
 
-        owner_id = project_id
-        organization_id = request.json["organization_id"]
-        holding_type = request.json["holding_type"]
-        quantity = request.json["quantity"]
-        aquisition_price = request.json["aquisition_price"]
-        analytical_account = request.json["analytical_account"]
-        aquisition_date = request.json["aquisition_date"]
-
-        financial_holding = FinancialHoldings(
-            owner_id=owner_id,
-            organization_id=organization_id,
-            holding_type=holding_type,
-            quantity=quantity,
-            aquisition_price=aquisition_price,
-            analytical_account=analytical_account,
-            aquisition_date=aquisition_date,
-        )
+        financial_holding = financial_holdings_service.create_financial_holding(request.json)
 
         db.session.add(financial_holding)
         db.session.commit()

@@ -15,7 +15,7 @@ class AccountBalance(db.Model):
     debit = db.Column(db.Float, nullable=False)
     credit = db.Column(db.Float, nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
-    balance_date = db.Column(db.String(10), nullable=False)
+    balance_date = db.Column(db.DateTime, nullable=False)
     total_debit = db.Column(db.Float, nullable=False)
     total_credit = db.Column(db.Float, nullable=False)
     final_debit_balance = db.Column(db.Float, nullable=False)
@@ -56,6 +56,7 @@ class AccountBalance(db.Model):
 
     def __getstate__(self):
         state = self.__dict__.copy()
+        state["balance_date"] = state["balance_date"].strftime("%Y-%m")
         del state["_sa_instance_state"]
         return state
 

@@ -18,15 +18,15 @@ class Addressbook(db.Model):
     email = db.Column(db.String(255))
 
     def __init__(
-        self,
-        country,
-        state_or_province,
-        city,
-        street,
-        apartment_or_suite,
-        postal_code,
-        phone,
-        email,
+            self,
+            country,
+            state_or_province,
+            city,
+            street,
+            apartment_or_suite,
+            postal_code,
+            phone,
+            email,
     ):
         self.country = country
         self.state_or_province = state_or_province
@@ -44,3 +44,7 @@ class Addressbook(db.Model):
 
     def __repr__(self):
         return str(self.__getstate__())
+
+    def update_fields(self, var):
+        for key, value in var.items():
+            setattr(self, key, value)

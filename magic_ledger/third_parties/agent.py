@@ -16,10 +16,9 @@ class AgentTypeEnum(Enum):
 @dataclass
 class Agent(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    name = db.Column(db.String(255), nullable=False)
-    middle_name = db.Column(db.String(255), nullable=True)
-    surname = db.Column(db.String(255), nullable=False)
-    agent_type = db.Column(db.Enum(AgentTypeEnum), nullable=False)
+    agent_name = db.Column(db.String(255), nullable=False)
+    last_name = db.Column(db.String(255), nullable=False)
+    agent_type = db.Column(db.String(50), nullable=False)
     cnp = db.Column(db.String(13), nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey("addressbook.id"), nullable=False)
     banking_details_id = db.Column(
@@ -31,30 +30,22 @@ class Agent(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     def __init__(
-        self,
-        name,
-        middle_name,
-        surname,
-        agent_type,
-        cnp,
-        owner_id,
-        address_id,
-        banking_details_id,
+            self,
+            agent_name,
+            last_name,
+            agent_type,
+            cnp,
+            owner_id,
+            address_id,
+            banking_details_id,
     ):
-        self.name = name
-        self.middle_name = middle_name
-        self.surname = surname
+        self.agent_name = agent_name
+        self.last_name = last_name
         self.cnp = cnp
         self.owner_id = owner_id
         self.address_id = address_id
         self.banking_details_id = banking_details_id
-
-        if agent_type == "supplier":
-            self.agent_type = AgentTypeEnum.SUPPLIER
-        elif agent_type == "client":
-            self.agent_type = AgentTypeEnum.CLIENT
-        elif agent_type == "employee":
-            self.agent_type = AgentTypeEnum.EMPLOYEE
+        self.agent_type = agent_type
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -62,13 +53,11 @@ class Agent(db.Model):
 
         state["creation_date"] = str(state["creation_date"])
 
-        if state.get("agent_type") is AgentTypeEnum.SUPPLIER:
-            state["agent_type"] = "supplier"
-        elif state.get("agent_type") is AgentTypeEnum.CLIENT:
-            state["agent_type"] = "client"
-        elif state.get("agent_type") is AgentTypeEnum.EMPLOYEE:
-            state["agent_type"] = "employee"
         return state
 
     def __repr__(self):
         return str(self.__getstate__())
+
+    def update_fields(self, var):
+        for key, value in var.items():
+            setattr(self, key, value)

@@ -1,0 +1,2 @@
+DUE = 'due'
+PAID = 'paid'

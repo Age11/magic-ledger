@@ -21,19 +21,19 @@ class ForeignCurrencyRoll(db.Model):
         db.Integer, db.ForeignKey("project.id"), nullable=False
     )
 
-    currency_type = db.Column(db.Enum(Currency), nullable=False)
+    currency = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
     acquisition_price = db.Column(db.Float, nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
     analytical_account = db.Column(db.String(255), foreign_key="account_plan.account", nullable=False)
     acquisition_date = db.Column(db.DateTime, nullable=False)
-    roll_type = db.Column(db.Enum(RollType), nullable=False)
+    roll_type = db.Column(db.String(10), nullable=False)
 
 
     def __init__(
             self,
             owner_id,
-            currency_type,
+            currency,
             quantity,
             acquisition_price,
             analytical_account,
@@ -41,25 +41,17 @@ class ForeignCurrencyRoll(db.Model):
             acquisition_date=datetime.now().strftime("%Y-%m-%d"),
     ):
         self.owner_id = owner_id
-        self.currency_type = Currency[currency_type]
+        self.currency = currency
         self.quantity = quantity
         self.acquisition_price = acquisition_price
         self.total_amount = quantity * acquisition_price
         self.analytical_account = analytical_account
         self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m-%d")
-
-        if roll_type == "receivable":
-            self.roll_type = RollType.RECEIVABLE
-        elif roll_type == "payable":
-            self.roll_type = RollType.PAYABLE
-        elif roll_type == "cash":
-            self.roll_type = RollType.CASH
+        self.roll_type = roll_type
 
     def __getstate__(self):
         state = self.__dict__.copy()
-        state["currency_type"] = state["currency_type"].value
         state["acquisition_date"] = state["acquisition_date"].strftime("%Y-%m-%d")
-        state["roll_type"] = state["roll_type"].value
         del state["_sa_instance_state"]
         return state
 

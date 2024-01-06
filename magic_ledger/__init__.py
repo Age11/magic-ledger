@@ -51,9 +51,9 @@ def create_app(test_config=None):
 
     app.register_blueprint(projects.bp)
 
-    from magic_ledger import third_prties
+    from magic_ledger import third_parties
 
-    app.register_blueprint(third_prties.bp)
+    app.register_blueprint(third_parties.bp)
 
     from magic_ledger import inventory
 
@@ -89,6 +89,9 @@ def create_app(test_config=None):
 
     from magic_ledger import exchange
     app.register_blueprint(exchange.bp)
+
+    from magic_ledger import inflow
+    app.register_blueprint(inflow.bp)
 
     return app
 

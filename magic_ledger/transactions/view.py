@@ -4,15 +4,15 @@ from datetime import datetime
 from flask import Blueprint, flash, jsonify, request
 
 from magic_ledger import db
-from magic_ledger.account_balance.account_ballance_service import AccountBalanceService
 from magic_ledger.account_plan.model import AccountPlan
 from magic_ledger.transactions.transaction import Transaction
+import magic_ledger.account_balance.account_ballance_service as abs
 
 bp = Blueprint("transactions", __name__, url_prefix="/<project_id>/transactions/")
 
 
 @bp.route("/", methods=("GET", "POST"))
-def invoices(project_id):
+def transactions(project_id):
     if request.method == "POST":
         logging.info("""Creating transaction with the following data:""")
         logging.info(request.json)
@@ -34,25 +34,9 @@ def invoices(project_id):
             error = "credit_account_id id is required."
         # TODO: add more validation
 
-        abs = AccountBalanceService()
-
         if error is not None:
             flash(error)
         else:
-            # update account balance
-            abs.update_account_balance(
-                project_id=project_id,
-                analytical_account=debit_account,
-                current_debit=debit_amount,
-                balance_date=datetime.strptime(transaction_date, "%Y-%m-%d").strftime("%Y-%m"),
-            )
-
-            abs.update_account_balance(
-                project_id=project_id,
-                analytical_account=credit_account,
-                current_debit=credit_amount,
-                balance_date=datetime.strptime(transaction_date, "%Y-%m-%d").strftime("%Y-%m"),
-            )
 
             new_transaction = Transaction(
                 debit_account_id=debit_account,
@@ -64,6 +48,23 @@ def invoices(project_id):
                 owner_id=project_id,
                 details=details,
             )
+
+            # update account balance
+            abs.update_account_balance(
+                owner_id=project_id,
+                analytical_account=debit_account,
+                debit=debit_amount,
+                balance_date=new_transaction.transaction_date,
+            )
+
+            abs.update_account_balance(
+                owner_id=project_id,
+                analytical_account=credit_account,
+                credit=credit_amount,
+                balance_date=new_transaction.transaction_date,
+            )
+
+
             db.session.add(new_transaction)
             db.session.commit()
             response = jsonify()
