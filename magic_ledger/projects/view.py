@@ -1,26 +1,37 @@
-from flask import Blueprint, jsonify, request
-from magic_ledger.projects.project import Project
 import magic_ledger.projects.project_service as project_service
+from flask import request
+from flask_restx import Namespace, Resource
+from magic_ledger.projects.api_models import (project_model_input,
+                                              project_model_output,
+                                              simple_project_model_output)
 
-bp = Blueprint("projects", __name__, url_prefix="/projects")
+ns = Namespace(
+    "projects",
+    description="Accounting projects. Each project is related to an organizations operations and identity",
+)
 
-@bp.route("/", methods=("GET", "POST"))
-def projects():
-    if request.method == "POST":
+
+@ns.route("/")
+class Projects(Resource):
+    @ns.expect(project_model_input)
+    @ns.response(201, "Project created")
+    def post(self):
+        print(ns.payload)
         new_project = project_service.create_project(request_body=request.json)
-        response = jsonify()
-        response.status_code = 201
-        response.headers["location"] = "/projects/" + str(new_project.id)
-        response.autocorrect_location_header = False
+        return {}, 201, {"location": "/projects/" + str(new_project.id)}
 
-        return response
+    @ns.marshal_list_with(
+        project_model_output, code=200, description="All projects with full details"
+    )
+    @ns.response(200, "Get all projects with full details")
+    def get(self):
+        return project_service.get_all_projects_full_details()
 
-    elif request.method == "GET":
-        projects = project_service.get_all_projects_full_details()
-        return jsonify(
-            [{**prj[0].__getstate__(), **prj[1].__getstate__(), **prj[2].__getstate__(), **prj[3].__getstate__()} for
-             prj in projects])
 
-@bp.route("/<project_id>", methods=("GET",))
-def get_project(project_id):
-    return jsonify(Project.query.filter_by(id=project_id).first().__getstate__())
+@ns.route("/<project_id>", endpoint="project_by_id")
+class ProjectById(Resource):
+    @ns.doc(params={"project_id": "The project identifier"})
+    @ns.response(200, "Returns the project having the specified identifier")
+    @ns.marshal_with(simple_project_model_output)
+    def get(self, project_id):
+        return project_service.get_project_by_id(project_id)

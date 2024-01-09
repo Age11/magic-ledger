@@ -70,7 +70,7 @@ class InflowService:
             )
             db.session.add(new_transaction)
 
-            self.vat_service.generate_vat_transaction_for_purchase(supplier, client, item)
+            self.vat_service.generate_vat_transaction_for_purchase(supplier, client, item, new_invoice)
 
         new_invoice.total_value = value + vat_amount
         db.session.add(new_invoice)

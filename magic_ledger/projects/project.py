@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 
 from magic_ledger import db
 
@@ -23,11 +22,7 @@ class Project(db.Model):
         state = self.__dict__.copy()
         del state["_sa_instance_state"]
         state["creation_date"] = state["creation_date"].strftime("%Y-%m-%d")
-
         return state
-
-    def __repr__(self):
-        return str(self.__getstate__())
 
     def update_fields(self, var):
         for key, value in var.items():

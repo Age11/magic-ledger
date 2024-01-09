@@ -7,7 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 from sqlalchemy.orm import DeclarativeBase
 
-__version__ = (1, 1, 0, "dev")
+from .extensions import api
+
+__version__ = (0, 0, 1, "dev")
 
 
 class Base(DeclarativeBase):
@@ -20,6 +22,7 @@ db = SQLAlchemy(model_class=Base)
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
     app = Flask(__name__, instance_relative_config=True)
+    api.init_app(app)
 
     # some deploy systems set the database url in the environment
     db_url = os.environ.get("DATABASE_URL")
@@ -46,10 +49,9 @@ def create_app(test_config=None):
     app.cli.add_command(init_db_command)
 
     # apply the blueprints to the app
-
     from magic_ledger import projects
 
-    app.register_blueprint(projects.bp)
+    api.add_namespace(projects.ns)
 
     from magic_ledger import third_parties
 
@@ -88,9 +90,11 @@ def create_app(test_config=None):
     app.register_blueprint(account_balance.bp)
 
     from magic_ledger import exchange
+
     app.register_blueprint(exchange.bp)
 
     from magic_ledger import inflow
+
     app.register_blueprint(inflow.bp)
 
     return app

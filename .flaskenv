@@ -1,0 +1,3 @@
+FLASK_APP=magic_ledger
+FLASK_DEBUG=True
+FLASK_ENV=development

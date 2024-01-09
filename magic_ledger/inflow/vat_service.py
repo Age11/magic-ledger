@@ -12,10 +12,18 @@ class VatService:
         return cls.__instance
 
 
-    def generate_vat_transaction_for_purchase(self, supplier, client, item):
+    def generate_vat_transaction_for_purchase(self, supplier, client, item, invoice):
         if client.vat_mode == vat_mode.ON_INVOICE:
             if supplier.vat_mode == vat_mode.ON_INVOICE:
-                pass
-
+                txn_service.create_transaction({
+                    "debit_account_id": "4426",
+                    "credit_account_id": "401", #supplier analytical account
+                    "debit_amount": item.vat_amount,
+                    "credit_amount": item.vat_amount,
+                    "currency": "RON",
+                    "transaction_date": invoice.issue_date.strftime("%Y-%m-%d"),
+                    "details": "VAT",
+                    "owner_id": client.owner_id,
+                })
 
 
