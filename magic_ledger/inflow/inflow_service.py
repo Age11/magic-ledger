@@ -1,12 +1,12 @@
-from magic_ledger.inflow.vat_service import VatService
-from magic_ledger.invoices.invoice import Invoice
-from magic_ledger.inventory.inventory_items import InventoryItem
-import magic_ledger.third_parties.organization_service as tps
-from magic_ledger.transactions.transaction import Transaction
+import magic_ledger.third_parties.service.organization_service as tps
 from magic_ledger import db
+from magic_ledger.inflow.vat_service import VatService
+from magic_ledger.inventory.inventory_items import InventoryItem
+from magic_ledger.invoices.invoice import Invoice
+from magic_ledger.transactions.transaction import Transaction
+
 
 class InflowService:
-
     __instance = None
 
     def __new__(cls):
@@ -17,10 +17,22 @@ class InflowService:
     def __init__(self):
         self.vat_service = VatService()
 
-    def register_local_purchase(self, document_type, serial_number, receive_date, due_date, issue_date, payment_status, owner_id,
-                       supplier_id, client_id, currency, issuer_name, items):
-
-        #create an invoice
+    def register_local_purchase(
+        self,
+        document_type,
+        serial_number,
+        receive_date,
+        due_date,
+        issue_date,
+        payment_status,
+        owner_id,
+        supplier_id,
+        client_id,
+        currency,
+        issuer_name,
+        items,
+    ):
+        # create an invoice
         new_invoice = Invoice(
             document_type=document_type,
             serial_number=serial_number,
@@ -70,16 +82,10 @@ class InflowService:
             )
             db.session.add(new_transaction)
 
-            self.vat_service.generate_vat_transaction_for_purchase(supplier, client, item, new_invoice)
+            self.vat_service.generate_vat_transaction_for_purchase(
+                supplier, client, item, new_invoice
+            )
 
         new_invoice.total_value = value + vat_amount
         db.session.add(new_invoice)
         db.session.commit()
-
-
-
-
-
-
-
-

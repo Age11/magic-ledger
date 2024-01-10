@@ -1,11 +1,11 @@
-import magic_ledger.third_parties.organization_service as tps
 import magic_ledger.projects.project_status as project_status
 import magic_ledger.third_parties.organization_type as organization_type
-from magic_ledger.projects.project import Project
+import magic_ledger.third_parties.service.organization_service as tps
 from magic_ledger import db
-from magic_ledger.third_parties.addressbook import Addressbook
-from magic_ledger.third_parties.banking_details import BankingDetails
-from magic_ledger.third_parties.organization import Organization
+from magic_ledger.projects.project import Project
+from magic_ledger.third_parties.models.addressbook import Addressbook
+from magic_ledger.third_parties.models.banking_details import BankingDetails
+from magic_ledger.third_parties.models.organization import Organization
 
 
 def create_project(request_body):

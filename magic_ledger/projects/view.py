@@ -16,7 +16,6 @@ class Projects(Resource):
     @ns.expect(project_model_input)
     @ns.response(201, "Project created")
     def post(self):
-        print(ns.payload)
         new_project = project_service.create_project(request_body=request.json)
         return {}, 201, {"location": "/projects/" + str(new_project.id)}
 

@@ -55,7 +55,7 @@ def create_app(test_config=None):
 
     from magic_ledger import third_parties
 
-    app.register_blueprint(third_parties.bp)
+    api.add_namespace(third_parties.ns)
 
     from magic_ledger import inventory
 

@@ -105,7 +105,7 @@ def test_create_supplier_organization(client):
     assert data["banking_details_id"] == 2
     assert data["address_id"] == 2
 
-    response = client.get("/1/third-parties/organizations/suppliers/full/")
+    response = client.get("/1/third-parties/organizations/suppliers/")
     assert response.status_code == 200
     resp_data = json.loads(response.data)
     assert len(resp_data) == 1
@@ -119,20 +119,6 @@ def test_create_supplier_organization(client):
     assert data["id"] == 2
     assert data["banking_details_id"] == 2
     assert data["address_id"] == 2
-
-    assert data["country"] == "Romania"
-    assert data["state_or_province"] == "Prahova"
-    assert data["city"] == "Sinaia"
-    assert data["street"] == "Stanjeneilor"
-    assert data["apartment_or_suite"] == "16"
-    assert data["postal_code"] == "106100"
-    assert data["phone"] == "0721222222"
-    assert data["email"] == "contact@carmenimpextm.com"
-
-    assert data["account"] == "RO49AAAA1B31007593840000"
-    assert data["details"] == "AAAA BANK"
-
-    assert data["creation_date"] is not None
 
 
 def test_update_supplier(client):
@@ -207,35 +193,6 @@ def test_create_client_organization(client):
     assert data["banking_details_id"] == 2
     assert data["address_id"] == 2
 
-    response = client.get("/1/third-parties/organizations/clients/full/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-    data = resp_data[0]
-
-    assert data["organization_name"] == "XXX AMSTERFARM SRL"
-    assert data["cif"] == "31105210"
-    assert data["nrc"] == "J11/275/2003"
-    assert data["org_type"] == "client"
-    assert data["owner_id"] == 1
-    assert data["id"] == 2
-    assert data["banking_details_id"] == 2
-    assert data["address_id"] == 2
-
-    assert data["country"] == "Romania"
-    assert data["state_or_province"] == "Prahova"
-    assert data["city"] == "Sinaia"
-    assert data["street"] == "Fanfarei"
-    assert data["apartment_or_suite"] == "112"
-    assert data["postal_code"] == "106100"
-    assert data["phone"] == "0721333333"
-    assert data["email"] == "contact@amst.com"
-
-    assert data["account"] == "RO49AAAA1B31006591820999"
-    assert data["details"] == "AAAA BANK"
-
-    assert data["creation_date"] is not None
-
 
 def test_update_client(client):
     test_create_client_organization(client)
@@ -243,16 +200,6 @@ def test_update_client(client):
     organization_AAA["details"] = "BBBB BANK"
     resp = client.put("/1/third-parties/organizations/2", json=organization_AAA)
     assert resp.status_code == 201
-
-    response = client.get("/1/third-parties/organizations/clients/full/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-    data = resp_data[0]
-    assert data["organization_name"] == "AAA ONLINE SRL"
-    assert data["details"] == "BBBB BANK"
-
-    assert data["postal_code"] == "106100"
 
 
 agent_EI = {
@@ -333,35 +280,6 @@ def test_create_agent_client(client):
     assert data["id"] == 1
     assert data["banking_details_id"] == 2
     assert data["address_id"] == 2
-
-    response = client.get("/1/third-parties/agents/clients/full/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-    data = resp_data[0]
-
-    data = resp_data[0]
-    assert data["agent_name"] == "Emilian"
-    assert data["cnp"] == "1880202226699"
-    assert data["agent_type"] == "client"
-    assert data["owner_id"] == 1
-    assert data["id"] == 2
-    assert data["banking_details_id"] == 2
-    assert data["address_id"] == 2
-
-    assert data["country"] == "Romania"
-    assert data["state_or_province"] == "Prahova"
-    assert data["city"] == "Sinaia"
-    assert data["street"] == "AAAAAA"
-    assert data["apartment_or_suite"] == "100"
-    assert data["postal_code"] == "106100"
-    assert data["phone"] == "0721666555"
-    assert data["email"] == "ionemi@email.com"
-
-    assert data["account"] == "RO49AAAA1B31007593840001"
-    assert data["details"] == "AAAA BANK"
-
-    assert data["creation_date"] is not None
 
 
 agent_VV = {
