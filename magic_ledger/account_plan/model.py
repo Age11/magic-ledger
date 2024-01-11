@@ -6,13 +6,6 @@ from enum import Enum
 from magic_ledger import db
 
 
-class AccountTypeEnum(Enum):
-    ACTIVE = "activ"
-    PASIVE = "pasiv"
-    BIFUNCTIONAL = "bifunctional"
-    UNSPECIFIED = "nespecificat"
-
-
 @dataclass
 class AccountPlan(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)

@@ -1,9 +1,11 @@
 import magic_ledger.projects.project_service as project_service
 from flask import request
 from flask_restx import Namespace, Resource
-from magic_ledger.projects.api_models import (project_model_input,
-                                              project_model_output,
-                                              simple_project_model_output)
+from magic_ledger.projects.api_models import (
+    project_model_input,
+    project_model_output,
+    simple_project_model_output,
+)
 
 ns = Namespace(
     "projects",
@@ -13,7 +15,7 @@ ns = Namespace(
 
 @ns.route("/")
 class Projects(Resource):
-    @ns.expect(project_model_input)
+    @ns.expect(project_model_input, validate=True)
     @ns.response(201, "Project created")
     def post(self):
         new_project = project_service.create_project(request_body=request.json)

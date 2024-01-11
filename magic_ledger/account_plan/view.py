@@ -1,18 +1,19 @@
-import json
-import logging
-
-from flask import Blueprint, request
-
+from magic_ledger.account_plan.api_model import account_plan_entry_model
 from magic_ledger.account_plan.model import AccountPlan
 
-bp = Blueprint("account_plan", __name__, url_prefix="/account-plan")
+
+from flask_restx import Namespace, Resource
+
+ns = Namespace(
+    "account-plan",
+    path="/account-plan/",
+    description="An api that allows the user to manage the account plan",
+)
 
 
-@bp.route("/")
-def accounts():
-    if request.method == "GET":
-        res = AccountPlan.query.all()
-        l = []
-        for act in res:
-            l.append(act.__getstate__())
-        return [row.__getstate__() for row in res]
+@ns.route("/")
+class Transactions(Resource):
+    @ns.marshal_list_with(account_plan_entry_model)
+    @ns.response(201, "Get account plan")
+    def get(self):
+        return AccountPlan.query.all()

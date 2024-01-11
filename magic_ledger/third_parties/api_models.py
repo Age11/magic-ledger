@@ -4,7 +4,7 @@ from magic_ledger.inflow import vat_mode
 from magic_ledger.third_parties import organization_type
 
 organization_model_input = api.model(
-    "Organization",
+    "input_organization_address_bank_details",
     {
         "organization_name": fields.String(
             required=True, description="The organization name"
@@ -58,7 +58,7 @@ organization_model_input = api.model(
 
 
 organization_model_output = api.model(
-    "Organziation",
+    "output_organziation",
     {
         "id": fields.Integer(required=True, description="The organization id"),
         "organization_name": fields.String(
@@ -98,7 +98,7 @@ organization_model_output = api.model(
 )
 
 agent_model_input = api.model(
-    "Agent",
+    "input_agent_address_bank_details",
     {
         "agent_name": fields.String(
             required=True, description="The agent's first name"
@@ -137,7 +137,7 @@ agent_model_input = api.model(
 )
 
 agent_model_output = api.model(
-    "Agent",
+    "output_agent",
     {
         "id": fields.Integer(required=True, description="The agent id"),
         "agent_name": fields.String(
@@ -166,7 +166,7 @@ agent_model_output = api.model(
 )
 
 addressbook_model_output = api.model(
-    "Addressbook",
+    "output_addressbook",
     {
         "id": fields.Integer(required=True, description="The addressbook id"),
         "country": fields.String(
@@ -195,7 +195,7 @@ addressbook_model_output = api.model(
 )
 
 banking_details_model_output = api.model(
-    "BankingDetails",
+    "output_banking_details",
     {
         "id": fields.Integer(required=True, description="The banking details id"),
         "account": fields.String(

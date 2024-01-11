@@ -2,15 +2,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from enum import Enum
 
 from magic_ledger import db
-
-
-class AgentTypeEnum(Enum):
-    SUPPLIER = "supplier"
-    CLIENT = "client"
-    EMPLOYEE = "employee"
 
 
 @dataclass
@@ -30,14 +23,14 @@ class Agent(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     def __init__(
-            self,
-            agent_name,
-            last_name,
-            agent_type,
-            cnp,
-            owner_id,
-            address_id,
-            banking_details_id,
+        self,
+        agent_name,
+        last_name,
+        agent_type,
+        cnp,
+        owner_id,
+        address_id,
+        banking_details_id,
     ):
         self.agent_name = agent_name
         self.last_name = last_name

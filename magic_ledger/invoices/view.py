@@ -1,38 +1,53 @@
 import logging
 
-from flask import Blueprint, flash, jsonify, request
-
-from magic_ledger import db
-from magic_ledger.invoices import invoice_service, payment_status, document_type
-from magic_ledger.invoices.invoice import Invoice
-
-bp = Blueprint("invoices", __name__, url_prefix="/<project_id>/invoices")
+from flask import jsonify, request
 
 
-@bp.route("/", methods=("GET", "POST"))
-def invoices(project_id):
-    if request.method == "POST":
-        logging.info("""Creating invoice with the following data:""")
+from magic_ledger.inventory.api_model import inventory_model_output
+from magic_ledger.invoices import invoice_service
+from magic_ledger.invoices.api_model import invoice_model_input
+import magic_ledger.invoices.document_type as document_type
+import magic_ledger.invoices.payment_status as payment_status
+
+
+from flask_restx import Namespace, Resource
+
+ns = Namespace(
+    "invoice",
+    path="/<project_id>/invoices/",
+    description="An api that allows the user to manage a project's invoices",
+)
+
+
+@ns.route("/")
+class Invoices(Resource):
+    @ns.expect(invoice_model_input)
+    @ns.response(201, "Invoice created successfully")
+    def post(self, project_id):
+        logging.info("""Creating an invoice with the following data:""")
         request.json["owner_id"] = project_id
-        request.json["payment_status"] = payment_status.DUE
         request.json["document_type"] = document_type.INVOICE
+        request.json["payment_status"] = payment_status.DUE
         logging.info(request.json)
+        inventory = invoice_service.create_invoice(request.json)
+        return (
+            {},
+            201,
+            {"location": "/" + project_id + "/invoices/" + str(inventory.id)},
+        )
 
-        new_invoice = invoice_service.create_invoice(request_body=request.json)
-
-        db.session.add(new_invoice)
-        db.session.commit()
-        response = jsonify()
-        response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/invoices/" + str(new_invoice.id)
-        return response
-    elif request.method == "GET":
-        invs = invoice_service.get_all_invoices(owner_id=project_id)
-        return jsonify([row.__getstate__() for row in invs])
+    @ns.marshal_list_with(inventory_model_output, code=200)
+    def get(self, project_id):
+        return invoice_service.get_all_invoices(owner_id=project_id), 200
 
 
-@bp.route("/<int:invoice_id>", methods=("GET", "PUT", "DELETE"))
-def invoice(project_id, invoice_id):
-    invoice = invoice_service.get_invoice_by_id(invoice_id=invoice_id, owner_id=project_id)
-    if request.method == "GET":
-        return jsonify(invoice.__getstate__())
+@ns.route("/<invoice_id>/", endpoint="invoice_items")
+class InvoiceById(Resource):
+    @ns.marshal_list_with(inventory_model_output, code=200)
+    def get(self, project_id, invoice_id):
+        return (
+            invoice_service.get_invoice_by_id(
+                invoice_id=invoice_id, owner_id=project_id
+            ),
+            200,
+        )

@@ -6,7 +6,7 @@ from magic_ledger.third_parties import organization_type
 
 
 project_model_input = api.model(
-    "Project",
+    "input_project_organization_address_bank_details",
     {
         "project_name": fields.String(required=True, description="The project name"),
         "caen_code": fields.String(required=True, description="The project CAEN code"),
@@ -61,7 +61,7 @@ project_model_input = api.model(
 )
 
 project_model_output = api.model(
-    "Project",
+    "output_project_organization_address_bank_details",
     {
         "id": fields.Integer(required=True, description="The project id"),
         "project_name": fields.String(required=True, description="The project name"),
@@ -135,10 +135,11 @@ project_model_output = api.model(
 )
 
 simple_project_model_output = api.model(
-    "Project",
+    "project",
     {
         "id": fields.Integer(required=True, description="The project id"),
         "project_name": fields.String(required=True, description="The project name"),
+        "cae_code": fields.String(required=True, description="The project CAEN code"),
         "status": fields.String(
             required=True,
             description="The project status",

@@ -59,19 +59,19 @@ def create_app(test_config=None):
 
     from magic_ledger import inventory
 
-    app.register_blueprint(inventory.bp)
+    api.add_namespace(inventory.ns)
 
     from magic_ledger import invoices
 
-    app.register_blueprint(invoices.bp)
-
-    from magic_ledger import account_plan
-
-    app.register_blueprint(account_plan.bp)
+    api.add_namespace(invoices.ns)
 
     from magic_ledger import transactions
 
-    app.register_blueprint(transactions.bp)
+    api.add_namespace(transactions.ns)
+
+    from magic_ledger import account_plan
+
+    api.add_namespace(account_plan.ns)
 
     from magic_ledger import assets
 

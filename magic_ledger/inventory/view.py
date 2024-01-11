@@ -1,48 +1,80 @@
 import logging
 
-from flask import Blueprint, flash, jsonify, request
+from flask import request
 
-from magic_ledger import db
 from magic_ledger.inventory import inventory_service
-from magic_ledger.inventory.inventory import Inventory
-from magic_ledger.inventory.inventory_items import InventoryItem
+from magic_ledger.inventory.api_model import (
+    inventory_model_input,
+    inventory_model_output,
+    inventory_item_model_input,
+    inventory_item_model_output,
+)
 
-bp = Blueprint("inventory", __name__, url_prefix="/<project_id>/inventory")
+
+from flask_restx import Namespace, Resource
+
+ns = Namespace(
+    "inventory",
+    path="/<project_id>/inventories/",
+    description="An api that allows the user to manage a project's inventories",
+)
 
 
-@bp.route("/", methods=("GET", "POST"))
-def inventory(project_id):
-    if request.method == "POST":
-        logging.info("""Creating inventory with the following data:""")
+@ns.route("/")
+class Inventories(Resource):
+    @ns.expect(inventory_model_input, validate=True)
+    @ns.response(201, "Inventory created successfully")
+    def post(self, project_id):
+        logging.info("""Creating an inventory with the following data:""")
         request.json["owner_id"] = project_id
         logging.info(request.json)
-        inventory = inventory_service.create_inventory(request_body=request.json)
+        inventory = inventory_service.create_inventory(request.json)
+        return (
+            {},
+            201,
+            {"location": "/" + project_id + "/inventories/" + str(inventory.id)},
+        )
 
-        response = jsonify()
-        response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/inventory/" + str(inventory.id)
-        response.autocorrect_location_header = False
-        return response
-    elif request.method == "GET":
-        res = Inventory.query.all()
-        return jsonify([row.__getstate__() for row in res])
+    @ns.marshal_list_with(inventory_model_output, code=200)
+    def get(self, project_id):
+        return inventory_service.get_all_inventories(owner_id=project_id), 200
 
 
-@bp.route("<inventory_id>/items/", methods=("GET", "POST"))
-def inventory_items(project_id, inventory_id):
-    if request.method == "POST":
+@ns.route("/<inventory_id>/items/", endpoint="inventory_items")
+class InventoryItems(Resource):
+    @ns.expect(inventory_item_model_input)
+    def post(self, project_id, inventory_id):
         logging.info("""Creating inventory item with the following data:""")
         request.json["inventory_id"] = inventory_id
         logging.info(request.json)
 
         item = inventory_service.create_item(request_body=request.json)
 
-        db.session.add(item)
-        db.session.commit()
-        response = jsonify()
-        response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/inventory/" + inventory_id + "/items/" + str(item.id)
-        return response
-    elif request.method == "GET":
-        product = InventoryItem.query.filter_by(inventory_id=inventory_id).all()
-        return [row.__getstate__() for row in product]
+        return (
+            {},
+            201,
+            {
+                "location": "/"
+                + str(project_id)
+                + "/inventories/"
+                + str(item.inventory_id)
+                + "/items/"
+                + str(item.id)
+            },
+        )
+
+    @ns.marshal_list_with(inventory_item_model_output, code=200)
+    def get(self, project_id, inventory_id):
+        return inventory_service.get_all_inventory_items(inventory_id=inventory_id), 200
+
+
+@ns.route("/<inventory_id>/items/<item_id>/", endpoint="inventory_item")
+class InventoryItemById(Resource):
+    @ns.marshal_with(inventory_item_model_output)
+    def get(self, project_id, inventory_id, item_id):
+        return (
+            inventory_service.get_item_by_id(
+                item_id=item_id, inventory_id=inventory_id
+            ),
+            200,
+        )

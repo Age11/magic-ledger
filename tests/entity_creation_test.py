@@ -339,7 +339,6 @@ def test_create_all_types(client):
 
 
 stock_inventory = {
-    "inv_type": "stock",
     "name": "inventar marfuri",
     "description": "inventar marfuri",
     "inventory_method": "fifo",
@@ -348,17 +347,16 @@ stock_inventory = {
 
 def test_create_inventory(client):
     test_create_all_types(client)
-    response = client.post("/1/inventory/", json=stock_inventory)
+    response = client.post("/1/inventories/", json=stock_inventory)
     assert response.status_code == 201
-    assert response.headers["location"] == "/1/inventory/1"
+    assert response.headers["location"] == "/1/inventories/1"
 
-    response = client.get("/1/inventory/")
+    response = client.get("/1/inventories/")
     assert response.status_code == 200
     data = json.loads(response.data)
     assert len(data) == 1
 
     data = data[0]
-    assert data["inv_type"] == "stock"
     assert data["name"] == "inventar marfuri"
     assert data["description"] == "inventar marfuri"
     assert data["inventory_method"] == "fifo"
@@ -415,16 +413,18 @@ def test_create_item(client):
     assert response.status_code == 201
     assert response.headers["location"] == "/1/invoices/1"
 
-    response = client.post("/1/inventory/1/items/", json=item)
+    response = client.post("/1/inventories/1/items/", json=item)
     assert response.status_code == 201
-    assert response.headers["location"] == "/1/inventory/1/items/1"
+    assert response.headers["location"] == "/1/inventories/1/items/1"
 
-    response = client.get("/1/inventory/1/items/")
+    response = client.get("/1/inventories/1/items/")
     assert response.status_code == 200
     data = json.loads(response.data)
     assert len(data) == 1
 
-    data = data[0]
+    response = client.get("/1/inventories/1/items/1/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
     assert data["name"] == "paracetamol"
     assert data["description"] == "medicament"
     assert data["quantity"] == 1
@@ -455,13 +455,11 @@ def test_create_transaction(client):
     assert response.status_code == 201
     assert response.headers["location"] == "/1/transactions/1"
 
-    response = client.get("/1/transactions/1")
+    response = client.get("/1/transactions/1/")
     assert response.status_code == 200
     data = json.loads(response.data)
-    assert data["debit_account_id"] == "371"
-    assert data["debit_account_name"] == "MARFURI"
-    assert data["credit_account_id"] == "401"
-    assert data["credit_account_name"] == "FURNIZORI"
+    assert data["debit_account"] == "371"
+    assert data["credit_account"] == "401"
     assert data["debit_amount"] == 100
     assert data["credit_amount"] == 100
     assert data["currency"] == "RON"

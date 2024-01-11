@@ -1,99 +1,74 @@
+from magic_ledger.transactions import transaction_service
+from magic_ledger.transactions.api_model import (
+    transaction_model_input,
+    transaction_model_output,
+)
+import magic_ledger.account_balance.account_ballance_service as balance_service
 import logging
-from datetime import datetime
+from flask import request
+from flask_restx import Namespace, Resource
 
-from flask import Blueprint, flash, jsonify, request
-
-from magic_ledger import db
-from magic_ledger.account_plan.model import AccountPlan
-from magic_ledger.transactions.transaction import Transaction
-import magic_ledger.account_balance.account_ballance_service as abs
-
-bp = Blueprint("transactions", __name__, url_prefix="/<project_id>/transactions/")
+ns = Namespace(
+    "transaction",
+    path="/<project_id>/transactions/",
+    description="An api that allows the user to manage a project's transactions",
+)
 
 
-@bp.route("/", methods=("GET", "POST"))
-def transactions(project_id):
-    if request.method == "POST":
-        logging.info("""Creating transaction with the following data:""")
+@ns.route("/")
+class Transactions(Resource):
+    @ns.expect(transaction_model_input)
+    @ns.response(201, "Transaction created successfully")
+    def post(self, project_id):
+        logging.info("""Creating an transaction with the following data:""")
+        request.json["owner_id"] = project_id
         logging.info(request.json)
+        transaction = transaction_service.create_transaction(request.json)
 
-        # The type will determin weather we add something to the inventory or not
+        transaction_service.create_transaction(request.json)
+
         debit_account = request.json["debit_account"]
         credit_account = request.json["credit_account"]
         debit_amount = request.json["debit_amount"]
         credit_amount = request.json["credit_amount"]
+
         currency = request.json["currency"]
         transaction_date = request.json["transaction_date"]
         details = request.json["details"]
 
-        error = None
-
-        if not debit_account:
-            error = "debit_account_id is required."
-        if not credit_account:
-            error = "credit_account_id id is required."
-        # TODO: add more validation
-
-        if error is not None:
-            flash(error)
-        else:
-
-            new_transaction = Transaction(
-                debit_account_id=debit_account,
-                credit_account_id=credit_account,
-                debit_amount=debit_amount,
-                credit_amount=credit_amount,
-                currency=currency,
-                transaction_date=transaction_date,
-                owner_id=project_id,
-                details=details,
-            )
-
-            # update account balance
-            abs.update_account_balance(
-                owner_id=project_id,
-                analytical_account=debit_account,
-                debit=debit_amount,
-                balance_date=new_transaction.transaction_date,
-            )
-
-            abs.update_account_balance(
-                owner_id=project_id,
-                analytical_account=credit_account,
-                credit=credit_amount,
-                balance_date=new_transaction.transaction_date,
-            )
-
-
-            db.session.add(new_transaction)
-            db.session.commit()
-            response = jsonify()
-            response.status_code = 201
-            response.headers["location"] = "/" + project_id + "/transactions/" + str(new_transaction.id)
-            return response
-    elif request.method == "GET":
-        txs = Transaction.query.all()
-        return jsonify([row.__getstate__() for row in txs])
-
-
-@bp.route("/<int:transaction_id>")
-def get_transaction(project_id, transaction_id):
-    if request.method == "GET":
-        inv = Transaction.query.filter_by(id=transaction_id, owner_id=project_id).first().__getstate__()
-        inv["debit_account_name"] = (
-            AccountPlan.query.filter_by(account=inv["debit_account_id"]).first().acc_name
+        # update account balance
+        balance_service.update_account_balance(
+            owner_id=project_id,
+            analytical_account=debit_account,
+            debit=debit_amount,
+            balance_date=transaction.transaction_date,
         )
-        inv["credit_account_name"] = (
-            AccountPlan.query.filter_by(account=inv["credit_account_id"]).first().acc_name
+
+        balance_service.update_account_balance(
+            owner_id=project_id,
+            analytical_account=credit_account,
+            credit=credit_amount,
+            balance_date=transaction.transaction_date,
         )
-        return jsonify(inv)
 
-@bp.route("/purchase", methods=("PUT",))
-def purchase(project_id):
-    pass
+        return (
+            {},
+            201,
+            {"location": "/" + project_id + "/transactions/" + str(transaction.id)},
+        )
 
-@bp.route("/sale", methods=("PUT",))
-def sale(project_id):
-    pass
+    @ns.marshal_list_with(transaction_model_output, code=200)
+    def get(self, project_id):
+        return transaction_service.get_all_transactions(owner_id=project_id), 200
 
 
+@ns.route("/<transaction_id>/", endpoint="transaction")
+class TransactionById(Resource):
+    @ns.marshal_with(transaction_model_output, code=200)
+    def get(self, project_id, transaction_id):
+        return (
+            transaction_service.get_transaction_by_id(
+                transaction_id=transaction_id, owner_id=project_id
+            ),
+            200,
+        )

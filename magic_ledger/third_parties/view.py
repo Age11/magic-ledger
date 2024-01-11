@@ -5,11 +5,17 @@ import magic_ledger.third_parties.service.organization_service as organization_s
 from flask import request
 from flask_restx import Namespace, Resource
 from magic_ledger.third_parties.api_models import (
-    addressbook_model_output, agent_model_input, agent_model_output,
-    banking_details_model_output, organization_model_input,
-    organization_model_output)
-from magic_ledger.third_parties.service import (addressbook_service,
-                                                banking_details_service)
+    addressbook_model_output,
+    agent_model_input,
+    agent_model_output,
+    banking_details_model_output,
+    organization_model_input,
+    organization_model_output,
+)
+from magic_ledger.third_parties.service import (
+    addressbook_service,
+    banking_details_service,
+)
 
 ns = Namespace(
     "third-parties",
