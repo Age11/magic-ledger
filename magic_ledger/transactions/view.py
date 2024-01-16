@@ -3,7 +3,7 @@ from magic_ledger.transactions.api_model import (
     transaction_model_input,
     transaction_model_output,
 )
-import magic_ledger.account_balance.account_ballance_service as balance_service
+
 import logging
 from flask import request
 from flask_restx import Namespace, Resource
@@ -23,34 +23,9 @@ class Transactions(Resource):
         logging.info("""Creating an transaction with the following data:""")
         request.json["owner_id"] = project_id
         logging.info(request.json)
-        transaction = transaction_service.create_transaction(request.json)
-
-        transaction_service.create_transaction(request.json)
-
-        debit_account = request.json["debit_account"]
-        credit_account = request.json["credit_account"]
-        debit_amount = request.json["debit_amount"]
-        credit_amount = request.json["credit_amount"]
-
-        currency = request.json["currency"]
-        transaction_date = request.json["transaction_date"]
-        details = request.json["details"]
-
-        # update account balance
-        balance_service.update_account_balance(
-            owner_id=project_id,
-            analytical_account=debit_account,
-            debit=debit_amount,
-            balance_date=transaction.transaction_date,
+        transaction = transaction_service.create_transaction_and_update_balance(
+            request.json
         )
-
-        balance_service.update_account_balance(
-            owner_id=project_id,
-            analytical_account=credit_account,
-            credit=credit_amount,
-            balance_date=transaction.transaction_date,
-        )
-
         return (
             {},
             201,

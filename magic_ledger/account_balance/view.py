@@ -1,51 +1,52 @@
 import logging
-from datetime import datetime
 
-from flask import Blueprint, flash, jsonify, request
 
-from magic_ledger import db
+from flask import request
+
+
 from magic_ledger.account_balance.account_balance import AccountBalance
-import magic_ledger.account_balance.account_ballance_service as abs
-from magic_ledger.misc.clock import CLOCK
+import magic_ledger.account_balance.account_ballance_service as account_balance_service
+from magic_ledger.account_balance.api_model import (
+    account_balance_entry_model_input,
+    account_balance_entry_model_output,
+)
 
-bp = Blueprint("account_balance", __name__, url_prefix="/<project_id>/account-balance")
+
+from flask_restx import Namespace, Resource
+
+ns = Namespace(
+    "account-balance",
+    path="/<project_id>/account-balance/",
+    description="An api that allows the user to manage the account balance",
+)
 
 
-@bp.route("/", methods=("GET", "POST"))
-def account_balance(project_id):
-    if request.method == "POST":
+@ns.route("/")
+class AccountBalance(Resource):
+    @ns.marshal_list_with(account_balance_entry_model_output, code=200)
+    @ns.response(201, "Get account balance")
+    def get(self, project_id):
+        return account_balance_service.get_account_balances(owner_id=project_id), 200
+
+    @ns.expect(account_balance_entry_model_input)
+    @ns.response(201, "Account balance created")
+    def post(self, project_id):
+        """Create a new account balance entry"""
         logging.info("""adding initial account balance with the following data:""")
         logging.info(request.json)
-
-        error = None
-
-        if not len(request.json) > 0:
-            error = "provide some balance entries"
-        # TODO: add more validation
-
-        for balance in request.json:
-            balance["owner_id"] = project_id
-            # TODO this is the only date I pass as date instead of string. Fix it. You need to add a way to get date as String easily
-            balance["balance_date"] = datetime.strptime(balance["balance_date"], "%Y-%m")
-            account = abs.update_account_balance(
-                **balance
-            )
-
-        response = jsonify()
-        response.status_code = 201
-        response.headers["location"] = "/" + project_id + "/account-balance/set-initial/"
-        response.autocorrect_location_header = False
-        return response
-    elif request.method == "GET":
-        balance = AccountBalance.query.filter_by(owner_id=project_id).all()
-        return jsonify([row.__getstate__() for row in balance])
+        for account_balance in request.json:
+            account_balance["owner_id"] = project_id
+            account_balance_service.update_account_balance(**account_balance)
+        return {}, 201
 
 
-@bp.route("/close/<balance_date>", methods=("GET", "POST"))
-def close_month(project_id, balance_date):
-    if request.method == "POST":
+@ns.route("/close/<balance_date>")
+class CloseBalance(Resource):
+    @ns.response(201, "Accounts closed")
+    def post(self, project_id, balance_date):
+        """Closing account"""
         logging.info("""closing balance for the following month:""" + balance_date)
-        abs.close_balance_accounts(project_id=project_id, balance_date=balance_date)
-        response = jsonify()
-        response.status_code = 201
-        return response
+        account_balance_service.close_monthly_balance_accounts(
+            project_id=project_id, balance_date_string=balance_date
+        )
+        return {}, 201

@@ -73,6 +73,10 @@ def create_app(test_config=None):
 
     api.add_namespace(account_plan.ns)
 
+    from magic_ledger import account_balance
+
+    api.add_namespace(account_balance.ns)
+
     from magic_ledger import assets
 
     app.register_blueprint(assets.bp)
@@ -84,10 +88,6 @@ def create_app(test_config=None):
     from magic_ledger import liquidity
 
     app.register_blueprint(liquidity.bp)
-
-    from magic_ledger import account_balance
-
-    app.register_blueprint(account_balance.bp)
 
     from magic_ledger import exchange
 

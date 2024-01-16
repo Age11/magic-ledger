@@ -1,5 +1,4 @@
 import logging
-
 import magic_ledger.third_parties.service.agent_service as agent_service
 import magic_ledger.third_parties.service.organization_service as organization_service
 from flask import request

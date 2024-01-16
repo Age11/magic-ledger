@@ -467,6 +467,48 @@ def test_create_transaction(client):
     # TODO check that the account balance is updated
 
 
+init_balance = [
+    {
+        "balance_date_string": "2023-11",
+        "analytical_account": "371",
+        "initial_debit": 10,
+        "initial_credit": 100,
+        "cumulated_debit": 100,
+        "cumulated_credit": 100,
+    },
+    {
+        "balance_date_string": "2023-11",
+        "analytical_account": "401",
+        "initial_debit": 10,
+        "initial_credit": 100,
+        "cumulated_debit": 100,
+        "cumulated_credit": 100,
+    },
+]
+
+
+def test_take_initial_balance(client):
+    test_create_all_types(client)
+    resp = client.post("/1/account-balance/", json=init_balance)
+    assert resp.status_code == 201
+
+    resp = client.get("/1/account-balance/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 2
+
+
+def test_close_balance(client):
+    test_take_initial_balance(client)
+    resp = client.post("/1/account-balance/close/2023-11")
+    assert resp.status_code == 201
+
+    resp = client.get("/1/account-balance/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 4
+
+
 car = {
     "asset_name": "masina",
     "description": "o masina",
@@ -553,48 +595,6 @@ def test_create_foreign_currency_roll(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert len(data) == 1
-
-
-init_balance = [
-    {
-        "balance_date": "2023-11",
-        "analytical_account": "371",
-        "initial_debit": 10,
-        "initial_credit": 100,
-        "debit": 100,
-        "credit": 100,
-    },
-    {
-        "balance_date": "2023-11",
-        "analytical_account": "401",
-        "initial_debit": 500,
-        "initial_credit": 100,
-        "debit": 350,
-        "credit": 250,
-    },
-]
-
-
-def test_take_initial_balance(client):
-    test_create_all_types(client)
-    resp = client.post("/1/account-balance/", json=init_balance)
-    assert resp.status_code == 201
-
-    resp = client.get("/1/account-balance/")
-    assert resp.status_code == 200
-    data = json.loads(resp.data)
-    assert len(data) == 2
-
-
-def test_close_balance(client):
-    test_take_initial_balance(client)
-    resp = client.post("/1/account-balance/close/2023-11")
-    assert resp.status_code == 201
-
-    resp = client.get("/1/account-balance/")
-    assert resp.status_code == 200
-    data = json.loads(resp.data)
-    assert len(data) == 4
 
 
 exchange_rate1 = {
