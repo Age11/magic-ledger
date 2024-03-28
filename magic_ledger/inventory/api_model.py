@@ -55,12 +55,6 @@ inventory_item_model_input = api.model(
             required=True, description="The item acquisition price"
         ),
         "vat_rate": fields.Float(required=True, description="The item vat rate"),
-        "in_analytical_account": fields.String(
-            required=True, description="The item in analytical account"
-        ),
-        "out_analytical_account": fields.String(
-            required=True, description="The item out analytical account"
-        ),
         "inventory_id": fields.Integer(
             required=True, description="The item inventory id"
         ),
@@ -86,12 +80,6 @@ inventory_item_model_output = api.model(
         "vat_amount": fields.Float(required=True, description="The item total value"),
         "value": fields.Float(required=True, description="The item value"),
         "total_value": fields.Float(required=True, description="The item total value"),
-        "in_analytical_account": fields.String(
-            required=True, description="The item in analytical account"
-        ),
-        "out_analytical_account": fields.String(
-            required=True, description="The item out analytical account"
-        ),
         "inventory_id": fields.Integer(
             required=True, description="The item inventory id"
         ),

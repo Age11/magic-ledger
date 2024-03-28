@@ -4,7 +4,6 @@ import logging
 from flask import request
 
 
-from magic_ledger.account_balance.account_balance import AccountBalance
 import magic_ledger.account_balance.account_ballance_service as account_balance_service
 from magic_ledger.account_balance.api_model import (
     account_balance_entry_model_input,

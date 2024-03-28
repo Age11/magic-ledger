@@ -21,14 +21,6 @@ class InventoryItem(db.Model):
     vat_rate = db.Column(db.Float, nullable=False)
     vat_amount = db.Column(db.Float, nullable=False)
 
-    in_analytical_account = db.Column(
-        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
-    )
-
-    out_analytical_account = db.Column(
-        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
-    )
-
     invoice_id = db.Column(db.Integer, db.ForeignKey("invoice.id"))
     inventory_id = db.Column(db.Integer, db.ForeignKey("inventory.id"), nullable=False)
 
@@ -40,8 +32,6 @@ class InventoryItem(db.Model):
         measurement_unit,
         acquisition_price,
         vat_rate,
-        in_analytical_account,
-        out_analytical_account,
         invoice_id,
         inventory_id,
     ):
@@ -51,8 +41,6 @@ class InventoryItem(db.Model):
         self.measurement_unit = measurement_unit
         self.acquisition_price = acquisition_price
         self.vat_rate = vat_rate
-        self.in_analytical_account = in_analytical_account
-        self.out_analytical_account = out_analytical_account
         self.value = quantity * acquisition_price
         self.vat_amount = self.value * vat_rate / 100
         self.total_value = self.value + self.vat_amount

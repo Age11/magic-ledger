@@ -146,7 +146,7 @@ def get_clients_full_details(owner_id):
     )
 
 
-def get_project_organization(owner_id):
+def get_project_organizations(owner_id):
     return Organization.query.filter_by(
         org_type=organization_type.PROJECT, owner_id=owner_id
-    ).first()
+    ).all()

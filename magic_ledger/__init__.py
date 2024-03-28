@@ -69,6 +69,10 @@ def create_app(test_config=None):
 
     api.add_namespace(transactions.ns)
 
+    from magic_ledger import transaction_template
+
+    api.add_namespace(transaction_template.ns)
+
     from magic_ledger import account_plan
 
     api.add_namespace(account_plan.ns)
@@ -79,7 +83,7 @@ def create_app(test_config=None):
 
     from magic_ledger import assets
 
-    app.register_blueprint(assets.bp)
+    api.add_namespace(assets.ns)
 
     from magic_ledger import financial_holdings
 

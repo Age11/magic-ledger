@@ -3,16 +3,42 @@ Functionalitate:  Inregistrari pentru luna decembrie
 
   Scenariu: Inregistrari necesare pentru a descrie activitatea derulata in luna decembrie
 
-#     SC „ABC” S.A. are ca obiect de activitate producţie, comerţ, servicii diverse, operaţiuni de import-export,
-#     speculaţii la bursă etc., derulează operațiuni în luna decembrie N.
-
     * creez un proiect:
-      | nume | organizatie   | cif     | nrc           | tip     |cod_caen| telefon    | email           | mod_tva   | tara    | judet     | oras      | strada       | numar | cod_postal | cont_bancar             | detalii       |
-      | ABC  | SC. "ABC" S.A | R910910 | J40/65703/200 | proiect |4444| 0721222333 | contact@abc.com | facturare | Romania | Bucuresti | Bucuresti | Panselutelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
+      | nume | organizatie   | cif     | nrc           | tip     | cod_caen | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada       | numar | cod_postal | cont_bancar             | detalii       |
+      | ABC  | SC. "ABC" S.A | R910910 | J40/65703/200 | proiect | 4444     | 0721222333 | contact@abc.com | facturare | Romania | Bucuresti | Bucuresti | Panselutelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
 
-##     Acţiunile deţinute la entităţile afiliate, în valoare de 250.000 lei, sunt reprezentate de 500 de acţiuni emise
-##     de S.C.„AAA” SA, cumpărate pentru 500 lei/bucata și evidențiate în contul 261
-#
+    * creez un furnizor:
+      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
+      | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „Happy Service” IFN SA | 3020049 | J20/777/1998 | supplier | 0721222333 | contact@happy-service.com | facturare | Romania | Bucuresti | Bucuresti | Panseluta | 110   | 031183     | RO50PORL740266286982777 | Zarzavat Bank |
+
+    * creez un client:
+      | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
+
+    * creez un inventar:
+      | nume    | descriere        | metoda_inventariere |
+      | marfuri | inventar marfuri | fifo                |
+
+    * adaug un articol:
+      | nume_articol  | descriere                                   | cantitate | unitate_masura | pret_unitar | cota_tva |
+      | tricou simplu | tricou bumbac 100% multicolor fara imprimeu | 10        | buc            | 12.30       | 19       |
+
+    * adaug un articol in inventar:
+      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | cota_tva | id_inventar |
+      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 150       | buc            | 15.30       | 19       | 1           |
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva |nume_emitent|
+      | FF001 | 2023-12-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.      |
+
+    * adaug un articol din factura in inventar:
+      | nume_articol    | descriere                            | cantitate | unitate_masura | pret_unitar | cota_tva | id_inventar | id_factura |
+      | tricou imprimeu | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 8.30        | 19       | 1           | 1          |
+
 #    * creez o entitate afiliata:
 #      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |
 #      | S.C.„AAA” SA | 3021130 | J29/777/1999 | afiliat | 0755623155 | contact@aaa.com | facturare | Romania | Bucuresti | Bucuresti | Garofitelor | 112   | 031183     | RO50PORL888888286982666 | Zarzavat Bank |
@@ -20,14 +46,14 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #    * adaug "actiuni" detinute la entitatea afiliata:
 #      | organizatie  | id_organizatie | cantitate | pret_achizitie | cont_analitic | data_achizitie |
 #      | S.C.„AAA” SA | 2              | 500       | 500            | 261           | 2021-09-01     |
-#
-##      La 31.12.N-1 valoarea de piaţă a acţiunilor „AAA” a fost de 400 lei/bucata;
-#
-##   * actualizez valoarea actiunilor detinute la entitatea afiliata "S.C.„AAA” SA":
-##      | id_organizatie | valoare_de_piata |
-#
-##     Titlurile de plasament se referă la 100 acţiuni „BBB”, cumpărate pentru 20 lei/bucata şi 200 acţiuni „CCC”,
-##     cumpărate pentru 50 lei/bucata; conturile contabile utilizate sunt 5081/ BBB și 5081/CCC.
+
+#      La 31.12.N-1 valoarea de piaţă a acţiunilor „AAA” a fost de 400 lei/bucata;
+
+#   * actualizez valoarea actiunilor detinute la entitatea afiliata "S.C.„AAA” SA":
+#      | id_organizatie | valoare_de_piata |
+
+#     Titlurile de plasament se referă la 100 acţiuni „BBB”, cumpărate pentru 20 lei/bucata şi 200 acţiuni „CCC”,
+#     cumpărate pentru 50 lei/bucata; conturile contabile utilizate sunt 5081/ BBB și 5081/CCC.
 #
 #    * creez o entitate afiliata:
 #      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
@@ -58,7 +84,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #    * actualizez rulaj valutar:
 #      | moneda | cantitate | pret_achizitie | cont_analitic | data_achizitie | tip_rulaj_valuta |
 #      | EUR    | 10417     | 4.799          | 5124          | 2023-09-01     | cash             |
-#
+##
 #    * preiau balanta de verificare pentru luna "2023-11":
 #      | cont | debit_initial | credit_initial | debit      | credit    |
 #      | 1012 | 0.00          | 220000.00      | 0.00       | 0.00      |
@@ -140,16 +166,17 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #
 #    * inchid luna "2023-11"
 #
-#    * creez un furnizor:
-#      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
-#      | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
-#    * creez un client:
-#      | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
-#      | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
+
+#
+
 #    * creez un client agent:
 #      | nume    | prenume | telefon    | cnp     | tara    | judet   | oras   | strada | numar | cod_postal | email            | cont                     | detalii  |
 #      | Ionescu | Emilian | 0721666555 | Emilian | Romania | Prahova | Sinaia | Strazi | 99    | 106100     | ionemi@email.com | RO49AAAA1B31007593840001 | AAA BANK |
 #
+#    * creez un furnizor:
+#      | organizatie | cif | nrc | tip      | telefon      | email             | mod_tva   | tara      | judet | oras | strada | numar | cod_postal | cont_bancar | detalii               |
+#      | „BaBeB”     | -   | -   | supplier | 02 9876 5432 | contact@bebebe.au | facturare | Australia | -     | -    | -      | -     | -          | 062-001     | Zarzavat Bank BSB COD |
+
 #
 ##     02 decembrie Se vinde domnului Ionescu Emilian, CNP 1790718341701, mijlocul de transport cu 15.000 lei,
 ##     TVA 19%; valoarea de intrare a imobilizării este de 30.000 lei, iar amortizarea cumulată până în momentul
@@ -162,9 +189,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
 ##     valutar de la data vămuirii este de 5,00 lei/euro, iar cursul de la data emiterii facturii externe este de 4,95
 ##     lei/euro;
 #
-#    * creez un furnizor:
-#      | organizatie | cif | nrc | tip      | telefon      | email             | mod_tva   | tara      | judet | oras | strada | numar | cod_postal | cont_bancar | detalii               |
-#      | „BaBeB”     | -   | -   | supplier | 02 9876 5432 | contact@bebebe.au | facturare | Australia | -     | -    | -      | -     | -          | 062-001     | Zarzavat Bank BSB COD |
+
 #
 ##    * inregistrez import de marfuri
 #
@@ -174,13 +199,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
 ##
 ##      | 2023-07-12 | Factura furnizor extern  | Înregistrare achiziție mărfuri | 371        | 401         | 24750.00   | 24750.00    |
 ##      | 2023-07-12 | Factura transport extern | Înregistrare transport         | 371        | 401         | 4950.00    | 4950.00     |
-##
-##      | 2023-07-12 | Document                 | Inregistrare taxe vamale       | 371        | 446         | 3000.00    | 3000.00     |
-##      | 2023-07-12 | Document                 | Inregistrare comision vamal    | 371        | 446         | 150.00     | 150.00      |
-##      | 2023-07-12 |                          | Inregistrare TVA import vamal  | 4426       | 446         | 6298.50    | 6298.50     |
-##      | 2023-07-12 | Ordin de plată           | Plata datorii vamale           | 446        | 5121        | 3000.00    | 3000.00     |
-##      | 2023-07-12 | Ordin de plată           | Plata comision vamal           | 446        | 5121        | 150.00     | 150.00      |
-##      | 2023-07-12 | Ordin de plată           | Plata TVA import               | 446        | 5121        | 6298.50    | 6298.50     |
+
 #
 #    * inregistrez tranzactii:
 #      | data       | document                          | descriere                                          | cont_debit | cont_credit | suma_debit | suma_credit |

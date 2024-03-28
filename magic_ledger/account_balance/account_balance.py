@@ -10,7 +10,7 @@ from magic_ledger import db
 class AccountBalance(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     analytical_account = db.Column(
-        db.String(255), foreign_key="account_plan.account", nullable=False
+        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
     )
     initial_debit = db.Column(db.Float, nullable=False)
     initial_credit = db.Column(db.Float, nullable=False)

@@ -28,12 +28,13 @@ def create_item(request_body):
             "measurement_unit",
             "acquisition_price",
             "vat_rate",
-            "in_analytical_account",
-            "out_analytical_account",
             "inventory_id",
-            "invoice_id",
         )
     }
+    if "invoice_id" in request_body.keys():
+        item_data["invoice_id"] = request_body["invoice_id"]
+    else:
+        item_data["invoice_id"] = None
     new_item = InventoryItem(**item_data)
     db.session.add(new_item)
     db.session.commit()

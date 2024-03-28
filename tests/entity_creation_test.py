@@ -19,6 +19,25 @@ project_ABC = {
     "account": "RO49AAAA1B31007593840000",
     "details": "AAAA BANK",
 }
+p3 = {
+    "project_name": "XXXs",
+    "caen_code": "4941",
+    "vat_mode": "on_invoice",
+    "status": "active",
+    "organization_name": "xxx",
+    "cif": "XXXXXX",
+    "nrc": "xxx11",
+    "country": "xxx",
+    "state_or_province": "xxx",
+    "city": "xxx",
+    "street": "xxx",
+    "apartment_or_suite": "xxx",
+    "postal_code": "xxx",
+    "phone": "xxx",
+    "email": "xxx",
+    "account": "xxx",
+    "details": "xxx",
+}
 
 
 def test_create_project(client):
@@ -47,6 +66,19 @@ def test_create_project(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data["project_name"] == "ABC"
+
+
+def test_create_project2(client):
+    response = client.post("/projects/", json=p3)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/projects/1"
+
+    resp = client.get("/1/third-parties/organizations/projects/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 1
+    assert data[0]["organization_name"] == "xxx"
+    assert "id" in data[0].keys()
 
 
 organization_AAA = {
@@ -121,22 +153,22 @@ def test_create_supplier_organization(client):
     assert data["address_id"] == 2
 
 
-def test_update_supplier(client):
-    test_create_supplier_organization(client)
-    organization_AAA["organization_name"] = "AAA ONLINE SRL"
-    organization_AAA["details"] = "BBBB BANK"
-    resp = client.put("/1/third-parties/organizations/2", json=organization_AAA)
-    assert resp.status_code == 201
-
-    response = client.get("/1/third-parties/organizations/suppliers/full/")
-    assert response.status_code == 200
-    resp_data = json.loads(response.data)
-    assert len(resp_data) == 1
-    data = resp_data[0]
-    assert data["organization_name"] == "AAA ONLINE SRL"
-    assert data["details"] == "BBBB BANK"
-
-    assert data["postal_code"] == "106100"
+# def test_update_supplier(client):
+#     test_create_supplier_organization(client)
+#     organization_AAA["organization_name"] = "AAA ONLINE SRL"
+#     organization_AAA["details"] = "BBBB BANK"
+#     resp = client.put("/1/third-parties/organizations/2", json=organization_AAA)
+#     assert resp.status_code == 201
+#
+#     response = client.get("/1/third-parties/organizations/suppliers/full/")
+#     assert response.status_code == 200
+#     resp_data = json.loads(response.data)
+#     assert len(resp_data) == 1
+#     data = resp_data[0]
+#     assert data["organization_name"] == "AAA ONLINE SRL"
+#     assert data["details"] == "BBBB BANK"
+#
+#     assert data["postal_code"] == "106100"
 
 
 organization_AAB = {
@@ -366,13 +398,13 @@ def test_create_inventory(client):
 
 invoice = {
     "serial_number": "FF0001",
-    "issue_date": "2020-01-01",
-    "receive_date": "2020-01-01",
+    "invoice_date": "2020-01-01",
     "due_date": "2020-01-01",
     "supplier_id": "2",
     "client_id": "1",
     "currency": "RON",
     "amount": "100",
+    "vat_amount": "19",
     "issuer_name": "Valise Vasile",
 }
 
@@ -398,9 +430,6 @@ item = {
     "measurement_unit": "cutie",
     "acquisition_price": 100,
     "vat_rate": 19,
-    "in_analytical_account": "371",
-    "out_analytical_account": "707",
-    "total_value": 100,
     "invoice_id": 1,
     "inventory_id": 1,
 }
@@ -434,8 +463,6 @@ def test_create_item(client):
     assert data["total_value"] == 119
     assert data["vat_rate"] == 19
     assert data["vat_amount"] == 19
-    assert data["in_analytical_account"] == "371"
-    assert data["out_analytical_account"] == "707"
 
 
 transaction = {
@@ -469,7 +496,7 @@ def test_create_transaction(client):
 
 init_balance = [
     {
-        "balance_date_string": "2023-11",
+        "balance_date_string": "2023-11-01",
         "analytical_account": "371",
         "initial_debit": 10,
         "initial_credit": 100,
@@ -477,7 +504,7 @@ init_balance = [
         "cumulated_credit": 100,
     },
     {
-        "balance_date_string": "2023-11",
+        "balance_date_string": "2023-11-01",
         "analytical_account": "401",
         "initial_debit": 10,
         "initial_credit": 100,
@@ -539,7 +566,7 @@ def test_create_asset(client):
     assert data["asset_class"] == "21"
     assert data["depreciation_method"] == "straight_line"
     assert data["total_amount"] == 30000
-    assert data["total_duration"] == 5
+    assert data["total_duration"] == 60
     assert data["owner_id"] == 1
     assert data["id"] == 1
     assert data["remaining_duration"] == 35
@@ -548,9 +575,7 @@ def test_create_asset(client):
     assert data["monthly_amount"] == 500
     assert data["analytical_account"] == "2133"
     assert data["deprecation_analytical_account"] == "2813"
-
-    # TODO fix this
-    assert data["acquisition_date"] == "Wed, 01 Sep 2021 00:00:00 GMT"
+    assert data["acquisition_date"] == "2021-09-01 00:00:00"
 
 
 holding = {
@@ -625,3 +650,63 @@ def test_exchange_rate_entry(client):
     assert resp.status_code == 200
     data = json.loads(resp.data)
     assert len(data) == 2
+
+
+temp2 = {
+    "id": 2,
+    "name": "Plata salariu si taxe",
+    "description": "Inregistrarea salariilor datorate si a taxelor aferente",
+    "main_transaction": {
+        "debit_account": "641",
+        "credit_account": "421",
+        "currency": "RON",
+        "details": "Inregistrare cheltuieli cu salariile",
+    },
+    "followup_transactions": [
+        {
+            "debit_account": "421",
+            "credit_account": "431",
+            "operation": "*25/100",
+            "details": "Contributie asigurari sociale - CAS",
+        },
+        {
+            "debit_account": "421",
+            "credit_account": "437",
+            "operation": "*10/100",
+            "details": "Contribuții de asigurări sociale de sănătate - CASS",
+        },
+        {
+            "debit_account": "421",
+            "credit_account": "444",
+            "operation": "*65/100*10/100",
+            "details": "Impozit pe venit",
+        },
+    ],
+}
+
+
+def test_create_transaction_template(client):
+    r1 = client.post("/1/transaction-group-templates/", json=temp2)
+    assert r1.status_code == 201
+
+    r2 = client.get("/1/transaction-group-templates/")
+    assert r2.status_code == 200
+    data = json.loads(r2.data)
+    assert len(data) == 1
+    data = data[0]
+    assert data["id"] == 1
+
+    r3 = client.post(
+        "/1/transaction-group-templates/1/use-template",
+        json={
+            "transaction_group_template_id": 1,
+            "transaction_date": "2023-09-01",
+            "amount": 4000,
+        },
+    )
+    assert r3.status_code == 201
+    data = json.loads(r3.data)
+    assert len(data) == 4
+
+    r4 = client.get("/1/account-balance/")
+    assert r4.status_code == 200

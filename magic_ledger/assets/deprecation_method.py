@@ -1,1 +1,1 @@
-STREIGT_LINE = "straight_line"
+STREIGHT_LINE = "straight_line"

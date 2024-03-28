@@ -5,7 +5,7 @@ from flask import jsonify, request
 
 from magic_ledger.inventory.api_model import inventory_model_output
 from magic_ledger.invoices import invoice_service
-from magic_ledger.invoices.api_model import invoice_model_input
+from magic_ledger.invoices.api_model import invoice_model_input, invoice_model_output
 import magic_ledger.invoices.document_type as document_type
 import magic_ledger.invoices.payment_status as payment_status
 
@@ -26,7 +26,6 @@ class Invoices(Resource):
     def post(self, project_id):
         logging.info("""Creating an invoice with the following data:""")
         request.json["owner_id"] = project_id
-        request.json["document_type"] = document_type.INVOICE
         request.json["payment_status"] = payment_status.DUE
         logging.info(request.json)
         inventory = invoice_service.create_invoice(request.json)
@@ -36,7 +35,7 @@ class Invoices(Resource):
             {"location": "/" + project_id + "/invoices/" + str(inventory.id)},
         )
 
-    @ns.marshal_list_with(inventory_model_output, code=200)
+    @ns.marshal_list_with(invoice_model_output, code=200)
     def get(self, project_id):
         return invoice_service.get_all_invoices(owner_id=project_id), 200
 

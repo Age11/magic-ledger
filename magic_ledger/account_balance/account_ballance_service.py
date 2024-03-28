@@ -55,7 +55,7 @@ def update_account_balance(
     current_rollover_debit=0,
     current_rollover_credit=0,
 ):
-    balance_date = datetime.strptime(balance_date_string, "%Y-%m")
+    balance_date = datetime.strptime(balance_date_string, "%Y-%m-%d")
     exists, account = account_balance_exists(
         owner_id, analytical_account, balance_date.month, balance_date.year
     )

@@ -28,11 +28,9 @@ class MagicLedgerUser:
                 "phone": row["telefon"],
                 "email": row["email"],
                 "account": row["cont_bancar"],
-                "details": row["detalii"]
+                "details": row["detalii"],
             }
-            response = self.client.post(
-                self.base_url + "/projects/", json=req
-            )
+            response = self.client.post(self.base_url + "/projects/", json=req)
             assert response.status_code == 201
             self.selected_project = response.headers["location"].split("/")[2]
             return response
@@ -92,7 +90,6 @@ class MagicLedgerUser:
     def create_client_agent(self, context_table):
         for row in context_table:
             req = {
-
                 "agent_name": row["nume"],
                 "last_name": row["prenume"],
                 "cnp": row["cnp"],
@@ -106,7 +103,6 @@ class MagicLedgerUser:
                 "email": row["email"],
                 "account": row["cont"],
                 "details": row["detalii"],
-
             }
             response = self.client.post(
                 self.base_url + "/1/third-parties/agents/clients/", json=req
@@ -148,7 +144,9 @@ class MagicLedgerUser:
                 "asset_class": row["clasa"],
                 "analytical_account": row["cont_analitic"],
                 "deprecation_analytical_account": row["cont_analitic_amortizare"],
-                "depreciation_method": "straight_line" if row["tip_amortizare"] == "liniara" else row["tip_amortizare"],
+                "depreciation_method": "straight_line"
+                if row["tip_amortizare"] == "liniara"
+                else row["tip_amortizare"],
                 "total_duration": int(row["durata_utilizare"]),
                 "total_amount": int(row["valoare_totala"]),
                 "acquisition_date": row["data_achizitie"],
@@ -173,7 +171,8 @@ class MagicLedgerUser:
             }
 
             response = self.client.post(
-                self.base_url + "/" + self.selected_project + "/financial-holdings/", json=req
+                self.base_url + "/" + self.selected_project + "/financial-holdings/",
+                json=req,
             )
             assert response.status_code == 201
             return response
@@ -191,7 +190,8 @@ class MagicLedgerUser:
             }
 
             response = self.client.post(
-                self.base_url + "/" + self.selected_project + "/liquidity/reserve/", json=req
+                self.base_url + "/" + self.selected_project + "/liquidity/reserve/",
+                json=req,
             )
             assert response.status_code == 201
             return response
@@ -205,11 +205,12 @@ class MagicLedgerUser:
                 "initial_debit": float(row["debit_initial"]),
                 "initial_credit": float(row["credit_initial"]),
                 "debit": float(row["debit"]),
-                "credit": float(row["credit"])
+                "credit": float(row["credit"]),
             }
             req_body.append(req)
         response = self.client.post(
-            self.base_url + "/" + self.selected_project + "/account-balance/", json=req_body
+            self.base_url + "/" + self.selected_project + "/account-balance/",
+            json=req_body,
         )
         assert response.status_code == 201
         return response
@@ -218,7 +219,11 @@ class MagicLedgerUser:
 
     def close_balance_for_month(self, month):
         response = self.client.post(
-            self.base_url + "/" + self.selected_project + "/account-balance/close/" + month
+            self.base_url
+            + "/"
+            + self.selected_project
+            + "/account-balance/close/"
+            + month
         )
         assert response.status_code == 201
         return response
@@ -233,11 +238,108 @@ class MagicLedgerUser:
                 "transaction_date": row["data"],
                 "details": row["descriere"],
                 "currency": "RON",
-                "owner_id": self.selected_project
-             }
+                "owner_id": self.selected_project,
+            }
             response = self.client.post(
                 self.base_url + "/" + self.selected_project + "/transactions/", json=req
             )
             assert response.status_code == 201
         return True
 
+    def create_inventory(self, context_table):
+        for row in context_table:
+            req = {
+                "name": row["nume"],
+                "description": row["descriere"],
+                "inventory_method": row["metoda_inventariere"],
+            }
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/inventories/", json=req
+            )
+            return response
+
+    def add_item(self, context):
+        for row in context:
+            req = {
+                "name": row["nume_articol"],
+                "description": row["descriere"],
+                "quantity": int(row["cantitate"]),
+                "measurement_unit": row["unitate_masura"],
+                "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "vat_rate": round(float(row["cota_tva"]), 2),
+                "invoice_id": -int(self.selected_project),
+            }
+
+            response = self.client.post(
+                self.base_url
+                + "/"
+                + self.selected_project
+                + "/inventories/"
+                + "-"
+                + self.selected_project
+                + "/items/",
+                json=req,
+            )
+            return response
+
+    def add_inventory_item(self, context):
+        for row in context:
+            req = {
+                "name": row["nume_articol"],
+                "description": row["descriere"],
+                "quantity": int(row["cantitate"]),
+                "measurement_unit": row["unitate_masura"],
+                "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "vat_rate": round(float(row["cota_tva"]), 2),
+                "invoice_id": -int(self.selected_project),
+            }
+            response = self.client.post(
+                self.base_url
+                + "/"
+                + self.selected_project
+                + "/inventories/"
+                + row["id_inventar"]
+                + "/items/",
+                json=req,
+            )
+            return response
+
+    def add_invoice(self, context):
+        for row in context:
+            req = {
+                "serial_number": row["serie"],
+                "invoice_date": row["data_factura"],
+                "due_date": row["data_scadenta"],
+                "supplier_id": int(row["id_furnizor"]),
+                "client_id": int(row["id_client"]),
+                "currency": row["moneda"],
+                "amount": round(float(row["valoare_factura"]), 2),
+                "vat_amount": round(float(row["valoare_tva"]), 2),
+                "issuer_name": row["nume_emitent"],
+            }
+            response = self.client.post(
+                self.base_url + "/" + self.selected_project + "/invoices/", json=req
+            )
+            return response
+
+    def add_invoice_item(self, context):
+        for row in context:
+            req = {
+                "name": row["nume_articol"],
+                "description": row["descriere"],
+                "quantity": int(row["cantitate"]),
+                "measurement_unit": row["unitate_masura"],
+                "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "vat_rate": round(float(row["cota_tva"]), 2),
+                "invoice_id": row["id_factura"],
+            }
+            response = self.client.post(
+                self.base_url
+                + "/"
+                + self.selected_project
+                + "/inventories/"
+                + row["id_inventar"]
+                + "/items/",
+                json=req,
+            )
+            return response

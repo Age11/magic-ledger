@@ -8,6 +8,7 @@ from magic_ledger import db
 from datetime import datetime
 from magic_ledger.misc.currency import Currency
 
+
 class RollType(Enum):
     RECEIVABLE = "receivable"
     PAYABLE = "payable"
@@ -17,28 +18,27 @@ class RollType(Enum):
 @dataclass
 class ForeignCurrencyRoll(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
-    owner_id = db.Column(
-        db.Integer, db.ForeignKey("project.id"), nullable=False
-    )
+    owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
 
     currency = db.Column(db.String(10), nullable=False)
     quantity = db.Column(db.Float, nullable=False)
     acquisition_price = db.Column(db.Float, nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
-    analytical_account = db.Column(db.String(255), foreign_key="account_plan.account", nullable=False)
+    analytical_account = db.Column(
+        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
+    )
     acquisition_date = db.Column(db.DateTime, nullable=False)
     roll_type = db.Column(db.String(10), nullable=False)
 
-
     def __init__(
-            self,
-            owner_id,
-            currency,
-            quantity,
-            acquisition_price,
-            analytical_account,
-            roll_type,
-            acquisition_date=datetime.now().strftime("%Y-%m-%d"),
+        self,
+        owner_id,
+        currency,
+        quantity,
+        acquisition_price,
+        analytical_account,
+        roll_type,
+        acquisition_date=datetime.now().strftime("%Y-%m-%d"),
     ):
         self.owner_id = owner_id
         self.currency = currency
