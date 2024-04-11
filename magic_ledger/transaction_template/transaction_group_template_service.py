@@ -47,6 +47,18 @@ def retrieve_all_transaction_group_templates(project_id):
     return gtts
 
 
+def retrieve_all_transaction_group_templates_by_type(project_id, tx_type):
+    gtts = GroupTransactionTemplate.query.filter_by(owner_id=project_id).all()
+    for gtt in gtts:
+        gtt.main_transaction = GTTMainTransaction.query.filter_by(
+            id=gtt.main_transaction_id, tx_type=tx_type
+        ).first()
+        gtt.followup_transactions = GTTFollowupTransaction.query.filter_by(
+            main_transaction_id=gtt.main_transaction_id
+        ).all()
+    return gtts
+
+
 def generate_transactions_from_template(
     transaction_group_template_id, owner_id, request_body
 ):

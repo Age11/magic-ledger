@@ -165,3 +165,40 @@ def step_impl(context):
         }
         response = mg.add_accounting_treatment(request_body)
         assert response.status_code == 201
+
+    @given("adaug tratament contabil pentru achizitie cu tva normal si discount 10%")
+    def step_impl(context):
+        request_body = {
+            "name": "Achizitie marfuri cu TVA in regim  normal  si discount 10%",
+            "description": "Achizitie marfuri cu TVA in regim  normal 19%  si plata din cont ",
+            "main_transaction": {
+                "debit_account": "371",
+                "credit_account": "401",
+                "currency": "RON",
+                "details": "Achizitie marfa",
+                "tx_type": "intrări",
+            },
+            "followup_transactions": [
+                {
+                    "debit_account": "4426",
+                    "credit_account": "401",
+                    "operation": "*19/100",
+                    "details": "plata tva",
+                    "tx_type": "TVA-încasare",
+                },
+                {
+                    "debit_account": "371",
+                    "credit_account": "401",
+                    "operation": "*10/100*-1",
+                    "details": "discount",
+                    "tx_type": "intrări",
+                },
+                {
+                    "debit_account": "4426",
+                    "credit_account": "401",
+                    "operation": "*10/100*19/100*-1",
+                    "details": "tva discount",
+                    "tx_type": "intrări",
+                },
+            ],
+        }

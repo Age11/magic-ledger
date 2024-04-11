@@ -732,7 +732,7 @@ purchase = {
         "credit_account": "401",
         "currency": "RON",
         "details": "Inregistrare achizitie marfuri",
-        "tx_type": "intrari",
+        "tx_type": "intrări",
     },
     "followup_transactions": [
         {
@@ -756,6 +756,11 @@ def test_create_transaction_template2(client):
     assert len(data) == 1
     data = data[0]
     assert data["id"] == 1
+
+    r3 = client.get("/1/transaction-group-templates/intrări")
+    assert r3.status_code == 200
+    data = json.loads(r3.data)
+    assert len(data) == 1
 
     r3 = client.post(
         "/1/transaction-group-templates/1/use-template",
