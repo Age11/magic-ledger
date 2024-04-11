@@ -12,12 +12,14 @@ class GTTMainTransaction(db.Model):
     credit_account = Column(String, nullable=False)
     currency = Column(String)
     details = Column(String, nullable=False)
+    tx_type = Column(String, nullable=False)
 
-    def __init__(self, debit_account, credit_account, currency, details):
+    def __init__(self, debit_account, credit_account, currency, details, tx_type):
         self.debit_account = debit_account
         self.credit_account = credit_account
         self.currency = currency
         self.details = details
+        self.tx_type = tx_type
 
     def __repr__(self):
         return str(self.__getstate__())

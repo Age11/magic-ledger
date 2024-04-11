@@ -23,6 +23,7 @@ class Transaction(db.Model):
     recorded_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     details = db.Column(db.String(255), nullable=False)
+    tx_type = db.Column(db.String(255), nullable=False)
 
     def __init__(
         self,
@@ -34,6 +35,7 @@ class Transaction(db.Model):
         transaction_date,
         owner_id,
         details,
+        tx_type,
     ):
         self.debit_account = debit_account
         self.credit_account = credit_account
@@ -43,6 +45,7 @@ class Transaction(db.Model):
         self.transaction_date = datetime.strptime(transaction_date, "%Y-%m-%d")
         self.owner_id = owner_id
         self.details = details
+        self.tx_type = tx_type
 
     def __getstate__(self):
         state = self.__dict__.copy()

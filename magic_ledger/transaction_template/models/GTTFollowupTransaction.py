@@ -13,15 +13,23 @@ class GTTFollowupTransaction(db.Model):
     credit_account = Column(String, nullable=False)
     operation = Column(String)
     details = Column(String, nullable=False)
+    tx_type = Column(String, nullable=False)
 
     def __init__(
-        self, main_transaction_id, debit_account, credit_account, operation, details
+        self,
+        main_transaction_id,
+        debit_account,
+        credit_account,
+        operation,
+        details,
+        tx_type,
     ):
         self.main_transaction_id = main_transaction_id
         self.debit_account = debit_account
         self.credit_account = credit_account
         self.operation = operation
         self.details = details
+        self.tx_type = tx_type
 
     def __repr__(self):
         return str(self.__getstate__())

@@ -27,6 +27,7 @@ transaction_model_input = api.model(
         "owner_id": fields.Integer(
             required=True, description="The transaction owner id"
         ),
+        "tx_type": fields.String(required=True, description="The transaction type"),
     },
 )
 
@@ -56,5 +57,6 @@ transaction_model_output = api.model(
         "owner_id": fields.Integer(
             required=True, description="The transaction owner id"
         ),
+        "tx_type": fields.String(required=True, description="The transaction type"),
     },
 )

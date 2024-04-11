@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 
@@ -343,3 +345,13 @@ class MagicLedgerUser:
                 json=req,
             )
             return response
+
+    def add_accounting_treatment(self, request_body):
+        response = self.client.post(
+            self.base_url
+            + "/"
+            + self.selected_project
+            + "/transaction-group-templates/",
+            json=request_body,
+        )
+        return response

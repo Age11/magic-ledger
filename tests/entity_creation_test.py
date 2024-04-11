@@ -473,6 +473,7 @@ transaction = {
     "currency": "RON",
     "transaction_date": "2020-01-01",
     "details": "achizitie marfuri",
+    "tx_type": "intrari",
 }
 
 
@@ -491,6 +492,7 @@ def test_create_transaction(client):
     assert data["credit_amount"] == 100
     assert data["currency"] == "RON"
     assert data["details"] == "achizitie marfuri"
+    assert data["tx_type"] == "intrari"
     # TODO check that the account balance is updated
 
 
@@ -661,6 +663,7 @@ temp2 = {
         "credit_account": "421",
         "currency": "RON",
         "details": "Inregistrare cheltuieli cu salariile",
+        "tx_type": "salarii",
     },
     "followup_transactions": [
         {
@@ -668,18 +671,21 @@ temp2 = {
             "credit_account": "431",
             "operation": "*25/100",
             "details": "Contributie asigurari sociale - CAS",
+            "tx_type": "salarii",
         },
         {
             "debit_account": "421",
             "credit_account": "437",
             "operation": "*10/100",
             "details": "Contribuții de asigurări sociale de sănătate - CASS",
+            "tx_type": "salarii",
         },
         {
             "debit_account": "421",
             "credit_account": "444",
             "operation": "*65/100*10/100",
             "details": "Impozit pe venit",
+            "tx_type": "salarii",
         },
     ],
 }
@@ -699,7 +705,6 @@ def test_create_transaction_template(client):
     r3 = client.post(
         "/1/transaction-group-templates/1/use-template",
         json={
-            "transaction_group_template_id": 1,
             "transaction_date": "2023-09-01",
             "amount": 4000,
         },
@@ -708,5 +713,67 @@ def test_create_transaction_template(client):
     data = json.loads(r3.data)
     assert len(data) == 4
 
-    r4 = client.get("/1/account-balance/")
+    r4 = client.get("/1/transactions/")
     assert r4.status_code == 200
+    data = json.loads(r4.data)
+    assert len(data) == 4
+
+    r5 = client.get("/1/account-balance/")
+    assert r5.status_code == 200
+    data = json.loads(r5.data)
+    assert len(data) == 5
+
+
+purchase = {
+    "name": "Achiziție de mărfuri de la furnizor regim tva normal",
+    "description": "Aceasta inregistrare contabila se refera la achizitia de marfuri de la un furnizor care aplica regimul de tva normal",
+    "main_transaction": {
+        "debit_account": "371",
+        "credit_account": "401",
+        "currency": "RON",
+        "details": "Inregistrare achizitie marfuri",
+        "tx_type": "intrari",
+    },
+    "followup_transactions": [
+        {
+            "debit_account": "4426",
+            "credit_account": "401",
+            "operation": "*19/100",
+            "details": "Inregistrare TVA",
+            "tx_type": "TVA-incasare",
+        }
+    ],
+}
+
+
+def test_create_transaction_template2(client):
+    r1 = client.post("/1/transaction-group-templates/", json=purchase)
+    assert r1.status_code == 201
+
+    r2 = client.get("/1/transaction-group-templates/")
+    assert r2.status_code == 200
+    data = json.loads(r2.data)
+    assert len(data) == 1
+    data = data[0]
+    assert data["id"] == 1
+
+    r3 = client.post(
+        "/1/transaction-group-templates/1/use-template",
+        json={
+            "transaction_date": "2023-09-01",
+            "amount": 1000,
+        },
+    )
+    assert r3.status_code == 201
+    data = json.loads(r3.data)
+    assert len(data) == 2
+
+    r4 = client.get("/1/transactions/")
+    assert r4.status_code == 200
+    data = json.loads(r4.data)
+    assert len(data) == 2
+
+    r5 = client.get("/1/account-balance/")
+    assert r5.status_code == 200
+    data = json.loads(r5.data)
+    assert len(data) == 3

@@ -48,7 +48,7 @@ class TransactionProcessor(Resource):
     @ns.marshal_list_with(transaction_model_output, code=200)
     @ns.response(201, "Transactions created successfully")
     def post(self, project_id, transaction_group_template_id):
-        logging.info("""Creating an transaction with the following data:""")
+        logging.info("""Creating a transaction with the following data:""")
         return (
             generate_transactions_from_template(
                 transaction_group_template_id, project_id, request.json

@@ -12,32 +12,43 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
 
     * creez un furnizor:
-      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
-      | „Happy Service” IFN SA | 3020049 | J20/777/1998 | supplier | 0721222333 | contact@happy-service.com | facturare | Romania | Bucuresti | Bucuresti | Panseluta | 110   | 031183     | RO50PORL740266286982777 | Zarzavat Bank |
+      | organizatie      | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „MySupplier”  SA | 3020049 | J20/777/1998 | supplier | 0721222333 | contact@happy-service.com | facturare | Romania | Bucuresti | Bucuresti | Panseluta | 110   | 031183     | RO50PORL740266286982777 | Zarzavat Bank |
 
     * creez un client:
       | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
       | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
 
     * creez un inventar:
-      | nume    | descriere        | metoda_inventariere |
-      | marfuri | inventar marfuri | fifo                |
+      | nume    | descriere              | metoda_inventariere |
+      | marfuri | marfuri  petru vanzare | fifo                |
+
+    * creez un inventar:
+      | nume             | descriere           | metoda_inventariere |
+      | obiecte inventar | obiecte de inventar | fifo                |
+
 
     * adaug un articol:
-      | nume_articol  | descriere                                   | cantitate | unitate_masura | pret_unitar | cota_tva |
-      | tricou simplu | tricou bumbac 100% multicolor fara imprimeu | 10        | buc            | 12.30       | 19       |
+      | nume_articol | descriere                            | cantitate | unitate_masura | pret_unitar | cota_tva |
+      | tricou alb   | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 12.30       | 19       |
 
     * adaug un articol in inventar:
       | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | cota_tva | id_inventar |
       | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 150       | buc            | 15.30       | 19       | 1           |
 
     * adaug o factura:
-      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva |nume_emitent|
-      | FF001 | 2023-12-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.      |
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent |
+      | FF001 | 2023-12-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.        |
 
     * adaug un articol din factura in inventar:
-      | nume_articol    | descriere                            | cantitate | unitate_masura | pret_unitar | cota_tva | id_inventar | id_factura |
-      | tricou imprimeu | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 8.30        | 19       | 1           | 1          |
+      | nume_articol  | descriere                               | cantitate | unitate_masura | pret_unitar | cota_tva | id_inventar | id_factura |
+      | tricou galben | tricou bumbac 100% galben fara imprimeu | 10        | buc            | 8.30        | 19       | 1           | 1          |
+
+    * adaug tratament contabil pentru plata salariilor
+
+    * adaug tratament contabil pentru achizitie de la furnizor regim tva normal
+
+
 
 #    * creez o entitate afiliata:
 #      | organizatie  | cif     | nrc          | tip     | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada      | numar | cod_postal | cont_bancar             | detalii       |

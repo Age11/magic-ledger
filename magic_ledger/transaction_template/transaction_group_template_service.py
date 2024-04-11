@@ -44,7 +44,6 @@ def retrieve_all_transaction_group_templates(project_id):
         gtt.followup_transactions = GTTFollowupTransaction.query.filter_by(
             main_transaction_id=gtt.main_transaction_id
         ).all()
-    print(gtts)
     return gtts
 
 
@@ -58,7 +57,7 @@ def generate_transactions_from_template(
         id=transaction_group_template_id
     ).first()
     mt = GTTMainTransaction.query.filter_by(id=tgt.id).first()
-    ft = GTTFollowupTransaction.query.all()
+    ft = GTTFollowupTransaction.query.filter_by(main_transaction_id=mt.id).all()
 
     # create a transaction for the main transaction
     # create a transaction for each followup transaction
@@ -76,6 +75,7 @@ def generate_transactions_from_template(
                 "transaction_date": request_body["transaction_date"],
                 "details": mt.details,
                 "owner_id": owner_id,
+                "tx_type": mt.tx_type,
             }
         )
     )
@@ -96,6 +96,7 @@ def generate_transactions_from_template(
                     "transaction_date": request_body["transaction_date"],
                     "details": transaction.details,
                     "owner_id": owner_id,
+                    "tx_type": transaction.tx_type,
                 }
             )
         )
