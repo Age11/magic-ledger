@@ -125,3 +125,14 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
 def get_account_balances(owner_id):
     accounts = AccountBalance.query.filter_by(owner_id=owner_id).all()
     return accounts
+
+
+def get_balance_for_date(owner_id, month, year):
+    accounts = AccountBalance.query.filter(
+        and_(
+            AccountBalance.owner_id == owner_id,
+            extract("month", AccountBalance.balance_date) == month,
+            extract("year", AccountBalance.balance_date) == year,
+        )
+    ).all()
+    return accounts

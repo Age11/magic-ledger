@@ -49,3 +49,16 @@ class CloseBalance(Resource):
             project_id=project_id, balance_date_string=balance_date
         )
         return {}, 201
+
+
+@ns.route("/<year>/<month>")
+class AccountBalanceByDate(Resource):
+    @ns.marshal_list_with(account_balance_entry_model_output, code=200)
+    @ns.response(201, "Get account balance")
+    def get(self, project_id, year, month):
+        return (
+            account_balance_service.get_balance_for_date(
+                owner_id=project_id, month=month, year=year
+            ),
+            200,
+        )

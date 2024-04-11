@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 project_ABC = {
     "project_name": "ABC",
@@ -782,3 +783,15 @@ def test_create_transaction_template2(client):
     assert r5.status_code == 200
     data = json.loads(r5.data)
     assert len(data) == 3
+
+    r6 = client.get("/1/account-balance/2023/09")
+    assert r6.status_code == 200
+    data = json.loads(r6.data)
+    assert len(data) == 3
+
+    current_year = str(datetime.now().year)
+    current_month = str(datetime.now().month)
+    r7 = client.get(f"/1/account-balance/{current_year}/{current_month}")
+    assert r7.status_code == 200
+    data = json.loads(r7.data)
+    assert len(data) == 0
