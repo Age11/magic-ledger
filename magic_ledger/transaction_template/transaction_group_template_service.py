@@ -62,7 +62,7 @@ def retrieve_all_transaction_group_templates_by_type(project_id, tx_type):
 def generate_transactions_from_template(
     transaction_group_template_id, owner_id, request_body
 ):
-    # fing group template by id
+    # find group template by id
     # get main transaction using the id from the group template
     # get followup transactions using the id from the main transaction
     tgt = GroupTransactionTemplate.query.filter_by(
@@ -73,7 +73,10 @@ def generate_transactions_from_template(
 
     # create a transaction for the main transaction
     # create a transaction for each followup transaction
-
+    if "invoice_id" not in request_body.keys():
+        invoice_id = "None"
+    else:
+        invoice_id = request_body["invoice_id"]
     resp = []
 
     resp.append(
@@ -88,6 +91,7 @@ def generate_transactions_from_template(
                 "details": mt.details,
                 "owner_id": owner_id,
                 "tx_type": mt.tx_type,
+                "invoice_id": invoice_id,
             }
         )
     )
@@ -109,6 +113,7 @@ def generate_transactions_from_template(
                     "details": transaction.details,
                     "owner_id": owner_id,
                     "tx_type": transaction.tx_type,
+                    "invoice_id": invoice_id,
                 }
             )
         )

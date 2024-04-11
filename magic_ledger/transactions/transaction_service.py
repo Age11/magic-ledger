@@ -16,6 +16,7 @@ def create_transaction(request_body):
             "details",
             "owner_id",
             "tx_type",
+            "invoice_id",
         )
     }
     transaction = Transaction(**transactions_data)

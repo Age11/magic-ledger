@@ -409,8 +409,20 @@ invoice = {
     "issuer_name": "Valise Vasile",
 }
 
+transaction_on_invoice = {
+    "debit_account": "371",
+    "credit_account": "401",
+    "debit_amount": 100,
+    "credit_amount": 100,
+    "currency": "RON",
+    "transaction_date": "2020-01-01",
+    "details": "achizitie marfuri",
+    "tx_type": "intrari",
+    "invoice_id": 1,
+}
 
-def test_create_invoice(client):
+
+def test_create_invoice_and_transaction(client):
     test_create_all_types(client)
     response = client.post("/1/invoices/", json=invoice)
     assert response.status_code == 201
@@ -422,6 +434,16 @@ def test_create_invoice(client):
     data = data[0]
     data["owner_id"] = 1
     data["id"] = 1
+
+    response = client.post("/1/transactions/", json=transaction_on_invoice)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/transactions/1"
+
+    response = client.get("/1/transactions/1/")
+    assert response.status_code == 200
+    data = json.loads(response.data)
+    assert data["debit_account"] == "371"
+    assert data["invoice_id"] == 1
 
 
 item = {

@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from magic_ledger import db
-from magic_ledger.misc.currency import Currency
 
 
 @dataclass
@@ -24,6 +23,7 @@ class Transaction(db.Model):
     owner_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
     details = db.Column(db.String(255), nullable=False)
     tx_type = db.Column(db.String(255), nullable=False)
+    invoice_id = db.Column(db.Integer, db.ForeignKey("invoice.id"), nullable=True)
 
     def __init__(
         self,
@@ -36,6 +36,7 @@ class Transaction(db.Model):
         owner_id,
         details,
         tx_type,
+        invoice_id=None,
     ):
         self.debit_account = debit_account
         self.credit_account = credit_account
@@ -46,6 +47,7 @@ class Transaction(db.Model):
         self.owner_id = owner_id
         self.details = details
         self.tx_type = tx_type
+        self.invoice_id = invoice_id
 
     def __getstate__(self):
         state = self.__dict__.copy()
