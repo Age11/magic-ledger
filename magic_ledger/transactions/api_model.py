@@ -61,8 +61,8 @@ transaction_model_output = api.model(
             required=True, description="The transaction owner id"
         ),
         "tx_type": fields.String(required=True, description="The transaction type"),
-        "invoice_id": fields.Integer(
-            required=False, description="The transaction invoice id"
+        "invoice_id": fields.Raw(
+            required=False, description="The transaction invoice id or None"
         ),
     },
 )

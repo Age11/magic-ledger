@@ -1,2 +1,2 @@
-DUE = 'due'
-PAID = 'paid'
+DUE = "restantă"
+PAID = "plătită"

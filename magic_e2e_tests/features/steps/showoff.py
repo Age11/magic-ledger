@@ -52,10 +52,10 @@ def step_impl(context):
     assert response.status_code == 201
 
 
-@given('preiau balanta de verificare pentru luna "{month}"')
-def step_impl(context, month):
-    print(month)
-    response = mg.get_initial_account_balance(context.table, month)
+@given('preiau balanta de verificare pentru "{date}"')
+def step_impl(context, date):
+    print(date)
+    response = mg.create_initial_account_balance(context.table, date)
     assert response.status_code == 201
 
 
@@ -202,3 +202,103 @@ def step_impl(context):
                 },
             ],
         }
+
+    @given("adaug tratament contabil pentru vanzare catre client regim tva normal")
+    def step_impl(context):
+        request_body = {
+            "name": "Vanzare de marfuri catre client regim tva normal",
+            "description": "Aceasta inregistrare contabila se refera la vanzarea de marfuri catre un client care aplica regimul de tva normal",
+            "main_transaction": {
+                "debit_account": "4111",
+                "credit_account": "707",
+                "currency": "RON",
+                "details": "Înregistrare venituri din vanzari",
+                "tx_type": "ieșiri",
+            },
+            "followup_transactions": [
+                {
+                    "debit_account": "4111",
+                    "credit_account": "4427",
+                    "operation": "*19/100",
+                    "details": "Inregistrare TVA",
+                    "tx_type": "TVA-vanzare",
+                },
+                {
+                    "debit_account": "607",
+                    "credit_account": "371",
+                    "operation": "*1",
+                    "details": "Descarcare din gestiune",
+                    "tx_type": "ieșiri",
+                },
+            ],
+        }
+        response = mg.add_accounting_treatment(request_body)
+        assert response.status_code == 201
+
+    @given("adaug tratament contabil pentru incasare in cont de la client")
+    def step_impl(context):
+        request_body = {
+            "name": "Încasare în cont de la client",
+            "description": "Aceasta inregistrare contabila se refera la incasarea in cont de la un client",
+            "main_transaction": {
+                "debit_account": "5121",
+                "credit_account": "4111",
+                "currency": "RON",
+                "details": "Încasare în cont de la client",
+                "tx_type": "bancă",
+            },
+            "followup_transactions": [],
+        }
+        response = mg.add_accounting_treatment(request_body)
+        assert response.status_code == 201
+
+    @given("adaug tratament contabil pentru incasare in casa de la client")
+    def step_impl(context):
+        request_body = {
+            "name": "Încasare în casă de la client",
+            "description": "Aceasta inregistrare contabila se refera la casa in cont de la un client",
+            "main_transaction": {
+                "debit_account": "5311",
+                "credit_account": "4111",
+                "currency": "RON",
+                "details": "Încasare în casa de la client",
+                "tx_type": "casă",
+            },
+            "followup_transactions": [],
+        }
+        response = mg.add_accounting_treatment(request_body)
+        assert response.status_code == 201
+
+    @given("adaug tratament contabil pentru plata furnizor din cont")
+    def step_impl(context):
+        request_body = {
+            "name": "Plată furnizor din cont",
+            "description": "Aceasta inregistrare contabila se refera la plata din cont a unui furnizor",
+            "main_transaction": {
+                "debit_account": "401",
+                "credit_account": "5121",
+                "currency": "RON",
+                "details": "Încasare în casa de la client",
+                "tx_type": "bancă",
+            },
+            "followup_transactions": [],
+        }
+        response = mg.add_accounting_treatment(request_body)
+        assert response.status_code == 201
+
+        @given("adaug tratament contabil pentru plata furnizor din casă")
+        def step_impl(context):
+            request_body = {
+                "name": "Plata furnizor din casă",
+                "description": "Aceasta inregistrare contabila se refera la plata din casa a unui furnizor",
+                "main_transaction": {
+                    "debit_account": "401",
+                    "credit_account": "5311",
+                    "currency": "RON",
+                    "details": "Încasare în casa de la client",
+                    "tx_type": "casă",
+                },
+                "followup_transactions": [],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201

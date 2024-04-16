@@ -4,22 +4,7 @@ import magic_ledger.account_balance.account_ballance_service as balance_service
 
 
 def create_transaction(request_body):
-    transactions_data = {
-        k: request_body[k]
-        for k in (
-            "debit_account",
-            "credit_account",
-            "debit_amount",
-            "credit_amount",
-            "currency",
-            "transaction_date",
-            "details",
-            "owner_id",
-            "tx_type",
-            "invoice_id",
-        )
-    }
-    transaction = Transaction(**transactions_data)
+    transaction = Transaction(**request_body)
     db.session.add(transaction)
     db.session.commit()
     return transaction
@@ -45,14 +30,14 @@ def create_transaction_and_update_balance(request_body):
         owner_id=request_body["owner_id"],
         analytical_account=request_body["debit_account"],
         current_rollover_debit=request_body["debit_amount"],
-        balance_date_string=request_body["transaction_date"],
+        balance_date=request_body["transaction_date"],
     )
 
     balance_service.update_account_balance(
         owner_id=request_body["owner_id"],
         analytical_account=request_body["credit_account"],
         current_rollover_credit=request_body["credit_amount"],
-        balance_date_string=request_body["transaction_date"],
+        balance_date=request_body["transaction_date"],
     )
 
     return transaction

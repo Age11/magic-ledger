@@ -49,14 +49,32 @@ def retrieve_all_transaction_group_templates(project_id):
 
 def retrieve_all_transaction_group_templates_by_type(project_id, tx_type):
     gtts = GroupTransactionTemplate.query.filter_by(owner_id=project_id).all()
+    res = []
     for gtt in gtts:
         gtt.main_transaction = GTTMainTransaction.query.filter_by(
-            id=gtt.main_transaction_id, tx_type=tx_type
+            id=gtt.main_transaction_id
         ).first()
         gtt.followup_transactions = GTTFollowupTransaction.query.filter_by(
             main_transaction_id=gtt.main_transaction_id
         ).all()
-    return gtts
+        if gtt.main_transaction.tx_type == tx_type:
+            res.append(gtt)
+    return res
+
+
+def transaction_group_templates_by_type(project_id, tx_type):
+    gtts = GroupTransactionTemplate.query.filter_by(owner_id=project_id).all()
+    res = []
+    for gtt in gtts:
+        gtt.main_transaction = GTTMainTransaction.query.filter_by(
+            id=gtt.main_transaction_id
+        ).first()
+        gtt.followup_transactions = GTTFollowupTransaction.query.filter_by(
+            main_transaction_id=gtt.main_transaction_id
+        ).all()
+        if gtt.main_transaction.tx_type in tx_type:
+            res.append(gtt)
+    return res
 
 
 def generate_transactions_from_template(

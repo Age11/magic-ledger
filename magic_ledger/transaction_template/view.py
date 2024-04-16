@@ -7,6 +7,7 @@ from magic_ledger.transaction_template.transaction_group_template_service import
     retrieve_all_transaction_group_templates,
     generate_transactions_from_template,
     retrieve_all_transaction_group_templates_by_type,
+    transaction_group_templates_by_type,
 )
 
 import logging
@@ -47,6 +48,17 @@ class GroupTransactionTemplateByType(Resource):
     def get(self, project_id, tx_type):
         return (
             retrieve_all_transaction_group_templates_by_type(project_id, tx_type),
+            200,
+        )
+
+
+@ns.route("/by-type")
+class GroupTransactionTemplateByType(Resource):
+    @ns.response(200, "Transaction templates retrieved successfully by type")
+    @ns.marshal_list_with(transaction_group_template_model, code=200)
+    def get(self, project_id):
+        return (
+            transaction_group_templates_by_type(project_id, request.json["tx_type"]),
             200,
         )
 

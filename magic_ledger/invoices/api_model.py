@@ -1,6 +1,6 @@
 from flask_restx import fields
 from magic_ledger.extensions import api
-from magic_ledger.invoices import payment_status, document_type
+from magic_ledger.invoices import payment_status, document_type, invoice_type
 
 invoice_model_output = api.model(
     "invoice_input",
@@ -9,6 +9,11 @@ invoice_model_output = api.model(
         "serial_number": fields.String(required=True, description="The invoice name"),
         "invoice_date": fields.Date(required=True, description="The invoice date"),
         "due_date": fields.Date(required=True, description="The invoice due date"),
+        "invoice_type": fields.String(
+            required=True,
+            description="The invoice type",
+            enum=[invoice_type.PAYABLE, invoice_type.RECEIVABLE],
+        ),
         "payment_status": fields.String(
             required=True,
             description="The invoice payment status",

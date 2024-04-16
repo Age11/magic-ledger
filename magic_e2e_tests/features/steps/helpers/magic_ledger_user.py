@@ -198,16 +198,16 @@ class MagicLedgerUser:
             assert response.status_code == 201
             return response
 
-    def get_initial_account_balance(self, context_table, month):
+    def create_initial_account_balance(self, context_table, date):
         req_body = []
         for row in context_table:
             req = {
-                "balance_date": month,
+                "balance_date": date,
                 "analytical_account": row["cont"],
                 "initial_debit": float(row["debit_initial"]),
                 "initial_credit": float(row["credit_initial"]),
-                "debit": float(row["debit"]),
-                "credit": float(row["credit"]),
+                "cumulated_debit": float(row["debit_cumulat"]),
+                "cumulated_credit": float(row["credit_cumulat"]),
             }
             req_body.append(req)
         response = self.client.post(
@@ -217,7 +217,7 @@ class MagicLedgerUser:
         assert response.status_code == 201
         return response
 
-    close_month = get_initial_account_balance
+    close_month = create_initial_account_balance
 
     def close_balance_for_month(self, month):
         response = self.client.post(
@@ -268,9 +268,14 @@ class MagicLedgerUser:
                 "quantity": int(row["cantitate"]),
                 "measurement_unit": row["unitate_masura"],
                 "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "sale_price": round(float(row["pret_vanzare"]), 2),
+                "currency": "RON",
                 "vat_rate": round(float(row["cota_tva"]), 2),
                 "invoice_id": -int(self.selected_project),
             }
+
+            if "data_achizitie" in row.headings:
+                req["acquisition_date"] = row["data_achizitie"]
 
             response = self.client.post(
                 self.base_url
@@ -292,6 +297,8 @@ class MagicLedgerUser:
                 "quantity": int(row["cantitate"]),
                 "measurement_unit": row["unitate_masura"],
                 "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "sale_price": round(float(row["pret_vanzare"]), 2),
+                "currency": "RON",
                 "vat_rate": round(float(row["cota_tva"]), 2),
                 "invoice_id": -int(self.selected_project),
             }
@@ -310,6 +317,7 @@ class MagicLedgerUser:
         for row in context:
             req = {
                 "serial_number": row["serie"],
+                "invoice_type": row["tip_factura"],
                 "invoice_date": row["data_factura"],
                 "due_date": row["data_scadenta"],
                 "supplier_id": int(row["id_furnizor"]),
@@ -332,6 +340,8 @@ class MagicLedgerUser:
                 "quantity": int(row["cantitate"]),
                 "measurement_unit": row["unitate_masura"],
                 "acquisition_price": round(float(row["pret_unitar"]), 2),
+                "sale_price": round(float(row["pret_vanzare"]), 2),
+                "currency": "RON",
                 "vat_rate": round(float(row["cota_tva"]), 2),
                 "invoice_id": row["id_factura"],
             }

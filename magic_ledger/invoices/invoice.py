@@ -22,7 +22,8 @@ class Invoice(db.Model):
     issuer_name = db.Column(db.String(255))
     invoice_date = db.Column(db.DateTime, nullable=False)
     due_date = db.Column(db.DateTime, nullable=False)
-    payment_status = db.Column(db.String(25), nullable=False)
+    invoice_type = db.Column(db.String(10), nullable=False)
+    payment_status = db.Column(db.String(4), nullable=False)
     supplier_id = db.Column(db.Integer, db.ForeignKey("organization.id"))
     client_id = db.Column(db.Integer, db.ForeignKey("organization.id"), nullable=False)
     currency = db.Column(db.String(25), nullable=False)
@@ -35,6 +36,7 @@ class Invoice(db.Model):
         serial_number,
         due_date,
         invoice_date,
+        invoice_type,
         payment_status,
         owner_id,
         supplier_id,
@@ -57,6 +59,7 @@ class Invoice(db.Model):
         self.total_amount = self.amount + self.vat_amount
 
         self.payment_status = payment_status
+        self.invoice_type = invoice_type
         self.currency = currency
 
     def __getstate__(self):

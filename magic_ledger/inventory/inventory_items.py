@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from magic_ledger import db
 
@@ -14,15 +15,16 @@ class InventoryItem(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     measurement_unit = db.Column(db.String(255), nullable=False)
     acquisition_price = db.Column(db.Float, nullable=False)
-
-    value = db.Column(db.Float, nullable=False)
+    currency = db.Column(db.String(3), nullable=False)
     total_value = db.Column(db.Float, nullable=False)
+    sale_price = db.Column(db.Float, nullable=True)
 
     vat_rate = db.Column(db.Float, nullable=False)
-    vat_amount = db.Column(db.Float, nullable=False)
 
     invoice_id = db.Column(db.Integer, db.ForeignKey("invoice.id"))
     inventory_id = db.Column(db.Integer, db.ForeignKey("inventory.id"), nullable=False)
+
+    acquisition_date = db.Column(db.DateTime, nullable=False)
 
     def __init__(
         self,
@@ -31,9 +33,12 @@ class InventoryItem(db.Model):
         quantity,
         measurement_unit,
         acquisition_price,
+        sale_price,
         vat_rate,
         invoice_id,
         inventory_id,
+        currency="RON",
+        acquisition_date=datetime.now().strftime("%Y-%m-%d"),
     ):
         self.name = name
         self.description = description
@@ -41,16 +46,23 @@ class InventoryItem(db.Model):
         self.measurement_unit = measurement_unit
         self.acquisition_price = acquisition_price
         self.vat_rate = vat_rate
-        self.value = quantity * acquisition_price
-        self.vat_amount = self.value * vat_rate / 100
-        self.total_value = self.value + self.vat_amount
+        self.total_value = quantity * acquisition_price
+        self.sale_price = sale_price
         self.inventory_id = inventory_id
         self.invoice_id = invoice_id
+        self.currency = currency
+        self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m-%d")
 
     def __getstate__(self):
         state = self.__dict__.copy()
         del state["_sa_instance_state"]
+        state["acquisition_date"] = state["acquisition_date"].strftime("%Y-%m-%d")
         return state
 
     def __repr__(self):
         return str(self.__getstate__())
+
+    def decrease_quantity(self, quantity):
+        self.quantity -= quantity
+        self.total_value = self.quantity * self.acquisition_price
+        db.session.commit()

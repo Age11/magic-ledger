@@ -65,6 +65,18 @@ class InventoryItems(Resource):
 
     @ns.marshal_list_with(inventory_item_model_output, code=200)
     def get(self, project_id, inventory_id):
+        return (
+            inventory_service.get_inventory_items_by_inventory_method(
+                inventory_id=inventory_id
+            ),
+            200,
+        )
+
+
+@ns.route("/<inventory_id>/items/all", endpoint="all_inventory_items")
+class AllInventoryItems(Resource):
+    @ns.marshal_list_with(inventory_item_model_output, code=200)
+    def get(self, project_id, inventory_id):
         return inventory_service.get_all_inventory_items(inventory_id=inventory_id), 200
 
 
@@ -78,3 +90,18 @@ class InventoryItemById(Resource):
             ),
             200,
         )
+
+
+@ns.route("/<inventory_id>/items/<item_id>/decrease-stock/")
+class DecreaseStock(Resource):
+    def put(self, project_id, inventory_id, item_id):
+        logging.info("""Decreasing stock for item with id: {}""".format(item_id))
+        request.json["inventory_id"] = inventory_id
+        request.json["item_id"] = item_id
+        logging.info(request.json)
+        item = inventory_service.decrease_stock(
+            item_id=item_id,
+            inventory_id=inventory_id,
+            quantity=request.json["quantity"],
+        )
+        return {}, 204

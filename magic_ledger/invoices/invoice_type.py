@@ -1,0 +1,2 @@
+PAYABLE = "plată"
+RECEIVABLE = "încasare"

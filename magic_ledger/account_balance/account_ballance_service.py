@@ -9,11 +9,11 @@ from magic_ledger.account_balance.account_balance import AccountBalance
 from magic_ledger import db
 
 
-def create_account_balance(project_id, analytical_account, balance_date_string):
+def create_account_balance(project_id, analytical_account, balance_date):
     account = AccountBalance(
         analytical_account=analytical_account,
         owner_id=project_id,
-        balance_date_string=balance_date_string,
+        balance_date_string=balance_date,
     )
     db.session.add(account)
     db.session.commit()
@@ -47,7 +47,7 @@ def account_balance_exists(
 def update_account_balance(
     owner_id,
     analytical_account,
-    balance_date_string,
+    balance_date,
     initial_debit=0,
     initial_credit=0,
     cumulated_debit=0,
@@ -55,9 +55,9 @@ def update_account_balance(
     current_rollover_debit=0,
     current_rollover_credit=0,
 ):
-    balance_date = datetime.strptime(balance_date_string, "%Y-%m-%d")
+    bd = datetime.strptime(balance_date, "%Y-%m-%d")
     exists, account = account_balance_exists(
-        owner_id, analytical_account, balance_date.month, balance_date.year
+        owner_id, analytical_account, bd.month, bd.year
     )
     if exists:
         account.update_balance(
@@ -71,7 +71,7 @@ def update_account_balance(
         db.session.add(account)
     else:
         account = create_account_balance(
-            owner_id, analytical_account, balance_date.strftime("%Y-%m-%d")
+            owner_id, analytical_account, bd.strftime("%Y-%m-%d")
         )
         account.update_balance(
             initial_debit,

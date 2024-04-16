@@ -50,3 +50,24 @@ class InvoiceById(Resource):
             ),
             200,
         )
+
+
+@ns.route("/payable/")
+class PayableInvoices(Resource):
+    @ns.marshal_list_with(invoice_model_output, code=200)
+    def get(self, project_id):
+        return invoice_service.get_all_payable_invoices(owner_id=project_id), 200
+
+
+@ns.route("/receivable/")
+class ReceivableInvoices(Resource):
+    @ns.marshal_list_with(invoice_model_output, code=200)
+    def get(self, project_id):
+        return invoice_service.get_all_receivable_invoices(owner_id=project_id), 200
+
+
+@ns.route("/<invoice_id>/pay/")
+class SolvePayment(Resource):
+    def put(self, invoice_id, project_id):
+        invoice_service.solve_payment(invoice_id, owner_id=project_id)
+        return {}, 204
