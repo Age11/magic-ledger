@@ -85,6 +85,10 @@ def create_app(test_config=None):
 
     api.add_namespace(assets.ns)
 
+    from magic_ledger import reports
+
+    api.add_namespace(reports.ns)
+
     from magic_ledger import financial_holdings
 
     app.register_blueprint(financial_holdings.bp)

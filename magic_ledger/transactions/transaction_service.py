@@ -41,3 +41,15 @@ def create_transaction_and_update_balance(request_body):
     )
 
     return transaction
+
+
+def get_transactions_by_type(owner_id, tx_type, tx_date):
+    resp = []
+    transactions = Transaction.query.filter_by(owner_id=owner_id).all()
+    for transaction in transactions:
+        if (
+            transaction.tx_type in tx_type
+            and transaction.transaction_date.strftime("%Y-%m") == tx_date
+        ):
+            resp.append(transaction)
+    return resp

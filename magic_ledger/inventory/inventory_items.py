@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from magic_ledger import db
+from magic_ledger.inventory import inventory_item_type
 
 
 @dataclass
@@ -25,6 +26,7 @@ class InventoryItem(db.Model):
     inventory_id = db.Column(db.Integer, db.ForeignKey("inventory.id"), nullable=False)
 
     acquisition_date = db.Column(db.DateTime, nullable=False)
+    entry_type = db.Column(db.String(7), nullable=False)
 
     def __init__(
         self,
@@ -39,6 +41,7 @@ class InventoryItem(db.Model):
         inventory_id,
         currency="RON",
         acquisition_date=datetime.now().strftime("%Y-%m-%d"),
+        entry_type=inventory_item_type.STOCK,
     ):
         self.name = name
         self.description = description
@@ -46,12 +49,13 @@ class InventoryItem(db.Model):
         self.measurement_unit = measurement_unit
         self.acquisition_price = acquisition_price
         self.vat_rate = vat_rate
-        self.total_value = quantity * acquisition_price
+        self.total_value = round(quantity * acquisition_price, 2)
         self.sale_price = sale_price
         self.inventory_id = inventory_id
         self.invoice_id = invoice_id
         self.currency = currency
         self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m-%d")
+        self.entry_type = entry_type
 
     def __getstate__(self):
         state = self.__dict__.copy()

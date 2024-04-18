@@ -103,7 +103,7 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
 
     if balance_date.month == 12:
         for account in accounts:
-            account.cummulate_balance()
+            account.cumulate_amounts()
             account.calculate_total_amounts()
 
     for account in accounts:
@@ -117,7 +117,7 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
         new_account.initial_credit = account.initial_credit
         new_account.cumulated_debit = account.cumulated_debit
         new_account.cumulated_credit = account.cumulated_credit
-        account.completed = True
+        account.processed = True
         db.session.add(new_account)
     db.session.commit()
 
@@ -127,12 +127,21 @@ def get_account_balances(owner_id):
     return accounts
 
 
-def get_balance_for_date(owner_id, month, year):
+def get_balance_for_date(owner_id, balance_date):
+    bd = datetime.strptime(balance_date, "%Y-%m")
     accounts = AccountBalance.query.filter(
         and_(
             AccountBalance.owner_id == owner_id,
-            extract("month", AccountBalance.balance_date) == month,
-            extract("year", AccountBalance.balance_date) == year,
+            extract("month", AccountBalance.balance_date) == bd.month,
+            extract("year", AccountBalance.balance_date) == bd.year,
         )
     ).all()
     return accounts
+
+
+def get_available_dates(owner_id):
+    dates = AccountBalance.query.filter_by(owner_id=owner_id).all()
+    res = []
+    for date in dates:
+        res.append(date.balance_date.strftime("%Y-%m"))
+    return list(set(res))

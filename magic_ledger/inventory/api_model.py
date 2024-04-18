@@ -1,6 +1,6 @@
 from flask_restx import fields
 from magic_ledger.extensions import api
-from magic_ledger.inventory import inventory_type
+from magic_ledger.inventory import inventory_type, inventory_item_type
 
 inventory_model_output = api.model(
     "output_inventory",
@@ -63,6 +63,11 @@ inventory_item_model_input = api.model(
         "invoice_id": fields.Integer(required=True, description="The item invoice id"),
         "acquisition_date": fields.String(
             required=True, description="The item acquisition date"
+        ),
+        "entry_type": fields.String(
+            required=False,
+            description="The item entry type",
+            enum=[inventory_item_type.STOCK, inventory_item_type.ORDER],
         ),
     },
 )

@@ -501,7 +501,7 @@ def test_create_item(client):
     assert data["currency"] == "RON"
     assert data["acquisition_date"] == "2023-10-01"
 
-    dec = {"quantity": 10}
+    dec = {"quantity": 10, "invoice_id": 1}
 
     response = client.put("/1/inventories/1/items/1/decrease-stock/", json=dec)
     assert response.status_code == 204
@@ -579,7 +579,7 @@ def test_take_initial_balance(client):
 
 def test_close_balance(client):
     test_take_initial_balance(client)
-    resp = client.post("/1/account-balance/close/2023-11")
+    resp = client.put("/1/account-balance/close/2023-11")
     assert resp.status_code == 201
 
     resp = client.get("/1/account-balance/")
@@ -833,14 +833,12 @@ def test_create_transaction_template2(client):
     data = json.loads(r5.data)
     assert len(data) == 3
 
-    r6 = client.get("/1/account-balance/2023/09")
+    r6 = client.get("/1/account-balance/2023-09")
     assert r6.status_code == 200
     data = json.loads(r6.data)
     assert len(data) == 3
 
-    current_year = str(datetime.now().year)
-    current_month = str(datetime.now().month)
-    r7 = client.get(f"/1/account-balance/{current_year}/{current_month}")
+    r7 = client.get(f"/1/account-balance/{datetime.now().strftime('%Y-%m')}")
     assert r7.status_code == 200
     data = json.loads(r7.data)
     assert len(data) == 0
@@ -889,3 +887,92 @@ def test_create_transaction_template3(client):
     assert r4.status_code == 200
     data = json.loads(r4.data)
     assert len(data) == 1
+
+
+inv = {
+    "serial_number": "FF0001",
+    "invoice_date": "2024-04-16",
+    "due_date": "2024-04-16",
+    "supplier_id": "2",
+    "client_id": "1",
+    "currency": "RON",
+    "amount": "100",
+    "invoice_type": "plată",
+    "vat_amount": "19",
+    "issuer_name": "Valise Vasile",
+}
+
+inv2 = {
+    "serial_number": "FF0001",
+    "invoice_date": "2024-04-16",
+    "due_date": "2024-04-16",
+    "supplier_id": "1",
+    "client_id": "4",
+    "currency": "RON",
+    "amount": "100",
+    "invoice_type": "încasare",
+    "vat_amount": "19",
+    "issuer_name": "Valise Vasile",
+}
+
+it1 = {
+    "name": "paracetamol",
+    "description": "medicament",
+    "quantity": 50,
+    "measurement_unit": "cutie",
+    "acquisition_price": 100,
+    "sale_price": 102,
+    "currency": "RON",
+    "vat_rate": 19,
+    "invoice_id": 1,
+    "inventory_id": 1,
+    "acquisition_date": "2024-04-16",
+}
+
+it2 = {
+    "name": "aspirina",
+    "description": "medicament",
+    "quantity": 50,
+    "measurement_unit": "cutie",
+    "acquisition_price": 100,
+    "sale_price": 102,
+    "currency": "RON",
+    "vat_rate": 19,
+    "invoice_id": 1,
+    "inventory_id": 1,
+    "acquisition_date": "2024-04-16",
+}
+
+
+def test_journals(client):
+    test_create_invoice_and_transaction(client)
+    response = client.post("/1/inventories/1/items/", json=it1)
+    assert response.status_code == 201
+
+    response = client.post("/1/invoices/", json=inv)
+    assert response.status_code == 201
+    assert response.headers["location"] == "/1/invoices/2"
+
+    response = client.get("/1/invoices/")
+    data = json.loads(response.data)
+    assert len(data) == 2
+    response = client.post("/1/inventories/1/items/", json=it2)
+    assert response.status_code == 201
+
+    response = client.post("/1/invoices/", json=inv2)
+    assert response.status_code == 201
+    response = client.get("/1/invoices/")
+    data = json.loads(response.data)
+    assert len(data) == 3
+
+    response = client.put(
+        "/1/inventories/1/items/1/decrease-stock/",
+        json={"quantity": 10, "invoice_id": 3},
+    )
+    assert response.status_code == 204
+
+    resp = client.get("/1/reports/2024-04/purchase/")
+    assert resp.status_code == 200
+
+    resp = client.get("/1/reports/2024-04/sales/")
+    assert resp.status_code == 200

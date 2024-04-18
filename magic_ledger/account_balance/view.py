@@ -42,7 +42,7 @@ class AccountBalance(Resource):
 @ns.route("/close/<balance_date>")
 class CloseBalance(Resource):
     @ns.response(201, "Accounts closed")
-    def post(self, project_id, balance_date):
+    def put(self, project_id, balance_date):
         """Closing account"""
         logging.info("""closing balance for the following month:""" + balance_date)
         account_balance_service.close_monthly_balance_accounts(
@@ -51,14 +51,23 @@ class CloseBalance(Resource):
         return {}, 201
 
 
-@ns.route("/<year>/<month>")
+@ns.route("/<balance_date>")
 class AccountBalanceByDate(Resource):
     @ns.marshal_list_with(account_balance_entry_model_output, code=200)
     @ns.response(201, "Get account balance")
-    def get(self, project_id, year, month):
+    def get(self, project_id, balance_date):
         return (
             account_balance_service.get_balance_for_date(
-                owner_id=project_id, month=month, year=year
+                owner_id=project_id, balance_date=balance_date
             ),
+            200,
+        )
+
+
+@ns.route("/balance-dates")
+class AccountBalanceDates(Resource):
+    def get(self, project_id):
+        return (
+            account_balance_service.get_available_dates(owner_id=project_id),
             200,
         )

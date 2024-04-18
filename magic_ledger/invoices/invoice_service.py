@@ -1,6 +1,12 @@
+from datetime import datetime
+
 from magic_ledger import db
 from magic_ledger.invoices import invoice_type, payment_status
 from magic_ledger.invoices.invoice import Invoice
+from sqlalchemy.sql import extract
+from sqlalchemy import and_
+
+from magic_ledger.third_parties.service.organization_service import get_supplier_by_id
 
 
 def create_invoice(request_body):
@@ -31,7 +37,7 @@ def get_all_invoices(owner_id):
     return Invoice.query.filter_by(owner_id=owner_id).all()
 
 
-def get_all_payable_invoices(owner_id):
+def get_due_payable_invoices(owner_id):
     return Invoice.query.filter_by(
         owner_id=owner_id,
         invoice_type=invoice_type.PAYABLE,
@@ -39,7 +45,7 @@ def get_all_payable_invoices(owner_id):
     ).all()
 
 
-def get_all_receivable_invoices(owner_id):
+def get_due_receivable_invoices(owner_id):
     return Invoice.query.filter_by(
         owner_id=owner_id,
         invoice_type=invoice_type.RECEIVABLE,
@@ -60,3 +66,37 @@ def solve_payment(invoice_id, owner_id):
     invoice.payment_status = payment_status.PAID
     db.session.commit()
     return invoice
+
+
+def get_all_receivable_invoices_by_date(owner_id, invoice_date):
+    inv_date = datetime.strptime(invoice_date, "%Y-%m")
+    return (
+        db.session.query(Invoice)
+        .filter(
+            and_(
+                Invoice.owner_id == owner_id,
+                Invoice.invoice_type == invoice_type.RECEIVABLE,
+                extract("month", Invoice.invoice_date) == inv_date.month,
+                extract("year", Invoice.invoice_date) == inv_date.year,
+            )
+        )
+        .order_by(Invoice.invoice_date)
+        .all()
+    )
+
+
+def get_all_payable_invoices_by_date(owner_id, invoice_date):
+    inv_date = datetime.strptime(invoice_date, "%Y-%m")
+    return (
+        db.session.query(Invoice)
+        .filter(
+            and_(
+                Invoice.owner_id == owner_id,
+                Invoice.invoice_type == invoice_type.PAYABLE,
+                extract("month", Invoice.invoice_date) == inv_date.month,
+                extract("year", Invoice.invoice_date) == inv_date.year,
+            )
+        )
+        .order_by(Invoice.invoice_date)
+        .all()
+    )

@@ -77,7 +77,12 @@ class InventoryItems(Resource):
 class AllInventoryItems(Resource):
     @ns.marshal_list_with(inventory_item_model_output, code=200)
     def get(self, project_id, inventory_id):
-        return inventory_service.get_all_inventory_items(inventory_id=inventory_id), 200
+        return (
+            inventory_service.get_all_inventory_items(
+                inventory_id=inventory_id,
+            ),
+            200,
+        )
 
 
 @ns.route("/<inventory_id>/items/<item_id>/", endpoint="inventory_item")
@@ -103,5 +108,6 @@ class DecreaseStock(Resource):
             item_id=item_id,
             inventory_id=inventory_id,
             quantity=request.json["quantity"],
+            invoice_id=request.json["invoice_id"],
         )
         return {}, 204

@@ -111,6 +111,12 @@ def get_supplier_by_id(supplier_id, owner_id):
     ).first()
 
 
+def get_client_by_id(client_id, owner_id):
+    return Organization.query.filter_by(
+        org_type=organization_type.CLIENT, id=client_id, owner_id=owner_id
+    ).first()
+
+
 def create_client(request_body, project_id):
     request_body["org_type"] = organization_type.CLIENT
     return create_organization(request_body, project_id)
