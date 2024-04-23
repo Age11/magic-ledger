@@ -1,3 +1,4 @@
 FIFO = "fifo"
 LIFO = "lifo"
-AVERAGE = "average"
+AVERAGE = "cmp"
+NOT_APPLICABLE = "n/a"

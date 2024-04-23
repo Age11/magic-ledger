@@ -78,6 +78,7 @@ project_model_output = api.model(
         "organization_name": fields.String(
             required=True, description="The organization name"
         ),
+        "caen_code": fields.String(required=True, description="The project CAEN code"),
         "cif": fields.String(
             required=True,
             description="The organization fiscal identification code - CIF",

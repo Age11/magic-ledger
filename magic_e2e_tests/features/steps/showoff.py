@@ -72,7 +72,7 @@ def step_impl(context):
     assert response.status_code == 201
 
 
-@given("creez un inventar")
+@given("creez o gestiune")
 def step_impl(context):
     response = mg.create_inventory(context.table)
     assert response.status_code == 201
@@ -222,14 +222,7 @@ def step_impl(context):
                     "operation": "*19/100",
                     "details": "Inregistrare TVA",
                     "tx_type": "TVA-vanzare",
-                },
-                {
-                    "debit_account": "607",
-                    "credit_account": "371",
-                    "operation": "*1",
-                    "details": "Descarcare din gestiune",
-                    "tx_type": "ieșiri",
-                },
+                }
             ],
         }
         response = mg.add_accounting_treatment(request_body)
@@ -297,6 +290,147 @@ def step_impl(context):
                     "currency": "RON",
                     "details": "Încasare în casa de la client",
                     "tx_type": "casă",
+                },
+                "followup_transactions": [],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given("adaug tratament contabil pentru descarcare din gestiunea de marfuri")
+        def step_impl(context):
+            request_body = {
+                "name": "Descărcare marfa din gestiune",
+                "description": "Aceasta înregistrare contabila se refera la descărcarea din gestiune a unor mărfuri",
+                "main_transaction": {
+                    "debit_account": "601",
+                    "credit_account": "371",
+                    "currency": "RON",
+                    "details": "Descărcarea din gestiune a unor mărfuri",
+                    "tx_type": "descărcare",
+                },
+                "followup_transactions": [],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given("adaug tratament contabil pentru înregistrarea chiriei")
+        def step_impl(context):
+            request_body = {
+                "name": "Înregistrare chirie",
+                "description": "Aceasta înregistrare contabila se refera la înregistrarea cheltuielilor cu chiria",
+                "main_transaction": {
+                    "debit_account": "6123",
+                    "credit_account": "401",
+                    "currency": "RON",
+                    "details": "Înregistrare cheltuieli cu chiria",
+                    "tx_type": "ieșiri",
+                },
+                "followup_transactions": [
+                    {
+                        "debit_account": "4426",
+                        "credit_account": "401",
+                        "operation": "*19/100",
+                        "details": "Înregistrare TVA chirie",
+                        "tx_type": "TVA-vanzare",
+                    }
+                ],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given(
+            "adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile"
+        )
+        def step_impl(context):
+            request_body = {
+                "name": "Înregistrare achiziției de materiale consumabile",
+                "description": "Aceasta înregistrare contabila se refera la înregistrarea achiziției de materiale "
+                "consumabile",
+                "main_transaction": {
+                    "debit_account": "303",
+                    "credit_account": "401",
+                    "currency": "RON",
+                    "details": "Înregistrare achiziției de materiale consumabile",
+                    "tx_type": "ieșiri",
+                },
+                "followup_transactions": [
+                    {
+                        "debit_account": "4426",
+                        "credit_account": "401",
+                        "operation": "*19/100",
+                        "details": "Înregistrare TVA achiziție materiale consumabile",
+                        "tx_type": "TVA-vanzare",
+                    }
+                ],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given(
+            "adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile cu TVA la încasare"
+        )
+        def step_impl(context):
+            request_body = {
+                "name": "Înregistrare achiziției de materiale consumabile regim TVA la încasare",
+                "description": "Aceasta înregistrare contabila se refera la înregistrarea achiziției de materiale consumabile",
+                "main_transaction": {
+                    "debit_account": "303",
+                    "credit_account": "401",
+                    "currency": "RON",
+                    "details": "Înregistrare achiziției de materiale consumabile",
+                    "tx_type": "ieșiri",
+                },
+                "followup_transactions": [
+                    {
+                        "debit_account": "4428",
+                        "credit_account": "401",
+                        "operation": "*19/100",
+                        "details": "Înregistrare TVA neexigibilă achiziție materiale consumabile",
+                        "tx_type": "TVA-vanzare",
+                    }
+                ],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given(
+            "adaug tratament contabil pentru înregistrarea achiziției de imobilizări corporale"
+        )
+        def step_impl(context):
+            request_body = {
+                "name": "Înregistrare achiziției de imobilizări corporale",
+                "description": "Aceasta înregistrare contabila se refera la înregistrarea achiziției de imobilizări corporale",
+                "main_transaction": {
+                    "debit_account": "214",
+                    "credit_account": "404",
+                    "currency": "RON",
+                    "details": "Înregistrare achiziției de imobilizări corporale",
+                    "tx_type": "ieșiri",
+                },
+                "followup_transactions": [
+                    {
+                        "debit_account": "4426",
+                        "credit_account": "404",
+                        "operation": "*19/100",
+                        "details": "Înregistrare TVA achiziție materiale consumabile",
+                        "tx_type": "TVA-vanzare",
+                    }
+                ],
+            }
+            response = mg.add_accounting_treatment(request_body)
+            assert response.status_code == 201
+
+        @given("adaug tratament contabil pentru înregistrarea cheltuielilor cu uzura")
+        def step_impl(context):
+            request_body = {
+                "name": "Înregistrare cheltuielilor cu uzura",
+                "description": "Aceasta înregistrare contabila se refera la înregistrarea cheltuielilor cu uzura",
+                "main_transaction": {
+                    "debit_account": "603",
+                    "credit_account": "303",
+                    "currency": "RON",
+                    "details": "Înregistrare achiziției de imobilizări corporale",
+                    "tx_type": "ieșiri",
                 },
                 "followup_transactions": [],
             }

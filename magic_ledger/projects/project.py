@@ -11,6 +11,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     project_name = db.Column(db.String(255), nullable=False)
     creation_date = db.Column(db.DateTime, default=datetime.utcnow())
+    caen_code = db.Column(db.String(50), nullable=False)
     status = db.Column(db.String(20), nullable=False)
 
     def __init__(self, project_name, status, caen_code):

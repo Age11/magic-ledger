@@ -37,6 +37,7 @@ inventory_model_input = api.model(
                 inventory_type.FIFO,
                 inventory_type.LIFO,
                 inventory_type.AVERAGE,
+                inventory_type.NOT_APPLICABLE,
             ],
         ),
     },

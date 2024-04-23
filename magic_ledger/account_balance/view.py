@@ -71,3 +71,12 @@ class AccountBalanceDates(Resource):
             account_balance_service.get_available_dates(owner_id=project_id),
             200,
         )
+
+
+@ns.route("/profit-or-loss")
+class ProfitOrLoss(Resource):
+    def get(self, project_id):
+        return (
+            account_balance_service.get_current_profit_or_loss(owner_id=project_id),
+            200,
+        )

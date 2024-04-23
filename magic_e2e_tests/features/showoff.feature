@@ -4,8 +4,58 @@ Functionalitate:  Inregistrari pentru luna decembrie
   Scenariu: Inregistrari necesare pentru a descrie activitatea derulata in luna decembrie
 
     * creez un proiect:
-      | nume | organizatie   | cif     | nrc           | tip     | cod_caen | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada       | numar | cod_postal | cont_bancar             | detalii       |
-      | ABC  | SC. "ABC" S.A | R910910 | J40/65703/200 | proiect | 4444     | 0721222333 | contact@abc.com | facturare | Romania | Bucuresti | Bucuresti | Panselutelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
+      | nume | organizatie   | cif      | nrc            | tip     | cod_caen | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada       | numar | cod_postal | cont_bancar             | detalii       |
+      | ABC  | SC. "ABC" SRL | RO910910 | J40/65703/2000 | proiect | 471,4791 | 0721222333 | contact@abc.com | facturare | Romania | București | București | Panseluțelor | 12    | 031183     | RO50PORL739266286982387 | Zarzavat Bank |
+
+    * preiau balanta de verificare pentru "2023-11-01":
+      | cont | debit_initial | credit_initial | debit_cumulat | credit_cumulat |
+      | 1012 | 0.00          | 200.00         | 0.00          | 0.00           |
+      | 121  | 0.00          | 600.00         | 9067.00       | 10000.00       |
+      # Mijloc de transport și amortizare
+      | 2133 | 10000.00      | 0.00           | 0.00          | 0.00           |
+      | 2813 | 0.00          | 1000.00        | 0.00          | 0.00           |
+      #Mărfuri
+      | 371  | 2000.00       | 0.00           | 5000.00       | 6000.00        |
+      #Furnizori
+      | 401  | 0.00          | 10100.00       | 0.00          | 5950.00        |
+      | 4111 | 0.00          | 0.00           | 11900.00      | 10000.00       |
+      #Salarii
+      | 421  | 0.00          | 500.00         | 1650.00       | 3000.00        |
+      | 4315 | 0.00          | 100.00         | 100.00        | 750.00         |
+      | 4316 | 0.00          | 50.00          | 50.00         | 300.00         |
+      | 436  | 0.00          | 11.00          | 11.00         | 67.00          |
+      #TVA
+      | 4423 | 0.00          | 100.00         | 100.00        | 950.00         |
+      | 4426 | 0.00          | 0.00           | 950.00        | 950.00         |
+      | 4427 | 0.00          | 0.00           | 1900.00       | 1900.00        |
+      #Impozit pe venit de natura salarii
+      | 4427 | 0.00          | 9.00           | 9.00          | 100.00         |
+      #Conturi
+      | 5121 | 500.00        | 0.00           | 10000.00      | 770.00         |
+      | 5311 | 170.00        | 0.00           | 0.00          | 0.00           |
+      #Cheltuieli
+      | 607  | 0.00          | 0.00           | 6000.00       | 6000.00        |
+      | 641  | 0.00          | 0.00           | 3000.00       | 3000.00        |
+      | 6461 | 0.00          | 0.00           | 67.00         | 67.00          |
+      #Venituri
+      | 707  | 0.00          | 0.00           | 10000.00      | 10000.00       |
+
+
+    * creez o gestiune:
+      | nume    | descriere              | metoda_inventariere |
+      | mărfuri | mărfuri  petru vânzare | fifo                |
+
+    * creez o gestiune:
+      | nume             | descriere           | metoda_inventariere |
+      | obiecte inventar | obiecte de inventar | fifo                |
+
+    * creez o gestiune:
+      | nume                   | descriere           | metoda_inventariere |
+      | imobilizări  corporale | obiecte de inventar | imobilizări         |
+
+
+
+
 
     * creez un furnizor:
       | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
@@ -19,34 +69,26 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | organizatie   | cif     | nrc          | tip    | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
       | SC. "ASS" S.A | 3020048 | J29/777/1999 | client | 0721112373 | contact@ass.com | facturare | Romania | Bucuresti | Bucuresti | Ghioceilor | 17    | 031183     | RO50PORL739266211223366 | Zarzavat Bank |
 
-    * creez un inventar:
-      | nume    | descriere              | metoda_inventariere |
-      | marfuri | marfuri  petru vanzare | fifo                |
 
-    * creez un inventar:
-      | nume             | descriere           | metoda_inventariere |
-      | obiecte inventar | obiecte de inventar | fifo                |
-
-
-    * adaug un articol:
-      | nume_articol | descriere                            | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva |
-      | tricou alb   | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 12.30       | 13.00        | 19       |
-
-    * adaug un articol in inventar:
-      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | data_achizitie |
-      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 150       | buc            | 14.30       | 16.50        | 19       | 1           | 2023-12-01     |
-
-    * adaug un articol in inventar:
-      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar |
-      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 15.30       | 17.00        | 19       | 1           |
-
-    * adaug o factura:
-      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura |
-      | FF001 | 2023-12-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.        | plată       |
-
-    * adaug un articol din factura in inventar:
-      | nume_articol  | descriere                               | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
-      | tricou galben | tricou bumbac 100% galben fara imprimeu | 10        | buc            | 8.30        | 13.00        | 19       | 1           | 1          |
+#    * adaug un articol:
+#      | nume_articol | descriere                            | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva |
+#      | tricou alb   | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 12.30       | 13.00        | 19       |
+#
+#    * adaug un articol in inventar:
+#      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | data_achizitie |
+#      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 150       | buc            | 14.30       | 16.50        | 19       | 1           | 2024-04-01     |
+#
+#    * adaug un articol in inventar:
+#      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar |
+#      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 15.30       | 17.00        | 19       | 1           |
+#
+#    * adaug o factura:
+#      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura |
+#      | FF001 | 2024-04-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.        | plată       |
+#
+#    * adaug un articol din factura in inventar:
+#      | nume_articol  | descriere                               | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
+#      | tricou galben | tricou bumbac 100% galben fara imprimeu | 10        | buc            | 8.30        | 13.00        | 19       | 1           | 1          |
 
     * adaug tratament contabil pentru plata salariilor
 
@@ -62,10 +104,22 @@ Functionalitate:  Inregistrari pentru luna decembrie
 
     * adaug tratament contabil pentru plata furnizor din casă
 
-    * preiau balanta de verificare pentru "2024-04-02":
-      | cont | debit_initial | credit_initial | debit_cumulat | credit_cumulat |
-      | 4111 | 1200          | 0.00           | 25000.00      | 0.00           |
-      | 401  | 0.00          | 100.00         | 0.00          | 100.00         |
+    * adaug tratament contabil pentru descarcare din gestiunea de marfuri
+
+    * adaug tratament contabil pentru înregistrarea chiriei
+
+    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile
+
+    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile cu TVA la încasare
+
+    * adaug tratament contabil pentru înregistrarea achiziției de imobilizări corporale
+
+    * adaug tratament contabil pentru înregistrarea cheltuielilor cu uzura
+
+
+
+
+
 #      | 1012 | 0.00          | 220000.00      | 0.00          | 0.00           |
 #      | 1061 | 0.00          | 5000.00        | 0.00          | 0.00           |
 #      | 1068 | 0.00          | 100000.00      | 0.00          | 0.00           |

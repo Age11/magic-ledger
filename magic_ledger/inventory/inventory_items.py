@@ -69,4 +69,4 @@ class InventoryItem(db.Model):
     def decrease_quantity(self, quantity):
         self.quantity -= quantity
         self.total_value = self.quantity * self.acquisition_price
-        db.session.commit()
+        db.session.flush()

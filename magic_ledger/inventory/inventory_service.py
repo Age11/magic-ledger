@@ -114,22 +114,7 @@ def get_average_inventory_items(inventory_id):
 def decrease_stock(item_id, inventory_id, quantity, invoice_id):
     item = get_item_by_id(item_id, inventory_id)
     item.decrease_quantity(quantity)
-    create_item(
-        {
-            "name": item.name,
-            "description": item.description,
-            "quantity": quantity,
-            "measurement_unit": item.measurement_unit,
-            "acquisition_price": item.acquisition_price,
-            "sale_price": item.sale_price,
-            "currency": item.currency,
-            "vat_rate": item.vat_rate,
-            "inventory_id": item.inventory_id,
-            "invoice_id": invoice_id,
-            "acquisition_date": item.acquisition_date.strftime("%Y-%m-%d"),
-            "item_type": inventory_item_type.ORDER,
-        }
-    )
+    db.session.commit()
     return item
 
 

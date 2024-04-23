@@ -3,7 +3,7 @@ from datetime import datetime
 
 project_ABC = {
     "project_name": "ABC",
-    "vat_mode": "on_invoice",
+    "vat_mode": "facturare",
     "status": "active",
     "organization_name": "CARMEN IMPEX TM SRL",
     "cif": "5420048",
@@ -23,7 +23,7 @@ project_ABC = {
 p3 = {
     "project_name": "XXXs",
     "caen_code": "4941",
-    "vat_mode": "on_invoice",
+    "vat_mode": "facturare",
     "status": "active",
     "organization_name": "xxx",
     "cif": "XXXXXX",
@@ -96,7 +96,7 @@ organization_AAA = {
     "email": "contact@carmenimpextm.com",
     "account": "RO49AAAA1B31007593840000",
     "details": "AAAA BANK",
-    "vat_mode": "on_invoice",
+    "vat_mode": "facturare",
 }
 
 
@@ -186,7 +186,7 @@ organization_AAB = {
     "email": "contact@amst.com",
     "account": "RO49AAAA1B31006591820999",
     "details": "AAAA BANK",
-    "vat_mode": "on_invoice",
+    "vat_mode": "facturare",
 }
 
 
@@ -976,3 +976,59 @@ def test_journals(client):
 
     resp = client.get("/1/reports/2024-04/sales/")
     assert resp.status_code == 200
+
+
+balance = [
+    {
+        "balance_date": "2024-04-02",
+        "analytical_account": "707",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 2000.0,
+    },
+    {
+        "balance_date": "2024-04-02",
+        "analytical_account": "601",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 1000.0,
+        "cumulated_credit": 0.0,
+    },
+]
+
+
+def test_profit(client):
+    client.post("/1/account-balance/", json=balance)
+    resp = client.get("/1/account-balance/profit-or-loss")
+    assert resp.status_code == 200
+    amount = json.loads(resp.data)
+    assert amount == 1000.00
+
+
+balance = [
+    {
+        "balance_date": "2024-04-02",
+        "analytical_account": "707",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 2000.0,
+    },
+    {
+        "balance_date": "2024-04-02",
+        "analytical_account": "601",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 3000.0,
+        "cumulated_credit": 0.0,
+    },
+]
+
+
+def test_profit(client):
+    client.post("/1/account-balance/", json=balance)
+    resp = client.get("/1/account-balance/profit-or-loss")
+    assert resp.status_code == 200
+    amount = json.loads(resp.data)
+    assert amount == 1000.00
