@@ -1,23 +1,27 @@
 from flask_restx import fields
 
-from magic_ledger.assets import deprecation_method
+from magic_ledger.assets import deprecation_method_type
 from magic_ledger.extensions import api
 
 asset_entry_model = api.model(
     "asset_entry_model",
     {
-        # "asset_name", "description", "asset_class", "depreciation_method", "total_amount", "total_duration", "acquisition_date", "recording_date", "analytical_account", "deprecation_analytical_account", "owner_id"
         "asset_name": fields.String(required=True, description="The asset name"),
         "description": fields.String(
             required=True, description="The asset description"
         ),
-        "asset_class": fields.String(required=True, description="The asset class"),
         "depreciation_method": fields.String(
             required=True,
             description="The asset depreciation method",
-            enum=[deprecation_method.STREIGHT_LINE],
+            enum=[deprecation_method_type.STREIGHT_LINE],
         ),
-        "total_amount": fields.Float(
+        "initial_value": fields.Float(
+            required=True, description="The asset total amount"
+        ),
+        "inventory_value": fields.Float(
+            required=True, description="The asset total amount"
+        ),
+        "current_value": fields.Float(
             required=True, description="The asset total amount"
         ),
         "total_duration": fields.Integer(
@@ -28,12 +32,6 @@ asset_entry_model = api.model(
         ),
         "recording_date": fields.String(
             required=True, description="The asset recording date"
-        ),
-        "analytical_account": fields.String(
-            required=True, description="The asset analytical account"
-        ),
-        "deprecation_analytical_account": fields.String(
-            required=True, description="The asset deprecation analytical account"
         ),
         "owner_id": fields.Integer(required=True, description="The asset owner id"),
     },
@@ -47,14 +45,13 @@ asset_output_model = api.model(
         "description": fields.String(
             required=True, description="The asset description"
         ),
-        "asset_class": fields.String(required=True, description="The asset class"),
-        "analytical_account": fields.String(
-            required=True, description="The asset analytical account"
+        "initial_value": fields.Float(
+            required=True, description="The asset total amount"
         ),
-        "deprecation_analytical_account": fields.String(
-            required=True, description="The asset deprecation analytical account"
+        "inventory_value": fields.Float(
+            required=True, description="The asset total amount"
         ),
-        "total_amount": fields.Float(
+        "current_value": fields.Float(
             required=True, description="The asset total amount"
         ),
         "depreciation_method": fields.String(
@@ -69,7 +66,7 @@ asset_output_model = api.model(
         "remaining_duration": fields.Integer(
             required=True, description="The asset remaining duration"
         ),
-        "monthly_amount": fields.Float(
+        "rounded_monthly_amount": fields.Float(
             required=True, description="The asset monthly amount"
         ),
         "total_duration": fields.Integer(

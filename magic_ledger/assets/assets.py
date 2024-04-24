@@ -5,7 +5,8 @@ from dateutil.relativedelta import relativedelta
 
 from magic_ledger import db
 
-from datetime import datetime, timedelta
+from datetime import datetime
+from magic_ledger.assets import deprecation_method_type
 
 
 @dataclass
@@ -13,21 +14,17 @@ class Asset(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     asset_name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255))
-    asset_class = db.Column(db.String(255), nullable=False)
 
-    analytical_account = db.Column(
-        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
-    )
-    deprecation_analytical_account = db.Column(
-        db.String(255), db.ForeignKey("account_plan.account"), nullable=False
-    )
+    initial_value = db.Column(db.Float, nullable=False)
+    inventory_value = db.Column(db.Float, nullable=False)
+    current_value = db.Column(db.Float, nullable=False)
 
-    total_amount = db.Column(db.Float, nullable=False)
     depreciation_method = db.Column(db.String(255), nullable=False)
     remaining_amount = db.Column(db.Float, nullable=False)
     deprecated_amount = db.Column(db.Float, nullable=False)
     remaining_duration = db.Column(db.Integer, nullable=False)
     monthly_amount = db.Column(db.Float, nullable=False)
+    rounded_monthly_amount = db.Column(db.Float, nullable=False)
     total_duration = db.Column(db.Integer, nullable=False)
     acquisition_date = db.Column(db.DateTime, nullable=False)
     deprecation_start_date = db.Column(db.DateTime, nullable=False)
@@ -39,44 +36,46 @@ class Asset(db.Model):
         self,
         asset_name,
         description,
-        asset_class,
-        total_amount,
+        initial_value,
+        inventory_value,
+        current_value,
         depreciation_method,
         total_duration,
         acquisition_date,
         owner_id,
-        analytical_account,
-        deprecation_analytical_account,
         recording_date=datetime.now().strftime("%Y-%m"),
     ):
         self.asset_name = asset_name
         self.description = description
-        self.asset_class = asset_class
-        self.analytical_account = analytical_account
-        self.deprecation_analytical_account = deprecation_analytical_account
-        self.total_amount = total_amount
-        self.total_duration = total_duration * 12
+        self.current_value = current_value
+        self.initial_value = initial_value
+        self.inventory_value = inventory_value
+        self.total_duration = total_duration
+
+        self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m")
+        self.recording_date = datetime.strptime(recording_date, "%Y-%m")
+        self.deprecation_start_date = self.acquisition_date + relativedelta(months=1)
+
+        self.remaining_duration = self.total_duration - (
+            (self.recording_date.month - self.deprecation_start_date.month)
+            + 12 * (self.recording_date.year - self.deprecation_start_date.year)
+        )
+
         self.depreciation_method = depreciation_method
         self.owner_id = owner_id
-        if depreciation_method == "straight_line":
-            self.monthly_amount = total_amount / self.total_duration
-
-            self.acquisition_date = datetime.strptime(acquisition_date, "%Y-%m")
-            self.deprecation_start_date = self.acquisition_date + relativedelta(
-                months=1
+        if depreciation_method == deprecation_method_type.STREIGHT_LINE:
+            self.monthly_amount = self.current_value / self.remaining_duration
+            self.remaining_amount = round(
+                self.monthly_amount * self.remaining_duration, 2
             )
-            self.recording_date = datetime.strptime(recording_date, "%Y-%m")
-            self.remaining_duration = self.total_duration - (
-                (self.recording_date.month - self.deprecation_start_date.month)
-                + 12 * (self.recording_date.year - self.deprecation_start_date.year)
+            self.deprecated_amount = round(
+                self.current_value - self.remaining_amount, 2
             )
-            self.remaining_amount = self.monthly_amount * self.remaining_duration
-            self.deprecated_amount = self.total_amount - self.remaining_amount
-
         else:
             raise NotImplementedError(
                 "Only straight line depreciation is supported at the moment."
             )
+        self.rounded_monthly_amount = round(self.monthly_amount, 2)
 
     def __getstate__(self):
         state = self.__dict__.copy()

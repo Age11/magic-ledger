@@ -75,10 +75,12 @@ class AccountBalance(db.Model):
         self.cumulated_credit += self.current_turnover_credit
         self.current_turnover_debit = 0
         self.current_turnover_credit = 0
+        db.session.flush()
 
     def calculate_total_amounts(self):
         self.total_debit_balance = self.initial_debit + self.cumulated_debit
         self.total_credit_balance = self.initial_credit + self.cumulated_credit
+        db.session.flush()
 
     def calculate_final_amounts(self):
         if self.total_debit_balance > self.total_credit_balance:
@@ -91,6 +93,15 @@ class AccountBalance(db.Model):
             self.final_credit_balance = (
                 self.total_credit_balance - self.total_debit_balance
             )
+        db.session.flush()
+
+    def get_total_debit_balance(self):
+        return self.initial_debit + self.cumulated_debit + self.current_turnover_debit
+
+    def get_total_credit_balance(self):
+        return (
+            self.initial_credit + self.cumulated_credit + self.current_turnover_credit
+        )
 
     def __getstate__(self):
         state = self.__dict__.copy()

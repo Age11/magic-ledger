@@ -40,6 +40,34 @@ Functionalitate:  Inregistrari pentru luna decembrie
       #Venituri
       | 707  | 0.00          | 0.00           | 10000.00      | 10000.00       |
 
+    * creez un furnizor:
+      | organizatie | cif      | nrc          | tip      | telefon    | email                   | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
+      | „ALFA” SRL  | 12345678 | J11/123/2005 | supplier | 0700100100 | contact@alfa-people.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 256   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie  | cif     | nrc          | tip      | telefon    | email            | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | „DATECS” SRL | 1289745 | J11/757/1993 | supplier | 0752223667 | office@datec.com | facturare | Romania | Bucuresti | Bucuresti | Margaretei | 81    | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie  | cif    | nrc          | tip      | telefon    | email              | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
+      | „MOBILA” SRL | 859647 | J11/663/2011 | supplier | 0769320676 | vanzari@mobila.com | facturare | Romania | Bucuresti | Bucuresti | Liliacului | 16    | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie        | cif    | nrc          | tip      | telefon    | email                 | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „SUPRAVEGHERE” SRL | 852369 | J11/000/2000 | supplier | 0722321727 | vanzari@supra-spy.com | facturare | Romania | Bucuresti | Bucuresti | Garofitei | 225   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie        | cif      | nrc          | tip      | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „TELEINTERNET” SRL | 85469725 | J22/222/2002 | supplier | 0720322588 | office@tnet.com | facturare | Romania | Bucuresti | Bucuresti | Bujorului | 121   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie   | cif    | nrc          | tip      | telefon    | email               | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „ENERGIA” SRL | 456789 | J33/333/2003 | supplier | 0721775223 | support@energia.com | facturare | Romania | Bucuresti | Bucuresti | Lalelelor | 64    | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
+    * creez un furnizor:
+      | organizatie | cif   | nrc          | tip      | telefon    | email           | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
+      | „HIDRO” SRL | 78569 | J44/444/2004 | supplier | 0723554488 | hidro@hidro.com | facturare | Romania | Bucuresti | Bucuresti | Lalelelor | 64    | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
+
 
     * creez o gestiune:
       | nume    | descriere              | metoda_inventariere |
@@ -49,17 +77,14 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | nume             | descriere           | metoda_inventariere |
       | obiecte inventar | obiecte de inventar | fifo                |
 
-    * creez o gestiune:
-      | nume                   | descriere           | metoda_inventariere |
-      | imobilizări  corporale | obiecte de inventar | imobilizări         |
+    * adaug un articol in inventar:
+      | nume_articol | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | data_achizitie |
+      | tricou mov   | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 10.00       | 20.00        | 19       | 1           | 2023-03-01     |
 
+    * adaug o imobilizare corporala
+      | asset_name    | tip_amortizare | valoare_initiala | valoare_inventar | valoare_curenta | durata_utilizare | data_achizitie | data_inregistrare | descriere                              |
+      | Autoutilitară | liniară        | 10000            | 10000            | 9000            | 48               | 2022-09        | 2023-11           | Renault Kangoo, 2015, 1.4 diesel, 75CP |
 
-
-
-
-    * creez un furnizor:
-      | organizatie            | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada   | numar | cod_postal | cont_bancar             | detalii       |
-      | „Happy Leasing” IFN SA | 3020048 | J29/777/1999 | supplier | 0721222333 | contact@happy-leasing.com | facturare | Romania | Bucuresti | Bucuresti | Crinului | 220   | 031183     | RO50PORL739266286982666 | Zarzavat Bank |
 
     * creez un furnizor:
       | organizatie      | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
@@ -74,10 +99,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #      | nume_articol | descriere                            | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva |
 #      | tricou alb   | tricou bumbac 100% alb fara imprimeu | 10        | buc            | 12.30       | 13.00        | 19       |
 #
-#    * adaug un articol in inventar:
-#      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | data_achizitie |
-#      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 150       | buc            | 14.30       | 16.50        | 19       | 1           | 2024-04-01     |
-#
+
 #    * adaug un articol in inventar:
 #      | nume_articol    | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar |
 #      | tricou imprimeu | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 15.30       | 17.00        | 19       | 1           |

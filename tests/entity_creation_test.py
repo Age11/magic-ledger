@@ -591,13 +591,12 @@ def test_close_balance(client):
 car = {
     "asset_name": "masina",
     "description": "o masina",
-    "asset_class": "21",
-    "analytical_account": "2133",
-    "deprecation_analytical_account": "2813",
-    "total_amount": 30000,
-    "depreciation_method": "straight_line",
-    "total_duration": 5,
-    "acquisition_date": "2021-09",
+    "initial_value": 10000,
+    "inventory_value": 10000,
+    "current_value": 9000,
+    "depreciation_method": "liniară",
+    "total_duration": 48,
+    "acquisition_date": "2022-09",
     "recording_date": "2023-11",
 }
 
@@ -615,19 +614,18 @@ def test_create_asset(client):
     data = data[0]
     assert data["asset_name"] == "masina"
     assert data["description"] == "o masina"
-    assert data["asset_class"] == "21"
-    assert data["depreciation_method"] == "straight_line"
-    assert data["total_amount"] == 30000
-    assert data["total_duration"] == 60
+    assert data["depreciation_method"] == "liniară"
+    assert data["initial_value"] == 10000
+    assert data["inventory_value"] == 10000
+    assert data["current_value"] == 9000
+    assert data["total_duration"] == 48
     assert data["owner_id"] == 1
     assert data["id"] == 1
     assert data["remaining_duration"] == 35
-    assert data["remaining_amount"] == 17500
-    assert data["deprecated_amount"] == 12500
-    assert data["monthly_amount"] == 500
-    assert data["analytical_account"] == "2133"
-    assert data["deprecation_analytical_account"] == "2813"
-    assert data["acquisition_date"] == "2021-09-01 00:00:00"
+    assert data["remaining_amount"] == 9000.00
+    assert data["deprecated_amount"] == 0.0
+    assert data["rounded_monthly_amount"] == 257.14
+    assert data["acquisition_date"] == "2022-09-01 00:00:00"
 
 
 holding = {

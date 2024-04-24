@@ -2,14 +2,16 @@ from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
 from flask_sqlalchemy import session
-from sqlalchemy import and_
+from sqlalchemy import and_, not_, or_
 from sqlalchemy.sql import extract
 
 from magic_ledger.account_balance.account_balance import AccountBalance
 from magic_ledger import db
 
 
-def create_account_balance(project_id, analytical_account, balance_date):
+def create_account_balance(
+    project_id, analytical_account, balance_date=datetime.now().strftime("%Y-%m-%d")
+):
     account = AccountBalance(
         analytical_account=analytical_account,
         owner_id=project_id,
@@ -23,8 +25,8 @@ def create_account_balance(project_id, analytical_account, balance_date):
 def account_balance_exists(
     owner_id,
     analytical_account,
-    acct_balance_month,
-    acct_balance_year,
+    acct_balance_month=datetime.now().month,
+    acct_balance_year=datetime.now().year,
 ):
     account = (
         db.session.query(AccountBalance)
@@ -108,6 +110,9 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
 
     for account in accounts:
         account.cumulate_amounts()
+        account.calculate_total_amounts()
+        account.calculate_final_amounts()
+        account.processed = True
         new_account = AccountBalance(
             analytical_account=account.analytical_account,
             owner_id=account.owner_id,
@@ -117,7 +122,6 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
         new_account.initial_credit = account.initial_credit
         new_account.cumulated_debit = account.cumulated_debit
         new_account.cumulated_credit = account.cumulated_credit
-        account.processed = True
         db.session.add(new_account)
     db.session.commit()
 
@@ -145,3 +149,64 @@ def get_available_dates(owner_id):
     for date in dates:
         res.append(date.balance_date.strftime("%Y-%m"))
     return list(set(res))
+
+
+def get_account_totals(owner_id, analytical_account):
+    account = AccountBalance.query.filter_by(
+        owner_id=owner_id, analytical_account=analytical_account, processed=False
+    ).first()
+
+    total_debit = account.get_total_debit_balance()
+    total_credit = account.get_total_credit_balance()
+    final_balance = total_debit - total_credit
+    return total_debit, total_credit, final_balance
+
+
+def get_current_profit_or_loss(owner_id):
+    income_accounts = (
+        db.session.query(AccountBalance)
+        .filter(
+            or_(
+                AccountBalance.analytical_account.like("7%"),
+                AccountBalance.analytical_account == "609",
+            ),
+            not_(AccountBalance.analytical_account == "709"),
+            AccountBalance.owner_id == owner_id,
+        )
+        .all()
+    )
+    expense_accounts = (
+        db.session.query(AccountBalance)
+        .filter(
+            or_(
+                AccountBalance.analytical_account.like("6%"),
+                AccountBalance.analytical_account == "709",
+            ),
+            not_(AccountBalance.analytical_account == "609"),
+            AccountBalance.owner_id == owner_id,
+        )
+        .all()
+    )
+    total_income = 0
+    total_expenses = 0
+    if not account_balance_exists(owner_id, "121")[0]:
+        create_account_balance(owner_id, "121")
+    profit_or_loss = AccountBalance.query.filter_by(
+        owner_id=owner_id, analytical_account="121"
+    ).first()
+    current_profit_or_loss = (
+        profit_or_loss.get_total_debit_balance()
+        - profit_or_loss.get_total_credit_balance()
+    )
+
+    for acc in income_accounts:
+        debit = acc.get_total_debit_balance()
+        credit = acc.get_total_credit_balance()
+        total_income += debit - credit
+
+    for acc in expense_accounts:
+        debit = acc.get_total_debit_balance()
+        credit = acc.get_total_credit_balance()
+        total_expenses += debit - credit
+
+    return current_profit_or_loss - total_income - total_expenses

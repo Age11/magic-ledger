@@ -143,14 +143,11 @@ class MagicLedgerUser:
             req = {
                 "asset_name": row["asset_name"],
                 "description": row["descriere"],
-                "asset_class": row["clasa"],
-                "analytical_account": row["cont_analitic"],
-                "deprecation_analytical_account": row["cont_analitic_amortizare"],
-                "depreciation_method": "straight_line"
-                if row["tip_amortizare"] == "liniara"
-                else row["tip_amortizare"],
+                "depreciation_method": row["tip_amortizare"],
                 "total_duration": int(row["durata_utilizare"]),
-                "total_amount": int(row["valoare_totala"]),
+                "initial_value": float(row["valoare_initiala"]),
+                "inventory_value": float(row["valoare_inventar"]),
+                "current_value": float(row["valoare_curenta"]),
                 "acquisition_date": row["data_achizitie"],
                 "recording_date": row["data_inregistrare"],
             }
