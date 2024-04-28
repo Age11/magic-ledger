@@ -34,3 +34,14 @@ class PurchaseReport(Resource):
     @ns.marshal_list_with(sales_journal_entry, code=200)
     def get(self, project_id, report_date):
         return reports_service.generate_sales_journal(project_id, report_date), 200
+
+
+@ns.route("/general-ledger/<balance_date>/<account>", endpoint="general-ledger")
+class AvailableDates(Resource):
+    def get(self, project_id, balance_date, account):
+        return (
+            reports_service.get_general_ledger_entry(
+                owner_id=project_id, balance_date=balance_date, account=account
+            ),
+            200,
+        )

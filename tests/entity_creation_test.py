@@ -1030,3 +1030,15 @@ def test_profit(client):
     assert resp.status_code == 200
     amount = json.loads(resp.data)
     assert amount == 1000.00
+
+
+def test_general_ledger(client):
+    test_create_transaction_template2(client)
+    dates = client.get("/1/transactions/available-dates/")
+    assert dates.status_code == 200
+    dates = json.loads(dates.data)
+    assert len(dates) == 1
+
+    general_ledger = client.get("/1/reports/general-ledger/2023-09/401")
+    assert general_ledger.status_code == 200
+    data = json.loads(general_ledger.data)

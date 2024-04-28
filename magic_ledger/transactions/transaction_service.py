@@ -53,3 +53,20 @@ def get_transactions_by_type(owner_id, tx_type, tx_date):
         ):
             resp.append(transaction)
     return resp
+
+
+def get_available_dates(owner_id):
+    transactions = Transaction.query.filter_by(owner_id=owner_id).all()
+    dates = []
+    for transaction in transactions:
+        dates.append(transaction.transaction_date.strftime("%Y-%m"))
+    return list(set(dates))
+
+
+def get_all_transactions_for_month(owner_id, tx_date):
+    transactions = Transaction.query.filter_by(owner_id=owner_id).all()
+    resp = []
+    for transaction in transactions:
+        if transaction.transaction_date.strftime("%Y-%m") == tx_date:
+            resp.append(transaction)
+    return resp

@@ -47,3 +47,10 @@ class TransactionById(Resource):
             ),
             200,
         )
+
+
+@ns.route("/available-dates/", endpoint="transaction_dates")
+class TransactionDates(Resource):
+    @ns.response(200, "Get transaction dates")
+    def get(self, project_id):
+        return transaction_service.get_available_dates(owner_id=project_id), 200

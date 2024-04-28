@@ -7,6 +7,7 @@ from magic_ledger.third_parties.service.organization_service import (
     get_supplier_by_id,
     get_client_by_id,
 )
+from magic_ledger.transactions.transaction_service import get_all_transactions_for_month
 
 
 def generate_purchase_journal(owner_id, invoice_date):
@@ -96,4 +97,27 @@ def generate_sales_journal(owner_id, invoice_date):
                 "payed": payed,
             }
         )
+    return res
+
+
+def get_general_ledger_entry(owner_id, balance_date, account):
+    transactions = get_all_transactions_for_month(owner_id, balance_date)
+    res = {"debit": [], "credit": []}
+    for tx in transactions:
+        if tx.debit_account == account:
+            res["debit"].append(
+                {
+                    "account": account,
+                    "date": tx.transaction_date.strftime("%Y-%m-%d"),
+                    "debit": tx.debit_amount,
+                }
+            )
+        if tx.credit_account == account:
+            res["credit"].append(
+                {
+                    "account": account,
+                    "date": tx.transaction_date.strftime("%Y-%m-%d"),
+                    "credit": tx.credit_amount,
+                }
+            )
     return res

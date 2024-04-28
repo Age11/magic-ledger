@@ -112,9 +112,28 @@ Functionalitate:  Inregistrari pentru luna decembrie
 #      | nume_articol  | descriere                               | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
 #      | tricou galben | tricou bumbac 100% galben fara imprimeu | 10        | buc            | 8.30        | 13.00        | 19       | 1           | 1          |
 
+    * adaug tratament contabil pentru înregistrarea chiriei
+
+    * adaug tratament contabil pentru înregistrarea cheltuielilor cu apa
+
+    * adaug tratament contabil pentru înregistrarea cheltuielilor cu energia
+
+    * adaug tratament contabil pentru înregistrarea cheltuielilor cu servicii poștale și cu telecomunicațiile
+
+    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA normal
+
+    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA la încasare
+
+    * adaug tratament contabil pentru achiziția de active corporale de la furnizor de imobilizări regim TVA normal
+
+    * adaug tratament contabil pentru achizitie de marfa de la furnizor regim tva normal
+
+
+
+
     * adaug tratament contabil pentru plata salariilor
 
-    * adaug tratament contabil pentru achizitie de la furnizor regim tva normal
+
 
     * adaug tratament contabil pentru vanzare catre client regim tva normal
 
@@ -128,7 +147,7 @@ Functionalitate:  Inregistrari pentru luna decembrie
 
     * adaug tratament contabil pentru descarcare din gestiunea de marfuri
 
-    * adaug tratament contabil pentru înregistrarea chiriei
+
 
     * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile
 
