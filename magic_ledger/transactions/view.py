@@ -54,3 +54,15 @@ class TransactionDates(Resource):
     @ns.response(200, "Get transaction dates")
     def get(self, project_id):
         return transaction_service.get_available_dates(owner_id=project_id), 200
+
+
+@ns.route("/monthly-transaction-ledger/<tx_date>/", endpoint="transaction_by_date")
+class TransactionsByDate(Resource):
+    @ns.marshal_list_with(transaction_model_output, code=200)
+    def get(self, project_id, tx_date):
+        return (
+            transaction_service.get_all_transactions_for_month(
+                owner_id=project_id, tx_date=tx_date
+            ),
+            200,
+        )

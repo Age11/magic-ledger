@@ -1,13 +1,12 @@
 import logging
 
-from flask import jsonify, request
+from flask import request
 
 
 from magic_ledger.inventory.api_model import inventory_model_output
 from magic_ledger.invoices import invoice_service
 from magic_ledger.invoices.api_model import invoice_model_input, invoice_model_output
-import magic_ledger.invoices.document_type as document_type
-import magic_ledger.invoices.payment_status as payment_status
+import magic_ledger.payments.payment_status as payment_status
 
 
 from flask_restx import Namespace, Resource
@@ -47,51 +46,6 @@ class InvoiceById(Resource):
         return (
             invoice_service.get_invoice_by_id(
                 invoice_id=invoice_id, owner_id=project_id
-            ),
-            200,
-        )
-
-
-@ns.route("/payable/")
-class PayableInvoices(Resource):
-    @ns.marshal_list_with(invoice_model_output, code=200)
-    def get(self, project_id):
-        return invoice_service.get_due_payable_invoices(owner_id=project_id), 200
-
-
-@ns.route("/receivable/")
-class ReceivableInvoices(Resource):
-    @ns.marshal_list_with(invoice_model_output, code=200)
-    def get(self, project_id):
-        return invoice_service.get_due_receivable_invoices(owner_id=project_id), 200
-
-
-@ns.route("/<invoice_id>/pay/")
-class SolvePayment(Resource):
-    def put(self, invoice_id, project_id):
-        invoice_service.solve_payment(invoice_id, owner_id=project_id)
-        return {}, 204
-
-
-@ns.route("/<invoice_date>/receivable/")
-class ReceivableInvoices(Resource):
-    @ns.marshal_list_with(invoice_model_output, code=200)
-    def get(self, project_id, invoice_date):
-        return (
-            invoice_service.get_all_receivable_invoices_by_date(
-                owner_id=project_id, invoice_date=invoice_date
-            ),
-            200,
-        )
-
-
-@ns.route("/<invoice_date>/payable/")
-class PayableInvoices(Resource):
-    @ns.marshal_list_with(invoice_model_output, code=200)
-    def get(self, project_id, invoice_date):
-        return (
-            invoice_service.get_all_payable_invoices_by_date(
-                owner_id=project_id, invoice_date=invoice_date
             ),
             200,
         )

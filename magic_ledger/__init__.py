@@ -65,6 +65,10 @@ def create_app(test_config=None):
 
     api.add_namespace(invoices.ns)
 
+    from magic_ledger import payments
+
+    api.add_namespace(payments.ns)
+
     from magic_ledger import transactions
 
     api.add_namespace(transactions.ns)

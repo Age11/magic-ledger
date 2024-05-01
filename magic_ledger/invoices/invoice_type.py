@@ -1,2 +1,2 @@
-PAYABLE = "plată"
-RECEIVABLE = "încasare"
+OUTGOING = "emisă"
+INCOMING = "primită"

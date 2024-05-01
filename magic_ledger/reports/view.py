@@ -1,12 +1,3 @@
-import logging
-
-from flask import request
-
-from magic_ledger.invoices import invoice_service
-from magic_ledger.invoices.api_model import invoice_model_input, invoice_model_output
-import magic_ledger.invoices.payment_status as payment_status
-
-
 from flask_restx import Namespace, Resource
 
 from magic_ledger.reports import reports_service

@@ -405,9 +405,11 @@ invoice = {
     "client_id": "1",
     "currency": "RON",
     "amount": "100",
-    "invoice_type": "plată",
+    "invoice_type": "primită",
+    "payment_type": "plată",
     "vat_amount": "19",
     "issuer_name": "Valise Vasile",
+    "amount_due": 119,
 }
 
 transaction_on_invoice = {
@@ -437,12 +439,11 @@ def test_create_invoice_and_transaction(client):
     data["id"] = 1
     assert data["serial_number"] == "FF0001"
     assert data["invoice_date"] == "2020-01-01"
-    assert data["due_date"] == "2020-01-01"
     assert data["supplier_id"] == 2
     assert data["client_id"] == 1
     assert data["currency"] == "RON"
     assert data["amount"] == 100
-    assert data["invoice_type"] == "plată"
+    assert data["invoice_type"] == "primită"
 
     response = client.post("/1/transactions/", json=transaction_on_invoice)
     assert response.status_code == 201
@@ -453,6 +454,26 @@ def test_create_invoice_and_transaction(client):
     data = json.loads(response.data)
     assert data["debit_account"] == "371"
     assert data["invoice_id"] == 1
+
+    resp = client.get("/1/payments/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 1
+    data = data[0]
+    assert data["payment_status"] == "restantă"
+    assert data["amount_due"] == 119
+    assert data["amount_paid"] == 0
+    assert data["invoice_id"] == 1
+    assert data["payment_type"] == "plată"
+    assert data["owner_id"] == 1
+
+    response = client.put("/1/payments/1/pay/", json={"amount": 119})
+    assert response.status_code == 204
+
+    resp = client.get("/1/payments/1/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert data["payment_status"] == "plătită"
 
 
 item = {
@@ -894,23 +915,27 @@ inv = {
     "supplier_id": "2",
     "client_id": "1",
     "currency": "RON",
-    "amount": "100",
-    "invoice_type": "plată",
-    "vat_amount": "19",
+    "amount": 100,
+    "invoice_type": "primită",
+    "payment_type": "plată",
+    "vat_amount": 19,
     "issuer_name": "Valise Vasile",
+    "amount_due": 119,
 }
 
 inv2 = {
-    "serial_number": "FF0001",
+    "serial_number": "FF0002",
     "invoice_date": "2024-04-16",
     "due_date": "2024-04-16",
     "supplier_id": "1",
     "client_id": "4",
     "currency": "RON",
-    "amount": "100",
-    "invoice_type": "încasare",
-    "vat_amount": "19",
+    "amount": 100,
+    "invoice_type": "emisă",
+    "payment_type": "încasare",
+    "vat_amount": 19,
     "issuer_name": "Valise Vasile",
+    "amount_due": 119,
 }
 
 it1 = {
@@ -975,6 +1000,16 @@ def test_journals(client):
     resp = client.get("/1/reports/2024-04/sales/")
     assert resp.status_code == 200
 
+    resp = client.get("/1/payments/2024-04/payable/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 1
+
+    resp = client.get("/1/payments/2024-04/receivable/")
+    assert resp.status_code == 200
+    data = json.loads(resp.data)
+    assert len(data) == 1
+
 
 balance = [
     {
@@ -1029,7 +1064,7 @@ def test_profit(client):
     resp = client.get("/1/account-balance/profit-or-loss")
     assert resp.status_code == 200
     amount = json.loads(resp.data)
-    assert amount == 1000.00
+    assert amount == -1000.00
 
 
 def test_general_ledger(client):
