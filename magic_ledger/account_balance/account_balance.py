@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from magic_ledger import db
+from magic_ledger.account_plan import account_plan_service
 
 
 @dataclass
@@ -102,6 +103,21 @@ class AccountBalance(db.Model):
         return (
             self.initial_credit + self.cumulated_credit + self.current_turnover_credit
         )
+
+    def get_final_balance(self):
+        final_debit_balance = (
+            self.initial_debit + self.cumulated_debit + self.current_turnover_debit
+        )
+        final_credit_balance = (
+            self.initial_credit + self.cumulated_credit + self.current_turnover_credit
+        )
+        final_balance = final_debit_balance - final_credit_balance
+        if final_balance > 0:
+            return final_balance, "debit"
+        elif final_balance < 0:
+            return abs(final_balance), "credit"
+        else:
+            return 0, account_plan_service.get_account_type(self.analytical_account)
 
     def __getstate__(self):
         state = self.__dict__.copy()

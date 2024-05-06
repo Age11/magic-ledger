@@ -1,12 +1,13 @@
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from flask_sqlalchemy import session
-from sqlalchemy import and_, not_, or_
+
+from sqlalchemy import and_, not_, or_, func
 from sqlalchemy.sql import extract
 
 from magic_ledger.account_balance.account_balance import AccountBalance
 from magic_ledger import db
+from magic_ledger.account_plan import account_plan_service
 
 
 def create_account_balance(
@@ -162,8 +163,8 @@ def get_account_totals(owner_id, analytical_account):
     return total_debit, total_credit, final_balance
 
 
-def get_current_profit_or_loss(owner_id):
-    income_accounts = (
+def get_income_accounts(owner_id, balance_date):
+    return (
         db.session.query(AccountBalance)
         .filter(
             or_(
@@ -172,10 +173,15 @@ def get_current_profit_or_loss(owner_id):
             ),
             not_(AccountBalance.analytical_account == "709"),
             AccountBalance.owner_id == owner_id,
+            AccountBalance.processed == False,
+            func.strftime("%Y-%m", AccountBalance.balance_date) == balance_date,
         )
         .all()
     )
-    expense_accounts = (
+
+
+def get_expenses_accounts(owner_id, balance_date):
+    return (
         db.session.query(AccountBalance)
         .filter(
             or_(
@@ -184,9 +190,16 @@ def get_current_profit_or_loss(owner_id):
             ),
             not_(AccountBalance.analytical_account == "609"),
             AccountBalance.owner_id == owner_id,
+            AccountBalance.processed == False,
+            func.strftime("%Y-%m", AccountBalance.balance_date) == balance_date,
         )
         .all()
     )
+
+
+def get_current_profit_or_loss(owner_id, balance_date):
+    income_accounts = get_income_accounts(owner_id, balance_date)
+    expense_accounts = get_expenses_accounts(owner_id, balance_date)
     total_income = 0
     total_expenses = 0
     if not account_balance_exists(owner_id, "121")[0]:
@@ -194,19 +207,29 @@ def get_current_profit_or_loss(owner_id):
     profit_or_loss = AccountBalance.query.filter_by(
         owner_id=owner_id, analytical_account="121"
     ).first()
-    current_profit_or_loss = (
-        profit_or_loss.get_total_debit_balance()
-        - profit_or_loss.get_total_credit_balance()
-    )
+    current_profit_or_loss, balance_type = profit_or_loss.get_final_balance()
 
     for acc in income_accounts:
-        debit = acc.get_total_debit_balance()
-        credit = acc.get_total_credit_balance()
-        total_income += debit - credit
+        total_income += acc.get_final_balance()[0]
 
     for acc in expense_accounts:
-        debit = acc.get_total_debit_balance()
-        credit = acc.get_total_credit_balance()
-        total_expenses += debit - credit
+        total_expenses += acc.get_final_balance()[0]
 
-    return current_profit_or_loss - total_income - total_expenses
+    return current_profit_or_loss + total_income - total_expenses
+
+
+def get_account_final_balance(owner_id, analytical_account, balance_date):
+    bd = datetime.strptime(balance_date, "%Y-%m")
+    ab = AccountBalance.query.filter(
+        and_(
+            AccountBalance.owner_id == owner_id,
+            extract("month", AccountBalance.balance_date) == bd.month,
+            extract("year", AccountBalance.balance_date) == bd.year,
+            AccountBalance.analytical_account == analytical_account,
+            AccountBalance.processed == False,
+        )
+    ).first()
+    if ab:
+        return ab.get_final_balance()
+    else:
+        0, account_plan_service.get_account_type(analytical_account)

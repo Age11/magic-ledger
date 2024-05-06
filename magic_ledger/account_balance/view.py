@@ -13,6 +13,7 @@ from magic_ledger.account_balance.api_model import (
 
 from flask_restx import Namespace, Resource
 
+
 ns = Namespace(
     "account-balance",
     path="/<project_id>/account-balance/",
@@ -73,10 +74,12 @@ class AccountBalanceDates(Resource):
         )
 
 
-@ns.route("/profit-or-loss")
+@ns.route("/profit-or-loss/<balance_date>")
 class ProfitOrLoss(Resource):
-    def get(self, project_id):
+    def get(self, project_id, balance_date):
         return (
-            account_balance_service.get_current_profit_or_loss(owner_id=project_id),
+            account_balance_service.get_current_profit_or_loss(
+                owner_id=project_id, balance_date=balance_date
+            ),
             200,
         )

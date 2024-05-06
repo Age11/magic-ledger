@@ -1033,7 +1033,7 @@ balance = [
 
 def test_profit(client):
     client.post("/1/account-balance/", json=balance)
-    resp = client.get("/1/account-balance/profit-or-loss")
+    resp = client.get("/1/account-balance/profit-or-loss/2024-04")
     assert resp.status_code == 200
     amount = json.loads(resp.data)
     assert amount == 1000.00
@@ -1061,7 +1061,7 @@ balance = [
 
 def test_profit(client):
     client.post("/1/account-balance/", json=balance)
-    resp = client.get("/1/account-balance/profit-or-loss")
+    resp = client.get("/1/account-balance/profit-or-loss/2024-04")
     assert resp.status_code == 200
     amount = json.loads(resp.data)
     assert amount == -1000.00
@@ -1077,3 +1077,110 @@ def test_general_ledger(client):
     general_ledger = client.get("/1/reports/general-ledger/2023-09/401")
     assert general_ledger.status_code == 200
     data = json.loads(general_ledger.data)
+
+
+sale_template = {
+    "name": "Vanzare de marfuri catre client regim tva normal",
+    "description": "Aceasta inregistrare contabila se refera la vanzarea de marfuri catre un client care aplica regimul de tva normal",
+    "main_transaction": {
+        "debit_account": "4111",
+        "credit_account": "707",
+        "currency": "RON",
+        "details": "Înregistrare venituri din vanzari",
+        "tx_type": "ieșiri",
+    },
+    "followup_transactions": [
+        {
+            "debit_account": "4111",
+            "credit_account": "4427",
+            "operation": "*19/100",
+            "details": "Inregistrare TVA",
+            "tx_type": "TVA-vanzare",
+        }
+    ],
+}
+
+unload_stock = {
+    "name": "Descărcare marfa din gestiune",
+    "description": "Aceasta înregistrare contabila se refera la descărcarea din gestiune a unor mărfuri",
+    "main_transaction": {
+        "debit_account": "601",
+        "credit_account": "371",
+        "currency": "RON",
+        "details": "Descărcarea din gestiune a unor mărfuri",
+        "tx_type": "descărcare",
+    },
+    "followup_transactions": [],
+}
+
+
+def test_close_vat(client):
+    r1 = client.post("/1/transaction-group-templates/", json=purchase)
+    assert r1.status_code == 201
+
+    r2 = client.post("/1/transaction-group-templates/", json=sale_template)
+    assert r2.status_code == 201
+
+    r3 = client.post("/1/transaction-group-templates/", json=unload_stock)
+    assert r3.status_code == 201
+
+    r4 = client.get("/1/transaction-group-templates/")
+    assert r4.status_code == 200
+    data = json.loads(r4.data)
+    assert len(data) == 3
+
+    r5 = client.post(
+        "/1/transaction-group-templates/1/use-template",
+        json={
+            "transaction_date": "2024-05-01",
+            "amount": 1000,
+        },
+    )
+    assert r5.status_code == 201
+    data = json.loads(r5.data)
+    assert len(data) == 2
+
+    r6 = client.post(
+        "/1/transaction-group-templates/2/use-template",
+        json={
+            "transaction_date": "2024-05-02",
+            "amount": 2000,
+        },
+    )
+    assert r6.status_code == 201
+    data = json.loads(r6.data)
+    assert len(data) == 2
+
+    r7 = client.post(
+        "/1/transaction-group-templates/3/use-template",
+        json={
+            "transaction_date": "2024-05-02",
+            "amount": 1000,
+        },
+    )
+    assert r7.status_code == 201
+    data = json.loads(r7.data)
+    assert len(data) == 1
+
+    r8 = client.get("/1/transactions/")
+    assert r7.status_code == 201
+    data = json.loads(r8.data)
+    assert len(data) == 5
+
+    r9 = client.put("/1/transactions/generate-close-vat-transactions/2024-05/")
+    assert r9.status_code == 201
+
+    r10 = client.get("/1/transactions/")
+    assert r10.status_code == 200
+    data = json.loads(r10.data)
+    assert len(data) == 7
+
+    r11 = client.put(
+        "/1/transactions/generate-close-income-expenses-transactions/2024-05/"
+    )
+    assert r11.status_code == 201
+
+    r12 = client.get("/1/transactions/")
+    assert r12.status_code == 200
+    data = json.loads(r12.data)
+    assert len(data) == 9

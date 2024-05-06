@@ -66,3 +66,29 @@ class TransactionsByDate(Resource):
             ),
             200,
         )
+
+
+@ns.route(
+    "/generate-close-vat-transactions/<balance_date>/",
+    endpoint="generate_close_vat_transactions",
+)
+class GenerateCloseVatTransactions(Resource):
+    @ns.response(201, "Close VAT transactions generated")
+    def put(self, project_id, balance_date):
+        transaction_service.generate_close_vat_transactions(
+            owner_id=project_id, balance_date=balance_date
+        )
+        return {}, 201
+
+
+@ns.route(
+    "/generate-close-income-expenses-transactions/<balance_date>/",
+    endpoint="generate_close_income_expenses_transactions",
+)
+class GenerateCloseIncomeExpensesTransactions(Resource):
+    @ns.response(201, "Close income and expenses transactions generated")
+    def put(self, project_id, balance_date):
+        transaction_service.generate_close_income_and_expenses_account_transactions(
+            owner_id=project_id, balance_date=balance_date
+        )
+        return {}, 201
