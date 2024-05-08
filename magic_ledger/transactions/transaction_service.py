@@ -91,7 +91,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
 
     if collected_vat > deductible_vat:
         if deductible_vat == 0:
-            create_transaction(
+            create_transaction_and_update_balance(
                 {
                     "debit_account": "4427",
                     "credit_account": "4423",
@@ -107,7 +107,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
                 }
             )
         else:
-            create_transaction(
+            create_transaction_and_update_balance(
                 {
                     "debit_account": "4427",
                     "credit_account": "4426",
@@ -123,7 +123,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
                 }
             )
 
-        create_transaction(
+        create_transaction_and_update_balance(
             {
                 "debit_account": "4427",
                 "credit_account": "4423",
@@ -140,7 +140,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
         )
     elif deductible_vat > collected_vat:
         if collected_vat == 0:
-            create_transaction(
+            create_transaction_and_update_balance(
                 {
                     "debit_account": "4424",
                     "credit_account": "4426",
@@ -156,7 +156,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
                 }
             )
         else:
-            create_transaction(
+            create_transaction_and_update_balance(
                 {
                     "debit_account": "4427",
                     "credit_account": "4426",
@@ -172,7 +172,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
                 }
             )
 
-        create_transaction(
+        create_transaction_and_update_balance(
             {
                 "debit_account": "4424",
                 "credit_account": "4426",
@@ -189,7 +189,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
         )
 
     elif deductible_vat == collected_vat:
-        create_transaction(
+        create_transaction_and_update_balance(
             {
                 "debit_account": "4427",
                 "credit_account": "4426",
@@ -211,7 +211,7 @@ def generate_close_income_and_expenses_account_transactions(owner_id, balance_da
     expenses = balance_service.get_expenses_accounts(owner_id, balance_date)
     income = balance_service.get_income_accounts(owner_id, balance_date)
     for acc in expenses:
-        create_transaction(
+        create_transaction_and_update_balance(
             {
                 "debit_account": "121",
                 "credit_account": acc.analytical_account,
@@ -228,7 +228,7 @@ def generate_close_income_and_expenses_account_transactions(owner_id, balance_da
         )
 
     for acc in income:
-        create_transaction(
+        create_transaction_and_update_balance(
             {
                 "debit_account": acc.analytical_account,
                 "credit_account": "121",

@@ -115,18 +115,18 @@ def generate_transactions_from_template(
     )
 
     for transaction in ft:
+        if "X" in transaction.operation:
+            operation = transaction.operation.replace("X", str(request_body["amount"]))
+        else:
+            operation = str(request_body["amount"]) + transaction.operation
         resp.append(
             create_transaction_and_update_balance(
                 {
                     "debit_account": transaction.debit_account,
                     "credit_account": transaction.credit_account,
                     "currency": mt.currency,
-                    "debit_amount": eval(
-                        str(request_body["amount"]) + transaction.operation
-                    ),
-                    "credit_amount": eval(
-                        str(request_body["amount"]) + transaction.operation
-                    ),
+                    "debit_amount": eval(operation),
+                    "credit_amount": eval(operation),
                     "transaction_date": request_body["transaction_date"],
                     "details": transaction.details,
                     "owner_id": owner_id,

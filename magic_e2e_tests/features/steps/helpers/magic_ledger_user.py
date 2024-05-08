@@ -216,16 +216,21 @@ class MagicLedgerUser:
 
     close_month = create_initial_account_balance
 
-    def close_balance_for_month(self, month):
-        response = self.client.post(
-            self.base_url
-            + "/"
-            + self.selected_project
-            + "/account-balance/close/"
-            + month
+    def close_balance_for_month(self, balance_date):
+        r1 = self.client.put(
+            f"{self.base_url}/{self.selected_project}/transactions/generate-close-vat-transactions/{balance_date}"
         )
-        assert response.status_code == 201
-        return response
+        assert r1.status_code == 201
+        r2 = self.client.put(
+            f"{self.base_url}/{self.selected_project}/transactions/generate-close-income-expenses-transactions/{balance_date}"
+        )
+        assert r2.status_code == 201
+        r3 = self.client.put(
+            f"{self.base_url}/{self.selected_project}/account-balance/close/{balance_date}"
+        )
+        assert r3.status_code == 201
+
+        return r3
 
     def add_transaction(self, context_table):
         for row in context_table:
@@ -298,6 +303,7 @@ class MagicLedgerUser:
                 "currency": "RON",
                 "vat_rate": round(float(row["cota_tva"]), 2),
                 "invoice_id": -int(self.selected_project),
+                "acquisition_date": row["data_achizitie"],
             }
             response = self.client.post(
                 self.base_url
@@ -315,6 +321,7 @@ class MagicLedgerUser:
             req = {
                 "serial_number": row["serie"],
                 "invoice_type": row["tip_factura"],
+                "payment_type": row["tip_plata"],
                 "invoice_date": row["data_factura"],
                 "due_date": row["data_scadenta"],
                 "supplier_id": int(row["id_furnizor"]),
@@ -322,6 +329,8 @@ class MagicLedgerUser:
                 "currency": row["moneda"],
                 "amount": round(float(row["valoare_factura"]), 2),
                 "vat_amount": round(float(row["valoare_tva"]), 2),
+                "amount_due": round(float(row["valoare_factura"]), 2)
+                + round(float(row["valoare_tva"]), 2),
                 "issuer_name": row["nume_emitent"],
             }
             response = self.client.post(
@@ -331,13 +340,50 @@ class MagicLedgerUser:
 
     def add_invoice_item(self, context):
         for row in context:
+            if row["pret_vanzare"] == "N/A":
+                req = {
+                    "name": row["nume_articol"],
+                    "description": row["descriere"],
+                    "quantity": int(row["cantitate"]),
+                    "measurement_unit": row["unitate_masura"],
+                    "acquisition_price": round(float(row["pret_unitar"]), 2),
+                    "sale_price": None,
+                    "currency": "RON",
+                    "vat_rate": round(float(row["cota_tva"]), 2),
+                    "invoice_id": row["id_factura"],
+                }
+            else:
+                req = {
+                    "name": row["nume_articol"],
+                    "description": row["descriere"],
+                    "quantity": int(row["cantitate"]),
+                    "measurement_unit": row["unitate_masura"],
+                    "acquisition_price": round(float(row["pret_unitar"]), 2),
+                    "sale_price": round(float(row["pret_vanzare"]), 2),
+                    "currency": "RON",
+                    "vat_rate": round(float(row["cota_tva"]), 2),
+                    "invoice_id": row["id_factura"],
+                }
+            response = self.client.post(
+                self.base_url
+                + "/"
+                + self.selected_project
+                + "/inventories/"
+                + row["id_inventar"]
+                + "/items/",
+                json=req,
+            )
+            return response
+
+    def add_invoice_item_no_inventory(self, context):
+        for row in context:
             req = {
                 "name": row["nume_articol"],
                 "description": row["descriere"],
                 "quantity": int(row["cantitate"]),
                 "measurement_unit": row["unitate_masura"],
                 "acquisition_price": round(float(row["pret_unitar"]), 2),
-                "sale_price": round(float(row["pret_vanzare"]), 2),
+                "sale_price": None,
                 "currency": "RON",
                 "vat_rate": round(float(row["cota_tva"]), 2),
                 "invoice_id": row["id_factura"],
@@ -347,7 +393,7 @@ class MagicLedgerUser:
                 + "/"
                 + self.selected_project
                 + "/inventories/"
-                + row["id_inventar"]
+                + "-1"
                 + "/items/",
                 json=req,
             )
@@ -362,3 +408,39 @@ class MagicLedgerUser:
             json=request_body,
         )
         return response
+
+    def make_transaction_from_template(self, context):
+        for row in context:
+            req = {
+                "transaction_date": row["data_inregistrarii"],
+                "amount": round(float(row["suma"]), 2),
+            }
+            response = self.client.post(
+                self.base_url
+                + "/"
+                + self.selected_project
+                + "/transaction-group-templates/"
+                + str(row["id_sablon"])
+                + "/use-template",
+                json=req,
+            )
+        return response
+
+    def decrease_stock(self, context):
+        for row in context:
+            r1 = requests.put(
+                f'{self.base_url}/{self.selected_project}/inventories/{row["id_gestiune"]}/items/{row["id_articol"]}/decrease-stock',
+                json={
+                    "quantity": int(row["cantitate"]),
+                    "invoice_id": row["id_factura"],
+                },
+            )
+            return r1
+
+    def solve_payment(self, context):
+        for row in context:
+            r1 = requests.put(
+                f'{self.base_url}/{self.selected_project}/payments/{row["id_plata"]}/pay',
+                json={"amount": round(float(row["suma"]), 2)},
+            )
+            return r1

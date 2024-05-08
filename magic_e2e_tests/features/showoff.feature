@@ -79,15 +79,11 @@ Functionalitate:  Inregistrari pentru luna decembrie
 
     * adaug un articol in inventar:
       | nume_articol | descriere                                 | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | data_achizitie |
-      | tricou mov   | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 10.00       | 20.00        | 19       | 1           | 2023-03-01     |
+      | Tricou mov   | tricou bumbac 100% multicolor cu imprimeu | 100       | buc            | 10.00       | 20.00        | 19       | 1           | 2023-03-01     |
 
     * adaug o imobilizare corporala
       | asset_name    | tip_amortizare | valoare_initiala | valoare_inventar | valoare_curenta | durata_utilizare | data_achizitie | data_inregistrare | descriere                              |
       | Autoutilitară | liniară        | 10000            | 10000            | 9000            | 48               | 2022-09        | 2023-11           | Renault Kangoo, 2015, 1.4 diesel, 75CP |
-
-    * creez un furnizor:
-      | organizatie      | cif     | nrc          | tip      | telefon    | email                     | mod_tva   | tara    | judet     | oras      | strada    | numar | cod_postal | cont_bancar             | detalii       |
-      | „MySupplier”  SA | 3020049 | J20/777/1998 | supplier | 0721222333 | contact@happy-service.com | facturare | Romania | Bucuresti | Bucuresti | Panseluta | 110   | 031183     | RO50PORL740266286982777 | Zarzavat Bank |
 
     * creez un client:
       | organizatie       | cif      | nrc          | tip    | telefon    | email                 | mod_tva   | tara    | judet     | oras      | strada     | numar | cod_postal | cont_bancar             | detalii       |
@@ -97,52 +93,243 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | nume    | prenume | telefon    | cnp     | tara    | judet   | oras   | strada | numar | cod_postal | email            | cont                     | detalii  |
       | Ionescu | Emilian | 0721666555 | Emilian | Romania | Prahova | Sinaia | Strazi | 99    | 106100     | ionemi@email.com | RO49AAAA1B31007593840001 | AAA BANK |
 
+    * inchid luna "2023-11"
 
-#    * adaug o factura:
-#      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura |
-#      | FF001 | 2024-04-01   | 2023-12-31    | 2           | 1         | RON    | 83              | 15.77       | V. M.        | plată       |
-#
-#    * adaug un articol din factura in inventar:
-#      | nume_articol  | descriere                               | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
-#      | tricou galben | tricou bumbac 100% galben fara imprimeu | 10        | buc            | 8.30        | 13.00        | 19       | 1           | 1          |
+    # 2023-12-02
 
     * adaug tratament contabil pentru înregistrarea chiriei
 
-    * adaug tratament contabil pentru înregistrarea cheltuielilor cu apa
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 12345 | 2023-12-02   | 2023-12-31    | 2           | 1         | RON    | 1000.00         | 190.00      | V. M.        | primită     | plată     |
 
-    * adaug tratament contabil pentru înregistrarea cheltuielilor cu energia
+    * înregistrez un articol din factură:
+      | nume_articol | descriere                          | cantitate | unitate_masura | pret_unitar | cota_tva | id_factura |
+      | chirie       | Chiria pentru punctul de desfacere | 1         | lună           | 1000.00     | 19       | 1          |
 
-    * adaug tratament contabil pentru înregistrarea cheltuielilor cu servicii poștale și cu telecomunicațiile
+    * creez tranzacții din șablon:
+      | id_sablon | suma | data_inregistrarii |
+      | 1         | 1000 | 2023-12-02         |
 
-    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA normal
+    # 2023-12-05
 
-    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA la încasare
+    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA normal și dare în folosință
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 78956 | 2023-12-05   | 2023-12-31    | 4           | 1         | RON    | 5000.00         | 950.00      | B. B.        | primită     | plată     |
+
+    * adaug un articol din factura in inventar:
+      | nume_articol    | descriere                                         | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
+      | Rafturi Vitrină | Rafturi pentru amenajarea vitrinei, design modern | 10        | buc            | 500.00      | N/A          | 19       | 2           | 2          |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma | data_inregistrarii |
+      | 2         | 5000 | 2023-12-05         |
+
+
+    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA la încasare și dare în folosință
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 12859 | 2023-12-05   | 2023-12-31    | 3           | 1         | RON    | 1500.00         | 285.00      | G. D.        | primită     | plată     |
+
+    * adaug un articol din factura in inventar:
+      | nume_articol   | descriere             | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
+      | Casă de marcat | Casă de marcat DataCS | 1         | buc            | 1500        | N/A          | 19       | 2           | 3          |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma | data_inregistrarii |
+      | 3         | 1500 | 2023-12-05         |
+
 
     * adaug tratament contabil pentru achiziția de active corporale de la furnizor de imobilizări regim TVA normal
 
-    * adaug tratament contabil pentru achizitie de marfa de la furnizor regim tva normal
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 6952  | 2023-12-05   | 2023-12-31    | 3           | 1         | RON    | 5000.00         | 950.00      | G. D.        | primită     | plată     |
 
-    * adaug tratament contabil pentru plata salariilor
+    * adaug o imobilizare corporala
+      | asset_name          | tip_amortizare | valoare_initiala | valoare_inventar | valoare_curenta | durata_utilizare | data_achizitie | data_inregistrare | descriere                                 |
+      | Sistem supraveghere | liniară        | 5000             | 5000             | 5000            | 72               | 2023-12        | 2023-12           | Sistem supraveghere complet Guards Guards |
 
-    * adaug tratament contabil pentru vanzare catre client regim tva normal
+    * creez tranzacții din șablon:
+      | id_sablon | suma | data_inregistrarii |
+      | 4         | 5000 | 2023-12-05         |
 
-    * adaug tratament contabil pentru incasare in cont de la client
+
+  # 2023-12-06
+
+    * adaug tratament contabil pentru achiziție de marfă de la furnizor regim tva normal
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 76953 | 2023-12-06   | 2023-12-31    | 3           | 1         | RON    | 20000.00        | 3800.00     | G. D.        | primită     | plată     |
+
+    * adaug un articol din factura in inventar:
+      | nume_articol       | descriere                                         | cantitate | unitate_masura | pret_unitar | pret_vanzare | cota_tva | id_inventar | id_factura |
+      | Tricouri imprimate | Tricouri cu imprimeu, 100% bumbac, diverse culori | 1000      | buc            | 20.00       | N/A          | 19       | 1           | 5          |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma | data_inregistrarii |
+      | 5         | 1500 | 2023-12-06         |
+
+  # 2023-12-10
+
+    * adaug tratament contabil pentru vânzare către client regim tva normal
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 00001 | 2023-12-10   | 2023-12-31    | 1           | 9         | RON    | 10000.00        | 1900.00     | G. A.        | emisă       | încasare  |
+
+    * scad stocul de mărfuri:
+      | id_articol | cantitate | id_gestiune | id_factura |
+      | 5          | 200       | 1           | 6          |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma     | data_inregistrarii |
+      | 6         | 10000.00 | 2023-12-10         |
+
+    * adaug tratament contabil pentru descărcare din gestiunea de mărfuri
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 7         | 4000.00 | 2023-12-10         |
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 6        | 5000.00 |
 
     * adaug tratament contabil pentru incasare in casa de la client
 
-    * adaug tratament contabil pentru plata furnizor din cont
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 8         | 5000.00 | 2023-12-10         |
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 1        | 1190.00 |
 
     * adaug tratament contabil pentru plata furnizor din casă
 
-    * adaug tratament contabil pentru descarcare din gestiunea de marfuri
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 9         | 1190.00 | 2023-12-10         |
 
-    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile
+  # 2023-12-11
 
-    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile cu TVA la încasare
+    * adaug tratament contabil pentru vânzare către client regim tva normal cu încasare directă
 
-    * adaug tratament contabil pentru înregistrarea achiziției de imobilizări corporale
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 0001  | 2023-12-11   | 2023-12-31    | 1           | 9         | RON    | 2000.00         | 380.00      | G. A.        | emisă       | încasare  |
 
-    * adaug tratament contabil pentru înregistrarea cheltuielilor cu uzura
+    * scad stocul de mărfuri:
+      | id_articol | cantitate | id_gestiune | id_factura |
+      | 5          | 20        | 1           | 7          |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma   | data_inregistrarii |
+      | 7         | 400.00 | 2023-12-11         |
+
+  # 2023-12-12
+
+    * adaug tratament contabil pentru incasare in cont de la client
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 6        | 6900.00 |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 10        | 6190.00 | 2023-12-12         |
+
+    * adaug tratament contabil pentru plata furnizor din cont
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 4        | 5950.00 |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 11        | 5950.00 | 2023-12-12         |
+
+    * adaug tratament contabil pentru plata furnizor din cont cu exigibilizare TVA
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 3        | 1785.00 |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 12        | 1785.00 | 2023-12-12         |
+
+  # 2023-12-15
+
+    * adaug o factura:
+      | serie | data_factura | data_scadenta | id_furnizor | id_client | moneda | valoare_factura | valoare_tva | nume_emitent | tip_factura | tip_plata |
+      | 65897 | 2023-12-11   | 2023-12-31    | 6           | 1         | RON    | 168.07          | 31.93      | T. M.        | primită       | plată  |
+
+    * înregistrez un articol din factură:
+      | nume_articol | descriere           | cantitate | unitate_masura | pret_unitar | cota_tva | id_factura |
+      | telefonie    | Abonament telefonie | 1         | lună           | 168.07      | 19       | 8          |
+
+    * adaug tratament contabil pentru înregistrarea cheltuielilor cu servicii poștale și cu telecomunicațiile
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 13        | 168.07  | 2023-12-15         |
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 8        | 200.00  |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma    | data_inregistrarii |
+      | 9         | 200.00  | 2023-12-15         |
+
+    * rezolv plata:
+      | id_plata | suma    |
+      | 2        | 5950.00  |
+
+    * creez tranzacții din șablon:
+      | id_sablon | suma     | data_inregistrarii |
+      | 11        | 5950.00  | 2023-12-15         |
+
+    # 2023-12-20
+
+
+#    * adaug tratament contabil pentru înregistrarea cheltuielilor cu apa
+#
+#    * adaug tratament contabil pentru înregistrarea cheltuielilor cu energia
+#
+#    * adaug tratament contabil pentru înregistrarea cheltuielilor cu servicii poștale și cu telecomunicațiile
+#
+#    * adaug tratament contabil pentru Înregistrarea achiziției de obiecte de inventar de la furnizor cu regim TVA normal și dare în folosință
+#
+#    * adaug tratament contabil pentru achiziția de active corporale de la furnizor de imobilizări regim TVA normal
+#
+#    * adaug tratament contabil pentru plata salariilor
+#
+#    * adaug tratament contabil pentru vanzare catre client regim tva normal
+#
+#    * adaug tratament contabil pentru incasare in cont de la client
+#
+#    * adaug tratament contabil pentru incasare in casa de la client
+#
+#    * adaug tratament contabil pentru plata furnizor din cont
+#
+#    * adaug tratament contabil pentru plata furnizor din casă
+#
+#    * adaug tratament contabil pentru descarcare din gestiunea de marfuri
+#
+#    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile
+#
+#    * adaug tratament contabil pentru înregistrarea achiziției de materiale consumabile cu TVA la încasare
+#
+#    * adaug tratament contabil pentru înregistrarea achiziției de imobilizări corporale
+#
+#    * adaug tratament contabil pentru înregistrarea cheltuielilor cu uzura
 
 
 

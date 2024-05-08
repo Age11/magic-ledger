@@ -198,24 +198,27 @@ def get_expenses_accounts(owner_id, balance_date):
 
 
 def get_current_profit_or_loss(owner_id, balance_date):
-    income_accounts = get_income_accounts(owner_id, balance_date)
-    expense_accounts = get_expenses_accounts(owner_id, balance_date)
-    total_income = 0
-    total_expenses = 0
     if not account_balance_exists(owner_id, "121")[0]:
         create_account_balance(owner_id, "121")
     profit_or_loss = AccountBalance.query.filter_by(
         owner_id=owner_id, analytical_account="121"
     ).first()
-    current_profit_or_loss, balance_type = profit_or_loss.get_final_balance()
+    if profit_or_loss.processed == True:
+        return profit_or_loss.get_final_balance()[0]
+    else:
+        income_accounts = get_income_accounts(owner_id, balance_date)
+        expense_accounts = get_expenses_accounts(owner_id, balance_date)
+        total_income = 0
+        total_expenses = 0
+        current_profit_or_loss, balance_type = profit_or_loss.get_final_balance()
 
-    for acc in income_accounts:
-        total_income += acc.get_final_balance()[0]
+        for acc in income_accounts:
+            total_income += acc.get_final_balance()[0]
 
-    for acc in expense_accounts:
-        total_expenses += acc.get_final_balance()[0]
+        for acc in expense_accounts:
+            total_expenses += acc.get_final_balance()[0]
 
-    return current_profit_or_loss + total_income - total_expenses
+        return current_profit_or_loss + total_income - total_expenses
 
 
 def get_account_final_balance(owner_id, analytical_account, balance_date):
