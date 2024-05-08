@@ -421,7 +421,9 @@ transaction_on_invoice = {
     "transaction_date": "2020-01-01",
     "details": "achizitie marfuri",
     "tx_type": "intrari",
-    "invoice_id": 1,
+    "document_type": "factura",
+    "document_serial_number": "FF0001",
+    "document_id": 1,
 }
 
 
@@ -453,7 +455,7 @@ def test_create_invoice_and_transaction(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert data["debit_account"] == "371"
-    assert data["invoice_id"] == 1
+    assert data["document_id"] == 1
 
     resp = client.get("/1/payments/")
     assert resp.status_code == 200
@@ -545,6 +547,8 @@ transaction = {
     "transaction_date": "2020-01-01",
     "details": "achizitie marfuri",
     "tx_type": "intrari",
+    "document_type": "factura",
+    "document_serial_number": "FF0001",
 }
 
 
@@ -733,6 +737,7 @@ salary = {
         "currency": "RON",
         "details": "Inregistrare cheltuieli cu salariile",
         "tx_type": "salarii",
+        "document_type": "stat plata",
     },
     "followup_transactions": [
         {
@@ -741,6 +746,7 @@ salary = {
             "operation": "*25/100",
             "details": "Contributie asigurari sociale - CAS",
             "tx_type": "salarii",
+            "document_type": "stat plata",
         },
         {
             "debit_account": "421",
@@ -748,6 +754,7 @@ salary = {
             "operation": "*10/100",
             "details": "Contribuții de asigurări sociale de sănătate - CASS",
             "tx_type": "salarii",
+            "document_type": "stat plata",
         },
         {
             "debit_account": "421",
@@ -755,6 +762,7 @@ salary = {
             "operation": "*65/100*10/100",
             "details": "Impozit pe venit",
             "tx_type": "salarii",
+            "document_type": "stat plata",
         },
     ],
 }
@@ -776,6 +784,8 @@ def test_create_transaction_template(client):
         json={
             "transaction_date": "2023-09-01",
             "amount": 4000,
+            "document_serial_number": "F0001",
+            "document_id": 1,
         },
     )
     assert r3.status_code == 201
@@ -802,6 +812,7 @@ purchase = {
         "currency": "RON",
         "details": "Inregistrare achizitie marfuri",
         "tx_type": "intrări",
+        "document_type": "factura",
     },
     "followup_transactions": [
         {
@@ -810,6 +821,7 @@ purchase = {
             "operation": "*19/100",
             "details": "Inregistrare TVA",
             "tx_type": "TVA-incasare",
+            "document_type": "factura",
         }
     ],
 }
@@ -836,6 +848,8 @@ def test_create_transaction_template2(client):
         json={
             "transaction_date": "2023-09-01",
             "amount": 1000,
+            "document_serial_number": "F0001",
+            "document_id": -1,
         },
     )
     assert r3.status_code == 201
@@ -872,6 +886,7 @@ sell = {
         "currency": "RON",
         "details": "Înregistrare venituri din vanzari",
         "tx_type": "ieșiri",
+        "document_type": "factura",
     },
     "followup_transactions": [
         {
@@ -880,6 +895,7 @@ sell = {
             "operation": "*19/100",
             "details": "Inregistrare TVA",
             "tx_type": "TVA-vanzare",
+            "document_type": "factura",
         },
         {
             "debit_account": "607",
@@ -887,6 +903,7 @@ sell = {
             "operation": "*1",
             "details": "Descarcare din gestiune",
             "tx_type": "ieșiri",
+            "document_type": "proces-verbal",
         },
     ],
 }
@@ -1088,6 +1105,7 @@ sale_template = {
         "currency": "RON",
         "details": "Înregistrare venituri din vanzari",
         "tx_type": "ieșiri",
+        "document_type": "factura",
     },
     "followup_transactions": [
         {
@@ -1096,6 +1114,7 @@ sale_template = {
             "operation": "*19/100",
             "details": "Inregistrare TVA",
             "tx_type": "TVA-vanzare",
+            "document_type": "factura",
         }
     ],
 }
@@ -1104,11 +1123,12 @@ unload_stock = {
     "name": "Descărcare marfa din gestiune",
     "description": "Aceasta înregistrare contabila se refera la descărcarea din gestiune a unor mărfuri",
     "main_transaction": {
-        "debit_account": "601",
+        "debit_account": "607",
         "credit_account": "371",
         "currency": "RON",
         "details": "Descărcarea din gestiune a unor mărfuri",
         "tx_type": "descărcare",
+        "document_type": "factura",
     },
     "followup_transactions": [],
 }
@@ -1134,6 +1154,8 @@ def test_close_vat(client):
         json={
             "transaction_date": "2024-05-01",
             "amount": 1000,
+            "document_serial_number": "F0001",
+            "document_id": 1,
         },
     )
     assert r5.status_code == 201
@@ -1145,6 +1167,8 @@ def test_close_vat(client):
         json={
             "transaction_date": "2024-05-02",
             "amount": 2000,
+            "document_serial_number": "F0001",
+            "document_id": 1,
         },
     )
     assert r6.status_code == 201
@@ -1156,6 +1180,8 @@ def test_close_vat(client):
         json={
             "transaction_date": "2024-05-02",
             "amount": 1000,
+            "document_serial_number": "F0001",
+            "document_id": 1,
         },
     )
     assert r7.status_code == 201
@@ -1184,3 +1210,188 @@ def test_close_vat(client):
     assert r12.status_code == 200
     data = json.loads(r12.data)
     assert len(data) == 9
+
+
+balance_nov = [
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "1012",
+        "initial_debit": 0.0,
+        "initial_credit": 200.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 0.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "121",
+        "initial_debit": 0.0,
+        "initial_credit": 600.0,
+        "cumulated_debit": 9067.0,
+        "cumulated_credit": 10000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "2133",
+        "initial_debit": 10000.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 0.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "2813",
+        "initial_debit": 0.0,
+        "initial_credit": 1000.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 0.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "371",
+        "initial_debit": 2000.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 5000.0,
+        "cumulated_credit": 6000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "401",
+        "initial_debit": 0.0,
+        "initial_credit": 10100.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 5950.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4111",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 11900.0,
+        "cumulated_credit": 10000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "421",
+        "initial_debit": 0.0,
+        "initial_credit": 500.0,
+        "cumulated_debit": 1650.0,
+        "cumulated_credit": 3000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4315",
+        "initial_debit": 0.0,
+        "initial_credit": 100.0,
+        "cumulated_debit": 100.0,
+        "cumulated_credit": 750.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4316",
+        "initial_debit": 0.0,
+        "initial_credit": 50.0,
+        "cumulated_debit": 50.0,
+        "cumulated_credit": 300.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "436",
+        "initial_debit": 0.0,
+        "initial_credit": 11.0,
+        "cumulated_debit": 11.0,
+        "cumulated_credit": 67.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4423",
+        "initial_debit": 0.0,
+        "initial_credit": 100.0,
+        "cumulated_debit": 100.0,
+        "cumulated_credit": 950.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4426",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 950.0,
+        "cumulated_credit": 950.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "4427",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 1900.0,
+        "cumulated_credit": 1900.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "444",
+        "initial_debit": 0.0,
+        "initial_credit": 9.0,
+        "cumulated_debit": 9.0,
+        "cumulated_credit": 100.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "5121",
+        "initial_debit": 500.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 10000.0,
+        "cumulated_credit": 770.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "5311",
+        "initial_debit": 170.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 0.0,
+        "cumulated_credit": 0.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "607",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 6000.0,
+        "cumulated_credit": 6000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "641",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 3000.0,
+        "cumulated_credit": 3000.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "6461",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 67.0,
+        "cumulated_credit": 67.0,
+    },
+    {
+        "balance_date": "2023-11-01",
+        "analytical_account": "707",
+        "initial_debit": 0.0,
+        "initial_credit": 0.0,
+        "cumulated_debit": 10000.0,
+        "cumulated_credit": 10000.0,
+    },
+]
+
+
+def test_month_close(client):
+    r1 = client.post("http://localhost:5000/1/account-balance/", json=balance_nov)
+    assert r1.status_code == 201
+
+    r2 = client.put(
+        "http://localhost:5000/1/transactions/generate-close-vat-transactions/2023-11/"
+    )
+    assert r2.status_code == 201
+
+    r3 = client.put("http://localhost:5000/1/account-balance/close/2023-11")
+    assert r3.status_code == 201

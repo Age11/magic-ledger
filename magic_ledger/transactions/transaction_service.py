@@ -66,7 +66,9 @@ def get_available_dates(owner_id):
 
 
 def get_all_transactions_for_month(owner_id, tx_date):
-    transactions = Transaction.query.filter_by(owner_id=owner_id).all()
+    transactions = (
+        Transaction.query.filter_by(owner_id=owner_id).order_by(Transaction.id).all()
+    )
     resp = []
     for transaction in transactions:
         if transaction.transaction_date.strftime("%Y-%m") == tx_date:
@@ -211,35 +213,37 @@ def generate_close_income_and_expenses_account_transactions(owner_id, balance_da
     expenses = balance_service.get_expenses_accounts(owner_id, balance_date)
     income = balance_service.get_income_accounts(owner_id, balance_date)
     for acc in expenses:
-        create_transaction_and_update_balance(
-            {
-                "debit_account": "121",
-                "credit_account": acc.analytical_account,
-                "debit_amount": acc.get_final_balance()[0],
-                "credit_amount": acc.get_final_balance()[0],
-                "currency": "RON",
-                "transaction_date": last_day_of_month(bd.year, bd.month).strftime(
-                    "%Y-%m-%d"
-                ),
-                "details": "Închiderea conturilor de cheltuieli",
-                "tx_type": "închideri",
-                "owner_id": owner_id,
-            }
-        )
+        if acc.get_final_balance()[0] > 0:
+            create_transaction_and_update_balance(
+                {
+                    "debit_account": "121",
+                    "credit_account": acc.analytical_account,
+                    "debit_amount": acc.get_final_balance()[0],
+                    "credit_amount": acc.get_final_balance()[0],
+                    "currency": "RON",
+                    "transaction_date": last_day_of_month(bd.year, bd.month).strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "details": "Închiderea conturilor de cheltuieli",
+                    "tx_type": "închideri",
+                    "owner_id": owner_id,
+                }
+            )
 
     for acc in income:
-        create_transaction_and_update_balance(
-            {
-                "debit_account": acc.analytical_account,
-                "credit_account": "121",
-                "debit_amount": acc.get_final_balance()[0],
-                "credit_amount": acc.get_final_balance()[0],
-                "currency": "RON",
-                "transaction_date": last_day_of_month(bd.year, bd.month).strftime(
-                    "%Y-%m-%d"
-                ),
-                "details": "Închiderea conturilor de venituri",
-                "tx_type": "închideri",
-                "owner_id": owner_id,
-            }
-        )
+        if acc.get_final_balance()[0] > 0:
+            create_transaction_and_update_balance(
+                {
+                    "debit_account": acc.analytical_account,
+                    "credit_account": "121",
+                    "debit_amount": acc.get_final_balance()[0],
+                    "credit_amount": acc.get_final_balance()[0],
+                    "currency": "RON",
+                    "transaction_date": last_day_of_month(bd.year, bd.month).strftime(
+                        "%Y-%m-%d"
+                    ),
+                    "details": "Închiderea conturilor de venituri",
+                    "tx_type": "închideri",
+                    "owner_id": owner_id,
+                }
+            )

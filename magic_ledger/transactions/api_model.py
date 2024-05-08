@@ -28,7 +28,13 @@ transaction_model_input = api.model(
             required=True, description="The transaction owner id"
         ),
         "tx_type": fields.String(required=True, description="The transaction type"),
-        "invoice_id": fields.Integer(
+        "document_type": fields.String(
+            required=False, description="The transaction document type"
+        ),
+        "document_serial_number": fields.String(
+            required=False, description="The transaction document serial number"
+        ),
+        "document_id": fields.Integer(
             required=False, description="The transaction invoice id"
         ),
     },
@@ -61,8 +67,16 @@ transaction_model_output = api.model(
             required=True, description="The transaction owner id"
         ),
         "tx_type": fields.String(required=True, description="The transaction type"),
-        "invoice_id": fields.Raw(
-            required=False, description="The transaction invoice id or None"
+        "document_type": fields.String(
+            required=False, description="The transaction document type"
+        ),
+        "document_serial_number": fields.String(
+            required=False,
+            allow_null=True,
+            description="The transaction document serial number",
+        ),
+        "document_id": fields.Integer(
+            required=False, allow_null=True, description="The transaction invoice id"
         ),
     },
 )

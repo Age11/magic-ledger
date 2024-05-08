@@ -105,9 +105,8 @@ def close_monthly_balance_accounts(project_id, balance_date_string):
     open_date_string = (balance_date + relativedelta(months=1)).strftime("%Y-%m-%d")
 
     if balance_date.month == 12:
-        for account in accounts:
-            account.cumulate_amounts()
-            account.calculate_total_amounts()
+        # TODO inchide anul
+        pass
 
     for account in accounts:
         account.cumulate_amounts()

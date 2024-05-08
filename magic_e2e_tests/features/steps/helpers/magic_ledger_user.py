@@ -207,6 +207,7 @@ class MagicLedgerUser:
                 "cumulated_credit": float(row["credit_cumulat"]),
             }
             req_body.append(req)
+        print(req_body)
         response = self.client.post(
             self.base_url + "/" + self.selected_project + "/account-balance/",
             json=req_body,
@@ -414,7 +415,10 @@ class MagicLedgerUser:
             req = {
                 "transaction_date": row["data_inregistrarii"],
                 "amount": round(float(row["suma"]), 2),
+                "document_serial_number": row["serie_document"],
+                "document_id": row["id_document"],
             }
+
             response = self.client.post(
                 self.base_url
                 + "/"
@@ -436,6 +440,24 @@ class MagicLedgerUser:
                 },
             )
             return r1
+
+    def create_payment(self, context):
+        for row in context:
+            req = {
+                "amount": round(float(row["suma"]), 2),
+                "amount_due": round(float(row["suma"]), 2),
+                "payment_date": row["data_plata"],
+                "payment_type": row["tip_plata"],
+                "payment_status": "restantă",
+                "due_date": row["data_scadenta"],
+                "currency": "RON",
+                "invoice_id": row["id_factura"],
+                "transaction_id": row["id_tranzactie"],
+            }
+            response = self.client.post(
+                f"{self.base_url}/{self.selected_project}/payments/", json=req
+            )
+            return response
 
     def solve_payment(self, context):
         for row in context:

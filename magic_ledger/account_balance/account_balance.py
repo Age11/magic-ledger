@@ -64,18 +64,19 @@ class AccountBalance(db.Model):
         current_rollover_debit=0,
         current_rollover_credit=0,
     ):
-        self.initial_debit += initial_debit
-        self.initial_credit += initial_credit
-        self.cumulated_debit += cumulated_debit
-        self.cumulated_credit += cumulated_credit
-        self.current_turnover_debit += current_rollover_debit
-        self.current_turnover_credit += current_rollover_credit
+        self.initial_debit += round(float(initial_debit), 2)
+        self.initial_credit += round(float(initial_credit), 2)
+        self.cumulated_debit += round(float(cumulated_debit), 2)
+        self.cumulated_credit += round(float(cumulated_credit), 2)
+        self.current_turnover_debit += round(float(current_rollover_debit), 2)
+        self.current_turnover_credit += round(float(current_rollover_credit), 2)
 
     def cumulate_amounts(self):
         self.cumulated_debit += self.current_turnover_debit
         self.cumulated_credit += self.current_turnover_credit
-        self.current_turnover_debit = 0
-        self.current_turnover_credit = 0
+        # TODO FIX this?
+        # self.current_turnover_debit = 0
+        # self.current_turnover_credit = 0
         db.session.flush()
 
     def calculate_total_amounts(self):
@@ -88,9 +89,9 @@ class AccountBalance(db.Model):
             self.final_debit_balance = (
                 self.total_debit_balance - self.total_credit_balance
             )
-            self.final_credit_balance = 0
+            # self.final_credit_balance = 0
         elif self.total_credit_balance > self.total_debit_balance:
-            self.final_debit_balance = 0
+            # self.final_debit_balance = 0
             self.final_credit_balance = (
                 self.total_credit_balance - self.total_debit_balance
             )

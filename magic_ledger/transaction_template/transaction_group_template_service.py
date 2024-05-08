@@ -80,21 +80,22 @@ def transaction_group_templates_by_type(project_id, tx_type):
 def generate_transactions_from_template(
     transaction_group_template_id, owner_id, request_body
 ):
-    # find group template by id
-    # get main transaction using the id from the group template
-    # get followup transactions using the id from the main transaction
     tgt = GroupTransactionTemplate.query.filter_by(
         id=transaction_group_template_id
     ).first()
     mt = GTTMainTransaction.query.filter_by(id=tgt.id).first()
     ft = GTTFollowupTransaction.query.filter_by(main_transaction_id=mt.id).all()
 
-    # create a transaction for the main transaction
-    # create a transaction for each followup transaction
-    if "invoice_id" not in request_body.keys():
-        invoice_id = "None"
+    if "document_id" not in request_body.keys():
+        document_id = "None"
     else:
-        invoice_id = request_body["invoice_id"]
+        document_id = request_body["document_id"]
+
+    if "document_serial_number" not in request_body.keys():
+        document_serial_number = "None"
+    else:
+        document_serial_number = request_body["document_serial_number"]
+
     resp = []
 
     resp.append(
@@ -109,7 +110,9 @@ def generate_transactions_from_template(
                 "details": mt.details,
                 "owner_id": owner_id,
                 "tx_type": mt.tx_type,
-                "invoice_id": invoice_id,
+                "document_type": mt.document_type,
+                "document_serial_number": document_serial_number,
+                "document_id": document_id,
             }
         )
     )
@@ -131,7 +134,10 @@ def generate_transactions_from_template(
                     "details": transaction.details,
                     "owner_id": owner_id,
                     "tx_type": transaction.tx_type,
-                    "invoice_id": invoice_id,
+                    "document_type": transaction.document_type,
+                    # TODO for now I can't specify a setial and id for docuemnts that are different then the main transaction document
+                    "document_serial_number": document_serial_number,
+                    "document_id": document_id,
                 }
             )
         )

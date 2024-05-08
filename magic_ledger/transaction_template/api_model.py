@@ -13,6 +13,9 @@ TGT_main_transaction_model = api.model(
         "currency": fields.String(required=False, description="Transaction currency"),
         "details": fields.String(required=True, description="Transaction details"),
         "tx_type": fields.String(required=True, description="Transaction type"),
+        "document_type": fields.String(
+            required=False, description="Transaction document type"
+        ),
     },
 )
 
@@ -32,6 +35,9 @@ TGT_followup_transaction_model = api.model(
         ),
         "details": fields.String(required=True, description="Transaction details"),
         "tx_type": fields.String(required=True, description="Transaction type"),
+        "document_type": fields.String(
+            required=False, description="Transaction document type"
+        ),
     },
 )
 

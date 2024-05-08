@@ -13,13 +13,23 @@ class GTTMainTransaction(db.Model):
     currency = Column(String)
     details = Column(String, nullable=False)
     tx_type = Column(String, nullable=False)
+    document_type = Column(String, nullable=True)
 
-    def __init__(self, debit_account, credit_account, currency, details, tx_type):
+    def __init__(
+        self,
+        debit_account,
+        credit_account,
+        currency,
+        details,
+        tx_type,
+        document_type=None,
+    ):
         self.debit_account = debit_account
         self.credit_account = credit_account
         self.currency = currency
         self.details = details
         self.tx_type = tx_type
+        self.document_type = document_type
 
     def __repr__(self):
         return str(self.__getstate__())
