@@ -14,6 +14,7 @@ payment_model_output = api.model(
             required=True, description="The payment status"
         ),
         "payment_type": fields.String(required=True, description="The payment type"),
+        "details": fields.String(required=True, description="The payment details"),
         "currency": fields.String(required=True, description="The payment currency"),
         "amount_paid": fields.Float(required=True, description="The paid amount"),
         "amount_due": fields.Float(required=True, description="The due amount"),

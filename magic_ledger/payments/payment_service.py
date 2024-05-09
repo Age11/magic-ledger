@@ -7,6 +7,8 @@ from magic_ledger.invoices.invoice import Invoice
 from sqlalchemy.sql import extract
 from sqlalchemy import and_
 
+from magic_ledger.transactions.transaction import Transaction
+
 
 def create_payment(request_body):
     payment_data = {
@@ -34,7 +36,18 @@ def create_payment(request_body):
 
 
 def get_all_payments(owner_id):
-    return Payment.query.filter_by(owner_id=owner_id).all()
+    pmts = Payment.query.filter_by(owner_id=owner_id).all()
+    for pmt in pmts:
+        if pmt.invoice_id is not None:
+            inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
+            pmt.details = inv.serial_number
+        elif pmt.transaction_id is not None:
+            txn = Transaction.query.filter_by(id=pmt.transaction_id).first()
+            pmt.details = txn.name
+        else:
+            pmt.details = "Fără detalii"
+    print(pmts)
+    return pmts
 
 
 def get_payment_by_id(payment_id, owner_id):
@@ -54,7 +67,8 @@ def deposit_payment(invoice_id, owner_id, request_body):
 
 def get_all_receivable_payments_by_date(owner_id, payment_date):
     pmt_dt = datetime.strptime(payment_date, "%Y-%m")
-    return (
+
+    pmts = (
         db.session.query(Payment)
         .filter(
             and_(
@@ -68,11 +82,21 @@ def get_all_receivable_payments_by_date(owner_id, payment_date):
         .order_by(Payment.payment_date)
         .all()
     )
+    for pmt in pmts:
+        if pmt.invoice_id is not None:
+            inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
+            pmt.details = "Factura " + inv.serial_number
+        elif pmt.transaction_id is not None:
+            txn = Transaction.query.filter_by(id=pmt.transaction_id).first()
+            pmt.details = "Tranzacția " + txn.name
+        else:
+            pmt.details = "Fără detalii"
+    return pmts
 
 
 def get_all_payable_payments_by_date(owner_id, payment_date):
     pmt_dt = datetime.strptime(payment_date, "%Y-%m")
-    return (
+    pmts = (
         db.session.query(Payment)
         .filter(
             and_(
@@ -86,6 +110,42 @@ def get_all_payable_payments_by_date(owner_id, payment_date):
         .order_by(Payment.payment_date)
         .all()
     )
+    for pmt in pmts:
+        if pmt.invoice_id is not None:
+            inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
+            pmt.details = "Factura " + inv.serial_number
+        elif pmt.transaction_id is not None:
+            txn = Transaction.query.filter_by(id=pmt.transaction_id).first()
+            pmt.details = "Tranzacția " + txn.details
+        else:
+            pmt.details = "Fără detalii"
+    return pmts
+
+
+def get_all_payments_by_date(owner_id, payment_date):
+    pmt_dt = datetime.strptime(payment_date, "%Y-%m")
+    pmts = (
+        db.session.query(Payment)
+        .filter(
+            and_(
+                Payment.owner_id == owner_id,
+                extract("month", Payment.payment_date) == pmt_dt.month,
+                extract("year", Payment.payment_date) == pmt_dt.year,
+            )
+        )
+        .order_by(Payment.payment_date)
+        .all()
+    )
+    for pmt in pmts:
+        if pmt.invoice_id not in (None, -1):
+            inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
+            pmt.details = "Factura " + inv.serial_number
+        elif pmt.transaction_id not in (None, -1):
+            txn = Transaction.query.filter_by(id=pmt.transaction_id).first()
+            pmt.details = "Tranzacția " + txn.details
+        else:
+            pmt.details = "Fără detalii"
+    return pmts
 
 
 def get_available_payment_dates(owner_id):

@@ -8,6 +8,7 @@ from sqlalchemy.sql import extract
 from sqlalchemy import and_
 
 from magic_ledger.payments.payment_service import create_payment
+from magic_ledger.third_parties.service import organization_service
 
 
 def create_invoice(request_body):
@@ -47,7 +48,16 @@ def create_invoice(request_body):
 
 
 def get_all_invoices(owner_id):
-    return Invoice.query.filter_by(owner_id=owner_id).all()
+    invs = Invoice.query.filter_by(owner_id=owner_id).all()
+    for inv in invs:
+        sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
+        cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
+        inv.supplier_name = sup.organization_name
+        inv.sup_nrc = sup.nrc
+
+        inv.client_name = cli.organization_name
+        inv.cli_nrc = cli.nrc
+    return invs
 
 
 def get_invoice_by_id(invoice_id, owner_id):

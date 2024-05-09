@@ -112,7 +112,7 @@ def generate_transactions_from_template(
                 "tx_type": mt.tx_type,
                 "document_type": mt.document_type,
                 "document_serial_number": document_serial_number,
-                "document_id": document_id,
+                "document_id": -1,
             }
         )
     )
@@ -137,7 +137,7 @@ def generate_transactions_from_template(
                     "document_type": transaction.document_type,
                     # TODO for now I can't specify a setial and id for docuemnts that are different then the main transaction document
                     "document_serial_number": document_serial_number,
-                    "document_id": document_id,
+                    "document_id": -1,
                 }
             )
         )

@@ -199,9 +199,16 @@ def get_expenses_accounts(owner_id, balance_date):
 def get_current_profit_or_loss(owner_id, balance_date):
     if not account_balance_exists(owner_id, "121")[0]:
         create_account_balance(owner_id, "121")
-    profit_or_loss = AccountBalance.query.filter_by(
-        owner_id=owner_id, analytical_account="121"
-    ).first()
+
+    profit_or_loss = (
+        db.session.query(AccountBalance)
+        .filter(
+            AccountBalance.owner_id == owner_id,
+            AccountBalance.analytical_account == "121",
+            func.strftime("%Y-%m", AccountBalance.balance_date) == balance_date,
+        )
+        .first()
+    )
     if profit_or_loss.processed == True:
         return profit_or_loss.get_final_balance()[0]
     else:

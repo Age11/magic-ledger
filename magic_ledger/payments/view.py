@@ -83,3 +83,15 @@ class Payable(Resource):
 class AvailablePaymentDates(Resource):
     def get(self, project_id):
         return payment_service.get_available_payment_dates(owner_id=project_id)
+
+
+@ns.route("/<payment_date>/all/")
+class AllPayments(Resource):
+    @ns.marshal_list_with(payment_model_output, code=200)
+    def get(self, project_id, payment_date):
+        return (
+            payment_service.get_all_payments_by_date(
+                payment_date=payment_date, owner_id=project_id
+            ),
+            200,
+        )

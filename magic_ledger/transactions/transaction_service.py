@@ -190,7 +190,7 @@ def generate_close_vat_transactions(owner_id, balance_date):
             }
         )
 
-    elif deductible_vat == collected_vat:
+    elif deductible_vat == collected_vat != 0:
         create_transaction_and_update_balance(
             {
                 "debit_account": "4427",

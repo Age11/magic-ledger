@@ -17,7 +17,15 @@ invoice_model_output = api.model(
         "supplier_id": fields.Integer(
             required=True, description="The invoice supplier id"
         ),
+        "supplier_name": fields.String(
+            required=True, description="The invoice supplier name"
+        ),
+        "sup_nrc": fields.String(required=True, description="The invoice supplier cui"),
         "client_id": fields.Integer(required=True, description="The invoice client id"),
+        "client_name": fields.String(
+            required=True, description="The invoice client name"
+        ),
+        "cli_nrc": fields.String(required=True, description="The invoice client cui"),
         "amount": fields.Float(required=True, description="The invoice amount"),
         "vat_amount": fields.Float(required=True, description="The invoice vat amount"),
         "total_amount": fields.Float(

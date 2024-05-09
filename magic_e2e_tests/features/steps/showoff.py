@@ -812,7 +812,7 @@ def step_impl(context):
             "currency": "RON",
             "details": "Încasare credit pe termen scurt în cont",
             "tx_type": "încasare",
-            "document_type": "OP",
+            "document_type": "contract",
         },
         "followup_transactions": [],
     }
@@ -897,7 +897,7 @@ def step_impl(context):
             "currency": "RON",
             "details": "Plata furnizor din casă",
             "tx_type": "plată",
-            "document_type": "Chitanță",
+            "document_type": "chitanță",
         },
         "followup_transactions": [],
     }
