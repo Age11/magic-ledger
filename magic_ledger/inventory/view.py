@@ -100,7 +100,7 @@ class InventoryItemById(Resource):
 @ns.route("/<inventory_id>/items/<item_id>/decrease-stock/")
 class DecreaseStock(Resource):
     def put(self, project_id, inventory_id, item_id):
-        logging.info("""Decreasing stock for item with id: {}""".format(item_id))
+        print("""Decreasing stock for item with id: {}""".format(item_id))
         request.json["inventory_id"] = inventory_id
         request.json["item_id"] = item_id
         logging.info(request.json)

@@ -1,7 +1,7 @@
 from magic_ledger.inventory.inventory_service import get_items_from_invoice
 from magic_ledger.invoices.invoice_service import (
-    get_all_payable_invoices_by_date,
-    get_all_receivable_invoices_by_date,
+    get_all_incoming_invoices_by_date,
+    get_all_outgoing_invoices_by_date,
 )
 from magic_ledger.third_parties.service.organization_service import (
     get_supplier_by_id,
@@ -12,7 +12,7 @@ from magic_ledger.transactions.transaction_service import get_all_transactions_f
 
 def generate_purchase_journal(owner_id, invoice_date):
     # This function generates a buy report
-    invs = get_all_payable_invoices_by_date(owner_id, invoice_date)
+    invs = get_all_incoming_invoices_by_date(owner_id, invoice_date)
     res = []
     for inv in invs:
         supplier = get_supplier_by_id(inv.supplier_id, owner_id)
@@ -56,7 +56,7 @@ def generate_purchase_journal(owner_id, invoice_date):
 
 def generate_sales_journal(owner_id, invoice_date):
     # This function generates a buy report
-    invs = get_all_receivable_invoices_by_date(owner_id, invoice_date)
+    invs = get_all_outgoing_invoices_by_date(owner_id, invoice_date)
     res = []
     for inv in invs:
         client = get_client_by_id(inv.client_id, owner_id)

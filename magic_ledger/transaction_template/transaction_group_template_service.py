@@ -86,13 +86,13 @@ def generate_transactions_from_template(
     mt = GTTMainTransaction.query.filter_by(id=tgt.id).first()
     ft = GTTFollowupTransaction.query.filter_by(main_transaction_id=mt.id).all()
 
-    if "document_id" not in request_body.keys():
-        document_id = "None"
-    else:
+    if "document_id" in request_body.keys():
         document_id = request_body["document_id"]
+    else:
+        document_id = -1
 
     if "document_serial_number" not in request_body.keys():
-        document_serial_number = "None"
+        document_serial_number = "N/A"
     else:
         document_serial_number = request_body["document_serial_number"]
 
@@ -112,7 +112,7 @@ def generate_transactions_from_template(
                 "tx_type": mt.tx_type,
                 "document_type": mt.document_type,
                 "document_serial_number": document_serial_number,
-                "document_id": -1,
+                "document_id": document_id,
             }
         )
     )

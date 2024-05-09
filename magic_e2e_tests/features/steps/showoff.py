@@ -773,7 +773,7 @@ def step_impl(context):
             "credit_account": "2814",
             "currency": "RON",
             "details": "Cheltuieli cu amortizarea imobilizărilor",
-            "tx_type": "închideri",
+            "tx_type": "amortizări",
         },
         "followup_transactions": [],
     }

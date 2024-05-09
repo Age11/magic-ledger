@@ -49,3 +49,45 @@ class InvoiceById(Resource):
             ),
             200,
         )
+
+
+@ns.route("/<invoice_date>/all")
+class GetAllInvoices(Resource):
+    @ns.marshal_list_with(invoice_model_output, code=200)
+    def get(self, project_id, invoice_date):
+        return (
+            invoice_service.get_all_invoices_by_date(
+                owner_id=project_id, invoice_date=invoice_date
+            ),
+            200,
+        )
+
+
+@ns.route("/<invoice_date>/outgoing")
+class GetAllReceivableInvoices(Resource):
+    @ns.marshal_list_with(invoice_model_output, code=200)
+    def get(self, project_id, invoice_date):
+        return (
+            invoice_service.get_all_outgoing_invoices_by_date(
+                owner_id=project_id, invoice_date=invoice_date
+            ),
+            200,
+        )
+
+
+@ns.route("/<invoice_date>/incoming")
+class GetAllReceivableInvoices(Resource):
+    @ns.marshal_list_with(invoice_model_output, code=200)
+    def get(self, project_id, invoice_date):
+        return (
+            invoice_service.get_all_incoming_invoices_by_date(
+                owner_id=project_id, invoice_date=invoice_date
+            ),
+            200,
+        )
+
+
+@ns.route("/invoice-dates/")
+class AvailablePaymentDates(Resource):
+    def get(self, project_id):
+        return invoice_service.get_invoice_dates(owner_id=project_id)

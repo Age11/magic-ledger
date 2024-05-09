@@ -114,7 +114,7 @@ def get_average_inventory_items(inventory_id):
 def decrease_stock(item_id, inventory_id, quantity, invoice_id):
     item = get_item_by_id(item_id, inventory_id)
     item.decrease_quantity(quantity)
-    db.session.commit()
+
     return item
 
 

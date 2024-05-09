@@ -64,7 +64,7 @@ def get_invoice_by_id(invoice_id, owner_id):
     return Invoice.query.filter_by(id=invoice_id, owner_id=owner_id).first()
 
 
-def get_all_receivable_invoices_by_date(owner_id, invoice_date):
+def get_all_outgoing_invoices_by_date(owner_id, invoice_date):
     inv_date = datetime.strptime(invoice_date, "%Y-%m")
     return (
         db.session.query(Invoice)
@@ -81,7 +81,7 @@ def get_all_receivable_invoices_by_date(owner_id, invoice_date):
     )
 
 
-def get_all_payable_invoices_by_date(owner_id, invoice_date):
+def get_all_incoming_invoices_by_date(owner_id, invoice_date):
     inv_date = datetime.strptime(invoice_date, "%Y-%m")
     return (
         db.session.query(Invoice)
@@ -96,3 +96,36 @@ def get_all_payable_invoices_by_date(owner_id, invoice_date):
         .order_by(Invoice.invoice_date)
         .all()
     )
+
+
+def get_all_invoices_by_date(owner_id, invoice_date):
+    inv_date = datetime.strptime(invoice_date, "%Y-%m")
+    invs = (
+        db.session.query(Invoice)
+        .filter(
+            and_(
+                Invoice.owner_id == owner_id,
+                extract("month", Invoice.invoice_date) == inv_date.month,
+                extract("year", Invoice.invoice_date) == inv_date.year,
+            )
+        )
+        .order_by(Invoice.invoice_date)
+        .all()
+    )
+    for inv in invs:
+        sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
+        cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
+        inv.supplier_name = sup.organization_name
+        inv.sup_nrc = sup.nrc
+
+        inv.client_name = cli.organization_name
+        inv.cli_nrc = cli.nrc
+    return invs
+
+
+def get_invoice_dates(owner_id):
+    invoices = Invoice.query.filter_by(owner_id=owner_id).all()
+    res = []
+    for inv in invoices:
+        res.append(inv.invoice_date.strftime("%Y-%m"))
+    return list(set(res))
