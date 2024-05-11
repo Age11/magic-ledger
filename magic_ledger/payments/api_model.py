@@ -57,3 +57,17 @@ payment_model_input = api.model(
         ),
     },
 )
+
+payment_journal_entry = api.model(
+    "payment_journal_entry",
+    {
+        "payment_date": fields.Date(required=True, description="The payment due date"),
+        "payment_type": fields.String(required=True, description="The payment type"),
+        "installment_type": fields.String(
+            required=True, description="The installment type"
+        ),
+        "details": fields.String(required=True, description="The payment details"),
+        "amount": fields.Float(required=True, description="The payment amount"),
+        "currency": fields.String(required=True, description="The payment currency"),
+    },
+)

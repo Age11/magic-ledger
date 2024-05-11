@@ -95,8 +95,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
     * inchid luna "2023-11"
 
 
-  #    02-12-2023 - În vederea amenajării unui spațiu nou de desfacere pentru marfă în cadrul unui centru comercial societatea comercială a închiriat un stand.
-  #    Primește prima factură în valoare de 1.000 de lei  de la furnizorul „Alfa” SRL având seria 12345. Furnizorul aplică TVA în regim normal.
+#      02-12-2023 - În vederea amenajării unui spațiu nou de desfacere pentru marfă în cadrul unui centru comercial societatea comercială a închiriat un stand.
+#      Primește prima factură în valoare de 1.000 de lei  de la furnizorul „Alfa” SRL având seria 12345. Furnizorul aplică TVA în regim normal.
 
     * adaug tratament contabil pentru înregistrarea chiriei
 
@@ -210,8 +210,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 7         | 4000.00 | 2023-12-10         | 00001          | 6           |
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 6        | 5000.00 |
+      | id_plata | suma    |tip_plată|
+      | 6        | 5000.00 |casă     |
 
     * adaug tratament contabil pentru incasare in casa de la client
 
@@ -222,8 +222,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
   # Decide să achite factura de chirie de la „Alfa” SRL utilizând numerar din casă.
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 1        | 1190.00 |
+      | id_plata | suma    |tip_plată|tip_plată|
+      | 1        | 1190.00 |casă     |casă     |
 
     * adaug tratament contabil pentru plata furnizor din casă
 
@@ -252,13 +252,18 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
       | 7         | 400.00 | 2023-12-11         | BON0001         | -1          |
 
+        #TODO
+#    * creez o plată:
+#      | suma     | tip_plata | data_plata | data_scadenta | status     | id_factura | id_tranzactie |
+#      | 2380.00  | încasare  | 2023-12-11 | 2023-12-11    | 2023-12-11 | 7          | 32            |
+
    # 2023-12-12
    # Încasează prin bancă creanța generată prin factura 0001 de la clientul  „Popescu” SRL.
     * adaug tratament contabil pentru incasare in cont de la client
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 6        | 6900.00 |
+      | id_plata | suma    |tip_plată|
+      | 6        | 6900.00 |bancă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
@@ -269,8 +274,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
     * adaug tratament contabil pentru plata furnizor din cont
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 4        | 5950.00 |
+      | id_plata | suma    |tip_plată|
+      | 4        | 5950.00 |bancă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
@@ -280,8 +285,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
     * adaug tratament contabil pentru plata furnizor din cont cu exigibilizare TVA
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 3        | 1785.00 |
+      | id_plata | suma    |tip_plată|
+      | 3        | 1785.00 |casă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
@@ -304,8 +309,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 14        | 168.07 | 2023-12-15         | 65897          | 8           |
 
     * rezolv plata:
-      | id_plata | suma   |
-      | 8        | 200.00 |
+      | id_plata | suma   |tip_plată|
+      | 8        | 200.00 |casă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma   | data_inregistrarii | serie_document | id_document |
@@ -314,8 +319,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
     # Achită din bancă factura 78956 către „Mobilă” SRL în valoare de 5950 de lei.
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 2        | 5950.00 |
+      | id_plata | suma    |tip_plată|
+      | 2        | 5950.00 |bancă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
@@ -334,8 +339,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 10000.00 | încasare  | 2023-12-15 | 2023-12-31    | 2023-12-15 | -1         | 33            |
 
     * rezolv plata:
-      | id_plata | suma     |
-      | 9        | 10000.00 |
+      | id_plata | suma     |tip_plată|
+      | 9        | 10000.00 |bancă     |
 
   # 2023-12-16
     # 16-12-2023 - Achită parțial factura „76953” scadentă la 07-01-2024 către furnizorul de marfă în valoare de 5.000 lei.
@@ -344,8 +349,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 12        | 5000.00 | 2023-12-16         | 76953          | 5           |
 
     * rezolv plata:
-      | id_plata | suma    |
-      | 5        | 5000.00 |
+      | id_plata | suma    |tip_plată|
+      | 5        | 5000.00 |bancă    |
 
   # 2023-12-20
     # Primește factura de la furnizorul de energie cu numărul 4567 în valoare de 654,50 lei
@@ -415,8 +420,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
       | 22        | 300.00 | 2023-12-23         | 789            | 10          |
 
     * rezolv plata:
-      | id_plata | suma   |
-      | 10       | 357.00 |
+      | id_plata | suma   |tip_plată|
+      | 10       | 357.00 |casă     |
 
     * creez tranzacții din șablon:
       | id_sablon | suma   | data_inregistrarii | serie_document | id_document |
@@ -462,8 +467,8 @@ Functionalitate:  Inregistrari pentru luna decembrie
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
       | 26        | 1850.00 | 2023-12-12         | ST000          | -1          |
-
-
-
-
-
+#
+#
+#
+#
+#

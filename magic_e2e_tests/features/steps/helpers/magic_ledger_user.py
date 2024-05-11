@@ -463,6 +463,9 @@ class MagicLedgerUser:
         for row in context:
             r1 = requests.put(
                 f'{self.base_url}/{self.selected_project}/payments/{row["id_plata"]}/pay',
-                json={"amount": round(float(row["suma"]), 2)},
+                json={
+                    "amount": round(float(row["suma"]), 2),
+                    "installment_type": row["tip_plată"],
+                },
             )
             return r1

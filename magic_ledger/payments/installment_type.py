@@ -1,0 +1,2 @@
+CASH = "casă"
+CARD = "bancă"

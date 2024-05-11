@@ -9,7 +9,11 @@ import magic_ledger.payments.payment_status as payment_status
 from flask_restx import Namespace, Resource
 
 from magic_ledger.payments import payment_service
-from magic_ledger.payments.api_model import payment_model_input, payment_model_output
+from magic_ledger.payments.api_model import (
+    payment_model_input,
+    payment_model_output,
+    payment_journal_entry,
+)
 
 ns = Namespace(
     "payments",
@@ -94,4 +98,13 @@ class AllPayments(Resource):
                 payment_date=payment_date, owner_id=project_id
             ),
             200,
+        )
+
+
+@ns.route("/<journal_date>/payment-journal")
+class PaymentReport(Resource):
+    @ns.marshal_list_with(payment_journal_entry, code=200)
+    def get(self, project_id, journal_date):
+        return payment_service.get_payments_journal(
+            owner_id=project_id, journal_date=journal_date
         )

@@ -123,6 +123,18 @@ def get_all_invoices_by_date(owner_id, invoice_date):
     return invs
 
 
+def get_full_invoice_details(invoice_id, owner_id):
+    inv = get_invoice_by_id(invoice_id, owner_id)
+    sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
+    cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
+    inv.supplier_name = sup.organization_name
+    inv.sup_nrc = sup.nrc
+
+    inv.client_name = cli.organization_name
+    inv.cli_nrc = cli.nrc
+    return inv
+
+
 def get_invoice_dates(owner_id):
     invoices = Invoice.query.filter_by(owner_id=owner_id).all()
     res = []

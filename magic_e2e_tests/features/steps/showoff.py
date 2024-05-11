@@ -284,7 +284,7 @@ def step_impl(context):
 )
 def step_impl(context):
     request_body = {
-        "name": "Achiziției de obiecte de inventar, regim TVA încasare",
+        "name": "Achiziției de obiecte de inventar, regim TVA normal, dare în folosință",
         "description": "Achiziții de obiecte de inventar de la un furnizor cu regim TVA normal și dare în folosință",
         "main_transaction": {
             "debit_account": "303",
@@ -692,7 +692,7 @@ def step_impl(context):
 @given("adaug tratament contabil pentru cheltuieli cu salariile fără normă întreagă")
 def step_impl(context):
     request_body = {
-        "name": "Plata salariu jumătate normă și taxe aferente",
+        "name": "Cheltuieli salariu jumătate normă și taxe aferente",
         "description": "Înregistrarea salariilor fără normă întreagă datorate si a taxelor aferente",
         "main_transaction": {
             "debit_account": "641",

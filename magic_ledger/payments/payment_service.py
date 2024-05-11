@@ -1,3 +1,4 @@
+from magic_ledger.payments.installment import Installment
 from magic_ledger.payments.payment import Payment
 from datetime import datetime
 
@@ -60,7 +61,15 @@ def deposit_payment(invoice_id, owner_id, request_body):
         owner_id=owner_id,
         payment_status=payment_status.DUE,
     ).first()
+    installment = Installment(
+        payment_id=payment.id,
+        amount=request_body["amount"],
+        installment_type=request_body["installment_type"],
+    )
+    db.session.add(installment)
+    db.session.commit()
     payment.deposit_payment(request_body["amount"])
+
     db.session.commit()
     return payment
 
@@ -154,3 +163,22 @@ def get_available_payment_dates(owner_id):
     for payment in payments:
         res.append(payment.payment_date.strftime("%Y-%m"))
     return list(set(res))
+
+
+def get_payments_journal(owner_id, journal_date):
+    resp = []
+    pmts = get_all_payments_by_date(owner_id, journal_date)
+    for pmt in pmts:
+        installments = Installment.query.filter_by(payment_id=pmt.id).all()
+        for inst in installments:
+            resp.append(
+                {
+                    "payment_date": pmt.payment_date,
+                    "payment_type": pmt.payment_type,
+                    "installment_type": inst.installment_type,
+                    "details": pmt.details,
+                    "amount": inst.amount,
+                    "currency": pmt.currency,
+                }
+            )
+    return resp

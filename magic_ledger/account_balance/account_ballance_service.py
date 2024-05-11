@@ -42,9 +42,9 @@ def account_balance_exists(
         .first()
     )
 
-    if account:
-        return True, account
-    return False, None
+    if account is None:
+        return False, None
+    return True, account
 
 
 def update_account_balance(
@@ -198,7 +198,7 @@ def get_expenses_accounts(owner_id, balance_date):
 
 def get_current_profit_or_loss(owner_id, balance_date):
     if not account_balance_exists(owner_id, "121")[0]:
-        create_account_balance(owner_id, "121")
+        create_account_balance(owner_id, "121", balance_date + "-01")
 
     profit_or_loss = (
         db.session.query(AccountBalance)

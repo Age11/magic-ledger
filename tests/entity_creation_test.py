@@ -469,7 +469,9 @@ def test_create_invoice_and_transaction(client):
     assert data["payment_type"] == "plată"
     assert data["owner_id"] == 1
 
-    response = client.put("/1/payments/1/pay/", json={"amount": 119})
+    response = client.put(
+        "/1/payments/1/pay/", json={"amount": 119, "installment_type": "bancă"}
+    )
     assert response.status_code == 204
 
     resp = client.get("/1/payments/1/")
