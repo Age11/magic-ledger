@@ -671,7 +671,7 @@ def step_impl(context):
                 "credit_account": "444",
                 # 660 este deducerea personala
                 "operation": "(X*65/100) *10/100",
-                "details": "Impozit pe venit",
+                "details": "Impozit pe venit de natura salariilor",
                 "tx_type": "salarii",
                 "document_type": "ștat de plată",
             },
@@ -724,7 +724,7 @@ def step_impl(context):
                 "credit_account": "444",
                 # 660 este deducerea personala
                 "operation": "(X*65/100 - 660)*10/100",
-                "details": "Impozit pe venit",
+                "details": "Impozit pe venit de natura salarii",
                 "tx_type": "salarii",
                 "document_type": "ștat de plată",
             },

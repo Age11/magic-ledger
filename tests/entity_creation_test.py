@@ -479,6 +479,8 @@ def test_create_invoice_and_transaction(client):
     data = json.loads(resp.data)
     assert data["payment_status"] == "plătită"
 
+    response = client.get("/1/invoices/2020-01/all")
+
 
 item = {
     "name": "paracetamol",
@@ -762,7 +764,7 @@ salary = {
             "debit_account": "421",
             "credit_account": "444",
             "operation": "*65/100*10/100",
-            "details": "Impozit pe venit",
+            "details": "Impozit pe venit de natura salarii",
             "tx_type": "salarii",
             "document_type": "stat plata",
         },

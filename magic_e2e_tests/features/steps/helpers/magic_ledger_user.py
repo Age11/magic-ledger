@@ -334,6 +334,8 @@ class MagicLedgerUser:
                 + round(float(row["valoare_tva"]), 2),
                 "issuer_name": row["nume_emitent"],
             }
+            if "tip_client" in row.headings:
+                req["client_type"] = row["tip_client"]
             response = self.client.post(
                 self.base_url + "/" + self.selected_project + "/invoices/", json=req
             )
@@ -469,3 +471,19 @@ class MagicLedgerUser:
                 },
             )
             return r1
+
+    def add_payment(self, context):
+        for row in context:
+            req = {
+                "payment_date": row["data_plata"],
+                "due_date": row["data_scadenta"],
+                "amount_due": round(float(row["suma"]), 2),
+                "payment_type": row["tip_plata"],
+                "payment_status": "restantă",
+                "currency": "RON",
+                "invoice_id": row["id_factura"],
+            }
+            response = self.client.post(
+                f"{self.base_url}/{self.selected_project}/payments/", json=req
+            )
+            return response

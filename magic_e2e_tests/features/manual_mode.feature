@@ -202,13 +202,13 @@ Functionalitate:  Inregistrari pentru luna mai
     * creez tranzacții din șablon:
       | id_sablon | suma     | data_inregistrarii | serie_document | id_document |
       | 6         | 10000.00 | 2024-05-10         | 00001          | 6           |
-#
+
     * adaug tratament contabil pentru descărcare din gestiunea de mărfuri
-#
+
     * creez tranzacții din șablon:
       | id_sablon | suma    | data_inregistrarii | serie_document | id_document |
       | 7         | 4000.00 | 2024-05-10         | 00001          | 6           |
-#
+
 #    * rezolv plata:
 #      | id_plata | suma    |
 #      | 6        | 5000.00 |

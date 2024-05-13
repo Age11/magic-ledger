@@ -39,7 +39,7 @@ def create_payment(request_body):
 def get_all_payments(owner_id):
     pmts = Payment.query.filter_by(owner_id=owner_id).all()
     for pmt in pmts:
-        if pmt.invoice_id is not None:
+        if pmt.invoice_id is not None and pmt.invoice_id != -1:
             inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
             pmt.details = inv.serial_number
         elif pmt.transaction_id is not None:
@@ -92,7 +92,7 @@ def get_all_receivable_payments_by_date(owner_id, payment_date):
         .all()
     )
     for pmt in pmts:
-        if pmt.invoice_id is not None:
+        if pmt.invoice_id is not None and pmt.invoice_id != -1:
             inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
             pmt.details = "Factura " + inv.serial_number
         elif pmt.transaction_id is not None:
@@ -120,7 +120,7 @@ def get_all_payable_payments_by_date(owner_id, payment_date):
         .all()
     )
     for pmt in pmts:
-        if pmt.invoice_id is not None:
+        if pmt.invoice_id is not None and pmt.invoice_id != -1:
             inv = Invoice.query.filter_by(id=pmt.invoice_id).first()
             pmt.details = "Factura " + inv.serial_number
         elif pmt.transaction_id is not None:

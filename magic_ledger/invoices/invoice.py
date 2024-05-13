@@ -5,7 +5,9 @@ from datetime import datetime
 from enum import Enum
 
 from magic_ledger import db
+from magic_ledger.invoices import client_types
 from magic_ledger.misc.currency import Currency
+from magic_ledger.third_parties import organization_type
 
 
 @dataclass
@@ -18,6 +20,7 @@ class Invoice(db.Model):
     invoice_type = db.Column(db.String(10), nullable=False)
     supplier_id = db.Column(db.Integer, db.ForeignKey("organization.id"))
     client_id = db.Column(db.Integer, db.ForeignKey("organization.id"), nullable=False)
+    client_type = db.Column(db.String(10), nullable=False)
     amount = db.Column(db.Float, nullable=False)
     vat_amount = db.Column(db.Float, nullable=False)
     total_amount = db.Column(db.Float, nullable=False)
@@ -35,6 +38,7 @@ class Invoice(db.Model):
         vat_amount,
         currency,
         invoice_type,
+        client_type=client_types.ORGANIZATION,
     ):
         self.serial_number = serial_number
         self.invoice_date = datetime.strptime(invoice_date, "%Y-%m-%d")
@@ -48,6 +52,7 @@ class Invoice(db.Model):
         self.vat_amount = round(float(vat_amount), 2)
         self.total_amount = self.amount + self.vat_amount
         self.currency = currency
+        self.client_type = client_type
 
     def __getstate__(self):
         state = self.__dict__.copy()

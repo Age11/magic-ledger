@@ -1,14 +1,13 @@
 from datetime import datetime
 
 from magic_ledger import db
-from magic_ledger.invoices import invoice_type
-from magic_ledger.payments import payment_type, payment_status
+from magic_ledger.invoices import invoice_type, client_types
 from magic_ledger.invoices.invoice import Invoice
 from sqlalchemy.sql import extract
 from sqlalchemy import and_
 
 from magic_ledger.payments.payment_service import create_payment
-from magic_ledger.third_parties.service import organization_service
+from magic_ledger.third_parties.service import organization_service, agent_service
 
 
 def create_invoice(request_body):
@@ -27,6 +26,8 @@ def create_invoice(request_body):
             "invoice_type",
         )
     }
+    if "client_type" in request_body:
+        invoice_data["client_type"] = request_body["client_type"]
     new_invoice = Invoice(**invoice_data)
     db.session.add(new_invoice)
     db.session.commit()
@@ -50,13 +51,18 @@ def create_invoice(request_body):
 def get_all_invoices(owner_id):
     invs = Invoice.query.filter_by(owner_id=owner_id).all()
     for inv in invs:
+        if inv.client_type == client_types.ORGANIZATION:
+            cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
+            inv.client_name = cli.organization_name
+            inv.cli_nrc = cli.nrc
+        elif inv.client_type == client_types.PERSON:
+            cli = agent_service.get_agent_by_id(inv.client_id, owner_id)
+            inv.client_name = cli.agent_name + " " + cli.last_name
+            inv.cli_nrc = cli.cnp
+
         sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
-        cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
         inv.supplier_name = sup.organization_name
         inv.sup_nrc = sup.nrc
-
-        inv.client_name = cli.organization_name
-        inv.cli_nrc = cli.nrc
     return invs
 
 
@@ -113,26 +119,19 @@ def get_all_invoices_by_date(owner_id, invoice_date):
         .all()
     )
     for inv in invs:
+        if inv.client_type == client_types.ORGANIZATION:
+            cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
+            inv.client_name = cli.organization_name
+            inv.cli_nrc = cli.nrc
+        elif inv.client_type == client_types.PERSON:
+            cli = agent_service.get_agent_by_id(inv.client_id, owner_id)
+            inv.client_name = cli.agent_name + " " + cli.last_name
+            inv.cli_nrc = cli.cnp
+
         sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
-        cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
         inv.supplier_name = sup.organization_name
         inv.sup_nrc = sup.nrc
-
-        inv.client_name = cli.organization_name
-        inv.cli_nrc = cli.nrc
     return invs
-
-
-def get_full_invoice_details(invoice_id, owner_id):
-    inv = get_invoice_by_id(invoice_id, owner_id)
-    sup = organization_service.get_organization_by_id(inv.supplier_id, owner_id)
-    cli = organization_service.get_organization_by_id(inv.client_id, owner_id)
-    inv.supplier_name = sup.organization_name
-    inv.sup_nrc = sup.nrc
-
-    inv.client_name = cli.organization_name
-    inv.cli_nrc = cli.nrc
-    return inv
 
 
 def get_invoice_dates(owner_id):

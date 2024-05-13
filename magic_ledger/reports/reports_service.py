@@ -1,8 +1,10 @@
 from magic_ledger.inventory.inventory_service import get_items_from_invoice
+from magic_ledger.invoices import client_types
 from magic_ledger.invoices.invoice_service import (
     get_all_incoming_invoices_by_date,
     get_all_outgoing_invoices_by_date,
 )
+from magic_ledger.third_parties.service.agent_service import get_agent_by_id
 from magic_ledger.third_parties.service.organization_service import (
     get_supplier_by_id,
     get_client_by_id,
@@ -59,8 +61,13 @@ def generate_sales_journal(owner_id, invoice_date):
     invs = get_all_outgoing_invoices_by_date(owner_id, invoice_date)
     res = []
     for inv in invs:
-        client = get_client_by_id(inv.client_id, owner_id)
-        print(client.organization_name)
+        if inv.client_type == client_types.ORGANIZATION:
+            client = get_client_by_id(inv.client_id, owner_id)
+            client_name = client.organization_name
+        elif inv.client_type == client_types.PERSON:
+            client = get_agent_by_id(inv.client_id, owner_id)
+            client_name = client.agent_name + " " + client.last_name
+
         items = get_items_from_invoice(inv.id)
         regular_amount = 0
         regular_vat_amount = 0
@@ -84,7 +91,7 @@ def generate_sales_journal(owner_id, invoice_date):
         res.append(
             {
                 "date": inv.invoice_date.strftime("%Y-%m-%d"),
-                "client_name": client.organization_name,
+                "client_name": client_name,
                 "client_vat_code": "NOT_IMPLEMENTED",
                 "total": inv.total_amount,
                 "amount": inv.amount,
